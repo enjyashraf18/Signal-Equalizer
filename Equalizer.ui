@@ -426,7 +426,7 @@ font-weight:800;</string>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_18">
         <item>
-         <widget class="QSlider" name="verticalSlider">
+         <widget class="QSlider" name="verticalSlider_1">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
