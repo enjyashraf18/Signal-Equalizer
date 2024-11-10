@@ -38,36 +38,7 @@ background-color: rgb(42, 42, 42);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_9">
-    <item row="6" column="1">
-     <spacer name="verticalSpacer_2">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Expanding</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>10</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="4" column="1">
-     <spacer name="verticalSpacer_3">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="2" column="1">
+    <item row="4" column="2">
      <layout class="QHBoxLayout" name="horizontalLayout_8">
       <item>
        <spacer name="horizontalSpacer_7">
@@ -136,7 +107,7 @@ font-weight:800;</string>
          <string notr="true">background-color: rgb(24, 24, 24);
 color: rgb(255, 255, 255);
 border: 1px;
-border-radius: 15px;
+border-radius: 18px;
 font-weight:800;</string>
         </property>
         <property name="text">
@@ -172,7 +143,7 @@ font-weight:800;</string>
          <string notr="true">background-color: rgb(24, 24, 24);
 color: rgb(255, 255, 255);
 border: 1px;
-border-radius: 15px;
+border-radius: 18px;
 font-weight:800;</string>
         </property>
         <property name="text">
@@ -208,7 +179,7 @@ font-weight:800;</string>
          <string notr="true">background-color: rgb(24, 24, 24);
 color: rgb(255, 255, 255);
 border: 1px;
-border-radius: 15px;
+border-radius: 18px;
 font-weight:800;</string>
         </property>
         <property name="text">
@@ -227,6 +198,97 @@ font-weight:800;</string>
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="label">
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap>Deliverables/turtle (2).png</pixmap>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="horizontalSlider">
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QSlider::groove:horizontal {
+    border: 1px solid #ffffff;
+    background: #ffffff;
+    height: 3px;
+    border-radius: 1.5px;
+}
+
+QSlider::sub-page:horizontal {
+    background: #ffffff;
+    border: 1px solid transparent;
+    height: 3px;
+    border-radius: 1.5px;
+}
+
+QSlider::add-page:horizontal {
+    background: #2887bf;
+    border: 1px solid #2887bf;
+    height: 3px;
+    border-radius: 1.5px;
+}
+
+QSlider::handle:horizontal {
+    background: #ffffff;
+    border: 2px solid #2887bf;
+    width: 5px;   /* Set width to make it look taller horizontally */
+    height: 8px;  /* Set the desired height */
+    border-radius: 5px;  /* Adjust border-radius to match new size */
+    margin: -8px 0;  /* Adjust margin to center the handle on the groove */
+}
+
+QSlider::handle:horizontal:hover {
+    background: #b0b0b0;
+}
+
+QSlider::handle:horizontal:pressed {
+    background: #909090;
+}
+</string>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap>Deliverables/rabbit (2).png</pixmap>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer_6">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -241,7 +303,23 @@ font-weight:800;</string>
       </item>
      </layout>
     </item>
-    <item row="0" column="1">
+    <item row="12" column="2">
+     <spacer name="verticalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>10</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="2">
      <spacer name="verticalSpacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -251,13 +329,163 @@ font-weight:800;</string>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>5</width>
-        <height>30</height>
+        <width>2</width>
+        <height>5</height>
        </size>
       </property>
      </spacer>
     </item>
-    <item row="2" column="2">
+    <item row="10" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_30">
+      <item>
+       <widget class="QLabel" name="label_7">
+        <property name="minimumSize">
+         <size>
+          <width>900</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color:white;
+font-size: 14px;
+font-weight:600;
+border-color: transparent;</string>
+        </property>
+        <property name="text">
+         <string>Frequency:</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_21">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_23">
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="styleSheet">
+           <string notr="true">color:white;
+font-size: 14px;
+font-weight:600;
+border-color: transparent;</string>
+          </property>
+          <property name="text">
+           <string>Original Signal:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_22">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="styleSheet">
+           <string notr="true">color:white;
+font-size: 14px;
+font-weight:600;
+border-color: transparent;</string>
+          </property>
+          <property name="text">
+           <string>Modified Signal:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="11" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_24">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_25">
+        <item>
+         <widget class="QWidget" name="widget_6" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>900</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color:rgb(24,24,24);</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="14" column="2">
+     <spacer name="verticalSpacer_2">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>10</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="5" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_31">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="Line" name="line">
+        <property name="minimumSize">
+         <size>
+          <width>800</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>1</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color:#ffffff;</string>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item row="4" column="3">
      <spacer name="horizontalSpacer_4">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -273,155 +501,7 @@ font-weight:800;</string>
       </property>
      </spacer>
     </item>
-    <item row="1" column="1">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_5">
-        <item>
-         <widget class="QWidget" name="widget" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>500</width>
-            <height>300</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color:rgb(24,24,24);</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
-         <widget class="QWidget" name="widget_2" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>500</width>
-            <height>300</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color:rgb(24,24,24);</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-    <item row="3" column="1">
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
-      <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_7">
-        <item>
-         <widget class="QWidget" name="widget_3" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>450</width>
-            <height>290</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color:rgb(24,24,24);</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_6">
-        <item>
-         <spacer name="horizontalSpacer_5">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QWidget" name="widget_4" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>450</width>
-            <height>290</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color:rgb(24,24,24);</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item row="0" column="0" rowspan="7">
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QWidget" name="widget_5" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>300</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>300</width>
-          <height>16777215</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="5" column="1">
+    <item row="13" column="2">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_18">
@@ -430,7 +510,7 @@ font-weight:800;</string>
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>200</height>
+            <height>140</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -449,19 +529,19 @@ QSlider::sub-page:vertical {
 }
 
 QSlider::add-page:vertical {
-    background: #1e6e9e;
-    border: 1px solid #5c5c5c;
+    background: #cc3c3c;
+    border: 1px solid #cc3c3c;
     width: 4px;
     border-radius: 2px;
 }
 
 QSlider::handle:vertical {
     background: #ffffff;
-    border: 2px solid #1e6e9e;
+    border: 2px solid #cc3c3c;
     width: 8px;
-    height: 16px;
+    height: 5px;
     /*border-radius: 4px;*/
-    margin: 0 -5px;  /*Adjust handle position */
+    margin: 0 -10px;  /*Adjust handle position */
 }
 
 QSlider::handle:vertical:hover {
@@ -487,7 +567,7 @@ QSlider::handle:vertical:pressed {
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>200</height>
+            <height>140</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -506,19 +586,19 @@ QSlider::sub-page:vertical {
 }
 
 QSlider::add-page:vertical {
-    background: #1e6e9e;
-    border: 1px solid #5c5c5c;
+    background: #2887bf;
+    border: 1px solid #2887bf;
     width: 4px;
     border-radius: 2px;
 }
 
 QSlider::handle:vertical {
     background: #ffffff;
-    border: 2px solid #1e6e9e;
+    border: 2px solid #2887bf;
     width: 8px;
-    height: 16px;
+    height: 5px;
     /*border-radius: 4px;*/
-    margin: 0 -5px;  /*Adjust handle position */
+    margin: 0 -10px;  /*Adjust handle position */
 }
 
 QSlider::handle:vertical:hover {
@@ -544,7 +624,7 @@ QSlider::handle:vertical:pressed {
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>200</height>
+            <height>140</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -563,19 +643,19 @@ QSlider::sub-page:vertical {
 }
 
 QSlider::add-page:vertical {
-    background: #1e6e9e;
-    border: 1px solid #5c5c5c;
+    background: #cc3c3c;
+    border: 1px solid #cc3c3c;
     width: 4px;
     border-radius: 2px;
 }
 
 QSlider::handle:vertical {
     background: #ffffff;
-    border: 2px solid #1e6e9e;
+    border: 2px solid #cc3c3c;
     width: 8px;
-    height: 16px;
+    height: 5px;
     /*border-radius: 4px;*/
-    margin: 0 -5px;  /*Adjust handle position */
+    margin: 0 -10px;  /*Adjust handle position */
 }
 
 QSlider::handle:vertical:hover {
@@ -601,7 +681,7 @@ QSlider::handle:vertical:pressed {
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>16777215</height>
+            <height>140</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -620,19 +700,19 @@ QSlider::sub-page:vertical {
 }
 
 QSlider::add-page:vertical {
-    background: #1e6e9e;
-    border: 1px solid #5c5c5c;
+    background: #2887bf;
+    border: 1px solid #2887bf;
     width: 4px;
     border-radius: 2px;
 }
 
 QSlider::handle:vertical {
     background: #ffffff;
-    border: 2px solid #1e6e9e;
+    border: 2px solid #2887bf;
     width: 8px;
-    height: 16px;
+    height: 5px;
     /*border-radius: 4px;*/
-    margin: 0 -5px;  /*Adjust handle position */
+    margin: 0 -10px;  /*Adjust handle position */
 }
 
 QSlider::handle:vertical:hover {
@@ -658,7 +738,7 @@ QSlider::handle:vertical:pressed {
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>200</height>
+            <height>140</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -677,19 +757,19 @@ QSlider::sub-page:vertical {
 }
 
 QSlider::add-page:vertical {
-    background: #1e6e9e;
-    border: 1px solid #5c5c5c;
+    background: #cc3c3c;
+    border: 1px solid #cc3c3c;
     width: 4px;
     border-radius: 2px;
 }
 
 QSlider::handle:vertical {
     background: #ffffff;
-    border: 2px solid #1e6e9e;
+    border: 2px solid #cc3c3c;
     width: 8px;
-    height: 16px;
+    height: 5px;
     /*border-radius: 4px;*/
-    margin: 0 -5px;  /*Adjust handle position */
+    margin: 0 -10px;  /*Adjust handle position */
 }
 
 QSlider::handle:vertical:hover {
@@ -715,7 +795,7 @@ QSlider::handle:vertical:pressed {
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>200</height>
+            <height>140</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -734,19 +814,19 @@ QSlider::sub-page:vertical {
 }
 
 QSlider::add-page:vertical {
-    background: #1e6e9e;
-    border: 1px solid #5c5c5c;
+    background: #2887bf;
+    border: 1px solid #2887bf;
     width: 4px;
     border-radius: 2px;
 }
 
 QSlider::handle:vertical {
     background: #ffffff;
-    border: 2px solid #1e6e9e;
+    border: 2px solid #2887bf;
     width: 8px;
-    height: 16px;
+    height: 5px;
     /*border-radius: 4px;*/
-    margin: 0 -5px;  /*Adjust handle position */
+    margin: 0 -10px;  /*Adjust handle position */
 }
 
 QSlider::handle:vertical:hover {
@@ -772,7 +852,7 @@ QSlider::handle:vertical:pressed {
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>200</height>
+            <height>140</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -791,19 +871,19 @@ QSlider::sub-page:vertical {
 }
 
 QSlider::add-page:vertical {
-    background: #1e6e9e;
-    border: 1px solid #5c5c5c;
+    background: #cc3c3c;
+    border: 1px solid #cc3c3c;
     width: 4px;
     border-radius: 2px;
 }
 
 QSlider::handle:vertical {
     background: #ffffff;
-    border: 2px solid #1e6e9e;
+    border: 2px solid #cc3c3c;
     width: 8px;
-    height: 16px;
+    height: 5px;
     /*border-radius: 4px;*/
-    margin: 0 -5px;  /*Adjust handle position */
+    margin: 0 -10px;  /*Adjust handle position */
 }
 
 QSlider::handle:vertical:hover {
@@ -829,7 +909,7 @@ QSlider::handle:vertical:pressed {
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>200</height>
+            <height>140</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -848,19 +928,19 @@ QSlider::sub-page:vertical {
 }
 
 QSlider::add-page:vertical {
-    background: #1e6e9e;
-    border: 1px solid #5c5c5c;
+    background: #2887bf;
+    border: 1px solid #2887bf;
     width: 4px;
     border-radius: 2px;
 }
 
 QSlider::handle:vertical {
     background: #ffffff;
-    border: 2px solid #1e6e9e;
+    border: 2px solid #2887bf;
     width: 8px;
-    height: 16px;
+    height: 5px;
     /*border-radius: 4px;*/
-    margin: 0 -5px;  /*Adjust handle position */
+    margin: 0 -10px;  /*Adjust handle position */
 }
 
 QSlider::handle:vertical:hover {
@@ -886,7 +966,7 @@ QSlider::handle:vertical:pressed {
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>200</height>
+            <height>140</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -905,19 +985,19 @@ QSlider::sub-page:vertical {
 }
 
 QSlider::add-page:vertical {
-    background: #1e6e9e;
-    border: 1px solid #5c5c5c;
+    background: #cc3c3c;
+    border: 1px solid #cc3c3c;
     width: 4px;
     border-radius: 2px;
 }
 
 QSlider::handle:vertical {
     background: #ffffff;
-    border: 2px solid #1e6e9e;
+    border: 2px solid #cc3c3c;
     width: 8px;
-    height: 16px;
+    height: 5px;
     /*border-radius: 4px;*/
-    margin: 0 -5px;  /*Adjust handle position */
+    margin: 0 -10px;  /*Adjust handle position */
 }
 
 QSlider::handle:vertical:hover {
@@ -943,13 +1023,13 @@ QSlider::handle:vertical:pressed {
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>150</height>
+            <height>100</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>200</height>
+            <height>140</height>
            </size>
           </property>
           <property name="styleSheet">
@@ -968,19 +1048,19 @@ QSlider::sub-page:vertical {
 }
 
 QSlider::add-page:vertical {
-    background: #1e6e9e;
-    border: 1px solid #5c5c5c;
+    background: #2887bf;
+    border: 1px solid #2887bf;
     width: 4px;
     border-radius: 2px;
 }
 
 QSlider::handle:vertical {
     background: #ffffff;
-    border: 2px solid #1e6e9e;
+    border: 2px solid #2887bf;
     width: 8px;
-    height: 16px;
+    height: 5px;
     /*border-radius: 4px;*/
-    margin: 0 -5px;  /*Adjust handle position */
+    margin: 0 -10px;  /*Adjust handle position */
 }
 
 QSlider::handle:vertical:hover {
@@ -1000,6 +1080,496 @@ QSlider::handle:vertical:pressed {
        </layout>
       </item>
      </layout>
+    </item>
+    <item row="9" column="2">
+     <spacer name="verticalSpacer_4">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>10</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="8" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QWidget" name="widget_3" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>450</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color:rgb(24,24,24);</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QWidget" name="widget_4" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>450</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color:rgb(24,24,24);</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="2" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QWidget" name="widget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>450</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color:rgb(24,24,24);</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QWidget" name="widget_2" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>450</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color:rgb(24,24,24);</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="7" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_26">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_28">
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="styleSheet">
+           <string notr="true">color:white;
+font-size: 14px;
+font-weight:600;
+border-color: transparent;</string>
+          </property>
+          <property name="text">
+           <string>Original signal Spectrogram:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_27">
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="styleSheet">
+           <string notr="true">color:white;
+font-size: 14px;
+font-weight:600;
+border-color: transparent;</string>
+          </property>
+          <property name="text">
+           <string>Modified Signal Spectrogram:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="0" rowspan="15">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QWidget" name="widget_5" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>300</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border: 1px solid #ffffff;
+border-radius:5px</string>
+        </property>
+        <widget class="QPushButton" name="uploadButton">
+         <property name="geometry">
+          <rect>
+           <x>60</x>
+           <y>30</y>
+           <width>161</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>2000</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(255, 255, 255);
+font-size: 15px;
+background-color:rgb(24,24,24);
+font-weight:800;
+border: 1px;
+border-radius: 20px;</string>
+         </property>
+         <property name="text">
+          <string>Browse file</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../../Task 2/Sampling-Studio/Deliverables/upload.png</normaloff>../../Task 2/Sampling-Studio/Deliverables/upload.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="Line" name="line_2">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>410</y>
+           <width>241</width>
+           <height>1</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>1</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color:#ffffff;</string>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="waveCompobox">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>260</y>
+           <width>241</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QComboBox {
+                color: rgb(255, 255, 255);
+                font-size: 18px;
+                background-color: rgb(24, 24, 24);
+                padding-left: 15px;
+                border: 1px solid transparent;
+                border-radius: 15px; /* Rounded corners */
+            }
+            
+            QComboBox QAbstractItemView {
+                background-color: #444444;    /* Dropdown list background */
+                color: #ffffff;               /* Dropdown list text color */
+                selection-background-color: #555555;  /* Highlight background */
+                selection-color: #FF5757;     /* Highlighted text color */
+            }
+
+            /* Remove the default arrow */
+            QComboBox::drop-down {
+                margin-right: 10px;
+                border-top-right-radius: 15px; /* Apply radius to the top-right */
+                border-bottom-right-radius: 15px; /* Apply radius to the bottom-right */
+            }
+
+            /* Customize the arrow (triangle) */
+            QComboBox::down-arrow {
+                image: url(Deliverables/down-arrow.png); /* Optional: use a custom image for the arrow */
+                width: 10px;
+                height: 10px;
+                margin-right: 10px; /* Moves the arrow more to the right */
+            }</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_8">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>240</y>
+           <width>211</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color:white;
+font-size: 14px;
+font-weight:600;
+border-color: transparent;</string>
+         </property>
+         <property name="text">
+          <string>Choose Mode:</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="checkBox">
+         <property name="geometry">
+          <rect>
+           <x>70</x>
+           <y>310</y>
+           <width>151</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QCheckBox {
+    color: rgb(255, 255, 255);  /* Text color */
+    font-size: 14px;            /* Font size */
+    font-weight: 500;           /* Font weight */
+    border: none;               /* No border */
+}
+
+QCheckBox::indicator {
+    width: 16px;               /* Size of the checkbox */
+    height: 16px;
+    border: 2px solid #2887bf; /* Box border color */
+    background-color: #ffffff; /* Box background color */
+    border-radius: 3px;        /* Rounded corners */
+}
+
+QCheckBox::indicator:checked {
+    background-color: #2887bf; /* Background color when checked */
+    border: 2px solid #2887bf; /* Border color when checked */
+}
+</string>
+         </property>
+         <property name="text">
+          <string>Hide Spectrogram</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="checkBox_2">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>350</y>
+           <width>111</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QCheckBox {
+    color: rgb(255, 255, 255);  /* Text color */
+    font-size: 14px;            /* Font size */
+    font-weight: 500;           /* Font weight */
+    border: none;               /* No border */
+}
+
+QCheckBox::indicator {
+    width: 16px;               /* Size of the checkbox */
+    height: 16px;
+    border: 2px solid #cc3c3c; /* Box border color */
+    background-color: #ffffff; /* Box background color */
+    border-radius: 3px;        /* Rounded corners */
+}
+
+QCheckBox::indicator:checked {
+    background-color: #cc3c3c; /* Background color when checked */
+    border: 2px solid #cc3c3c; /* Border color when checked */
+}
+</string>
+         </property>
+         <property name="text">
+          <string>Audiogram</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="uploadButton_2">
+         <property name="geometry">
+          <rect>
+           <x>60</x>
+           <y>470</y>
+           <width>161</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>2000</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(255, 255, 255);
+font-size: 15px;
+background-color:rgb(24,24,24);
+font-weight:800;
+border: 1px;
+border-radius: 20px;</string>
+         </property>
+         <property name="text">
+          <string>Play Audio</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>Deliverables/play-button-arrowhead.png</normaloff>Deliverables/play-button-arrowhead.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_9">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>430</y>
+           <width>211</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color:white;
+font-size: 14px;
+font-weight:600;
+border-color: transparent;</string>
+         </property>
+         <property name="text">
+          <string>Audio Before:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_10">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>550</y>
+           <width>211</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color:white;
+font-size: 14px;
+font-weight:600;
+border-color: transparent;</string>
+         </property>
+         <property name="text">
+          <string>Audio After:</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="uploadButton_3">
+         <property name="geometry">
+          <rect>
+           <x>60</x>
+           <y>590</y>
+           <width>161</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>2000</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">color: rgb(255, 255, 255);
+font-size: 15px;
+background-color:rgb(24,24,24);
+font-weight:800;
+border: 1px;
+border-radius: 20px;</string>
+         </property>
+         <property name="text">
+          <string>Play Audio</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>Deliverables/play-button-arrowhead.png</normaloff>Deliverables/play-button-arrowhead.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="8" column="1">
+     <spacer name="horizontalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>30</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
