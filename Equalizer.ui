@@ -132,9 +132,12 @@ border-color: transparent;</string>
     </item>
     <item row="13" column="2">
      <layout class="QHBoxLayout" name="sliders">
+     <layout class="QHBoxLayout" name="sliders">
       <item>
        <layout class="QHBoxLayout" name="slider1_layout">
+       <layout class="QHBoxLayout" name="slider1_layout">
         <item>
+         <widget class="QSlider" name="slider_1">
          <widget class="QSlider" name="slider_1">
           <property name="maximumSize">
            <size>
@@ -191,7 +194,9 @@ QSlider::handle:vertical:pressed {
       </item>
       <item>
        <layout class="QHBoxLayout" name="slider2_layout">
+       <layout class="QHBoxLayout" name="slider2_layout">
         <item>
+         <widget class="QSlider" name="slider_2">
          <widget class="QSlider" name="slider_2">
           <property name="maximumSize">
            <size>
@@ -248,7 +253,9 @@ QSlider::handle:vertical:pressed {
       </item>
       <item>
        <layout class="QHBoxLayout" name="slider3_layout">
+       <layout class="QHBoxLayout" name="slider3_layout">
         <item>
+         <widget class="QSlider" name="slider_3">
          <widget class="QSlider" name="slider_3">
           <property name="maximumSize">
            <size>
@@ -305,7 +312,9 @@ QSlider::handle:vertical:pressed {
       </item>
       <item>
        <layout class="QHBoxLayout" name="slider4_layout">
+       <layout class="QHBoxLayout" name="slider4_layout">
         <item>
+         <widget class="QSlider" name="slider_4">
          <widget class="QSlider" name="slider_4">
           <property name="maximumSize">
            <size>
@@ -362,7 +371,9 @@ QSlider::handle:vertical:pressed {
       </item>
       <item>
        <layout class="QHBoxLayout" name="slider5_layout">
+       <layout class="QHBoxLayout" name="slider5_layout">
         <item>
+         <widget class="QSlider" name="slider_5">
          <widget class="QSlider" name="slider_5">
           <property name="maximumSize">
            <size>
@@ -419,7 +430,9 @@ QSlider::handle:vertical:pressed {
       </item>
       <item>
        <layout class="QHBoxLayout" name="slider6_layout">
+       <layout class="QHBoxLayout" name="slider6_layout">
         <item>
+         <widget class="QSlider" name="slider_6">
          <widget class="QSlider" name="slider_6">
           <property name="maximumSize">
            <size>
@@ -476,7 +489,9 @@ QSlider::handle:vertical:pressed {
       </item>
       <item>
        <layout class="QHBoxLayout" name="slider7_layout">
+       <layout class="QHBoxLayout" name="slider7_layout">
         <item>
+         <widget class="QSlider" name="slider_7">
          <widget class="QSlider" name="slider_7">
           <property name="maximumSize">
            <size>
@@ -533,7 +548,9 @@ QSlider::handle:vertical:pressed {
       </item>
       <item>
        <layout class="QHBoxLayout" name="slider8_layout">
+       <layout class="QHBoxLayout" name="slider8_layout">
         <item>
+         <widget class="QSlider" name="slider_8">
          <widget class="QSlider" name="slider_8">
           <property name="maximumSize">
            <size>
@@ -590,7 +607,9 @@ QSlider::handle:vertical:pressed {
       </item>
       <item>
        <layout class="QHBoxLayout" name="slider9_layout">
+       <layout class="QHBoxLayout" name="slider9_layout">
         <item>
+         <widget class="QSlider" name="slider_9">
          <widget class="QSlider" name="slider_9">
           <property name="maximumSize">
            <size>
@@ -647,7 +666,9 @@ QSlider::handle:vertical:pressed {
       </item>
       <item>
        <layout class="QHBoxLayout" name="slider10_layout">
+       <layout class="QHBoxLayout" name="slider10_layout">
         <item>
+         <widget class="QSlider" name="slider_10">
          <widget class="QSlider" name="slider_10">
           <property name="minimumSize">
            <size>
@@ -1028,6 +1049,7 @@ QSlider::handle:horizontal:pressed {
 border-radius:5px</string>
         </property>
         <widget class="QPushButton" name="upload_button">
+        <widget class="QPushButton" name="upload_button">
          <property name="geometry">
           <rect>
            <x>60</x>
@@ -1093,6 +1115,7 @@ border-radius: 20px;</string>
          </property>
         </widget>
         <widget class="QComboBox" name="mode_combobox">
+        <widget class="QComboBox" name="mode_combobox">
          <property name="geometry">
           <rect>
            <x>30</x>
@@ -1110,7 +1133,7 @@ border-radius: 20px;</string>
                 border: 1px solid transparent;
                 border-radius: 15px; /* Rounded corners */
             }
-            
+
             QComboBox QAbstractItemView {
                 background-color: #444444;    /* Dropdown list background */
                 color: #ffffff;               /* Dropdown list text color */
@@ -1154,6 +1177,7 @@ border-color: transparent;</string>
          </property>
         </widget>
         <widget class="QCheckBox" name="spectrogram_checkbox">
+        <widget class="QCheckBox" name="spectrogram_checkbox">
          <property name="geometry">
           <rect>
            <x>70</x>
@@ -1189,6 +1213,7 @@ QCheckBox::indicator:checked {
          </property>
         </widget>
         <widget class="QCheckBox" name="audiogram_checkbox">
+        <widget class="QCheckBox" name="audiogram_checkbox">
          <property name="geometry">
           <rect>
            <x>90</x>
@@ -1223,6 +1248,7 @@ QCheckBox::indicator:checked {
           <string>Audiogram</string>
          </property>
         </widget>
+        <widget class="QPushButton" name="original_play_audio_button">
         <widget class="QPushButton" name="original_play_audio_button">
          <property name="geometry">
           <rect>
@@ -1304,6 +1330,7 @@ border-color: transparent;</string>
           <string>Audio After:</string>
          </property>
         </widget>
+        <widget class="QPushButton" name="modified_play_audio_button">
         <widget class="QPushButton" name="modified_play_audio_button">
          <property name="geometry">
           <rect>
