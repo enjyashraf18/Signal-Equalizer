@@ -57,28 +57,30 @@ class MainWindow(QMainWindow):
         # UI
         self.setWindowTitle("Signal Equalizer")
         self.setWindowIcon(QIcon("Deliverables/equalizer_icon.png"))
-        self.sliders_layout = self.findChild(QHBoxLayout, "sliders")
-        self.frequency_layout = self.findChild(QHBoxLayout, "frequency_layout")  # original signal specto
         self.original_signal_layout = self.findChild(QHBoxLayout, "original_signal_layout")
         self.modified_signal_layout = self.findChild(QHBoxLayout, "modified_signal_layout")
         self.original_spectrogram_layout = self.findChild(QHBoxLayout, "original_spectrogram_layout")
         self.modified_spectrogram_layout = self.findChild(QHBoxLayout, "modified_spectrogram_layout")
+        self.frequency_layout = self.findChild(QHBoxLayout, "frequency_layout")
+        self.sliders_layout = self.findChild(QHBoxLayout, "sliders")
 
         # Removing placeholder widgets
         self.old_original_time_plot = self.findChild(QWidget, "original_signal_widget")
-        self.old_modified_time_plot = self.findChild(QWidget, "modified_signal_widget")  # widget 6
-        self.old_frequency_plot = self.findChild(QWidget, "frequency_widget")  # change to correct widget
+        self.old_modified_time_plot = self.findChild(QWidget, "modified_signal_widget")
         self.old_original_spectrogram_widget = self.findChild(QWidget, "original_spectrogram_widget")
         self.old_modified_spectrogram_widget = self.findChild(QWidget, "modified_spectrogram_widget")
-        
+        self.old_frequency_plot = self.findChild(QWidget, "frequency_widget")
+
         self.original_signal_layout.removeWidget(self.old_original_time_plot)
         self.modified_signal_layout.removeWidget(self.old_modified_time_plot)
-        self.frequency_layout.removeWidget(self.old_frequency_plot)
         self.original_spectrogram_layout.removeWidget(self.old_original_spectrogram_widget)
         self.modified_spectrogram_layout.removeWidget(self.old_modified_spectrogram_widget)
+        self.frequency_layout.removeWidget(self.old_frequency_plot)
 
         self.old_original_time_plot.deleteLater()
         self.old_modified_time_plot.deleteLater()
+        self.old_original_spectrogram_widget.deleteLater()
+        self.old_modified_spectrogram_widget.deleteLater()
         self.old_frequency_plot.deleteLater()
 
         self.original_time_plot = pg.PlotWidget()
@@ -89,9 +91,9 @@ class MainWindow(QMainWindow):
 
         self.original_signal_layout.addWidget(self.original_time_plot)
         self.modified_signal_layout.addWidget(self.modified_time_plot)
-        self.frequency_layout.addWidget(self.frequency_plot)  # change to correct layout
         self.original_spectrogram_layout.addWidget(self.spectogram_original_data_graph)
         self.modified_spectrogram_layout.addWidget(self.spectogram_modified_data_graph)
+        self.frequency_layout.addWidget(self.frequency_plot)
 
         # Sliders and their labels
         self.sliders = []
@@ -320,7 +322,6 @@ class MainWindow(QMainWindow):
                 self.media_player.setMedia(QMediaContent(QUrl.fromLocalFile(modified_file_path)))
 
             self.media_player.stop() if is_playing else self.media_player.play()
-
             self.is_playing = not is_playing
 
             button = self.play_original_button if audio_type == 'original_play_audio_button' else self.play_modified_button

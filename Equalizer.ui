@@ -1186,7 +1186,7 @@ font-weight:600;
 border-color: transparent;</string>
           </property>
           <property name="text">
-           <string>Original signal Spectrogram:</string>
+           <string>Original Signal Spectrogram:</string>
           </property>
          </widget>
         </item>
