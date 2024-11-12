@@ -38,699 +38,6 @@ background-color: rgb(42, 42, 42);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_9">
-    <item row="9" column="2">
-     <spacer name="verticalSpacer_4">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Fixed</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>10</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="2" column="2">
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <layout class="QHBoxLayout" name="original_signal_lauout">
-        <item>
-         <widget class="QWidget" name="original_signal_widget" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>450</width>
-            <height>160</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color:rgb(24,24,24);</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="modified_signal_layout">
-        <item>
-         <widget class="QWidget" name="modified_signal_widget" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>450</width>
-            <height>160</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color:rgb(24,24,24);</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-    <item row="7" column="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_26">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_28">
-        <item>
-         <widget class="QLabel" name="label_6">
-          <property name="styleSheet">
-           <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-          </property>
-          <property name="text">
-           <string>Original signal Spectrogram:</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_27">
-        <item>
-         <widget class="QLabel" name="label_5">
-          <property name="styleSheet">
-           <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-          </property>
-          <property name="text">
-           <string>Modified Signal Spectrogram:</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-    <item row="13" column="2">
-     <layout class="QHBoxLayout" name="sliders">
-     <layout class="QHBoxLayout" name="sliders">
-      <item>
-       <layout class="QHBoxLayout" name="slider1_layout">
-       <layout class="QHBoxLayout" name="slider1_layout">
-        <item>
-         <widget class="QSlider" name="slider_1">
-         <widget class="QSlider" name="slider_1">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>140</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QSlider::groove:vertical {
-    border: 1px solid #ffffff;
-    background: #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::sub-page:vertical {
-    background: #ffffff;
-    border: 1px solid #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::add-page:vertical {
-    background: #cc3c3c;
-    border: 1px solid #cc3c3c;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::handle:vertical {
-    background: #ffffff;
-    border: 2px solid #cc3c3c;
-    width: 8px;
-    height: 5px;
-    /*border-radius: 4px;*/
-    margin: 0 -10px;  /*Adjust handle position */
-}
-
-QSlider::handle:vertical:hover {
-    background: #b0b0b0;
-}
-
-QSlider::handle:vertical:pressed {
-    background: #909090;
-}
-</string>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="slider2_layout">
-       <layout class="QHBoxLayout" name="slider2_layout">
-        <item>
-         <widget class="QSlider" name="slider_2">
-         <widget class="QSlider" name="slider_2">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>140</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QSlider::groove:vertical {
-    border: 1px solid #ffffff;
-    background: #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::sub-page:vertical {
-    background: #ffffff;
-    border: 1px solid #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::add-page:vertical {
-    background: #2887bf;
-    border: 1px solid #2887bf;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::handle:vertical {
-    background: #ffffff;
-    border: 2px solid #2887bf;
-    width: 8px;
-    height: 5px;
-    /*border-radius: 4px;*/
-    margin: 0 -10px;  /*Adjust handle position */
-}
-
-QSlider::handle:vertical:hover {
-    background: #b0b0b0;
-}
-
-QSlider::handle:vertical:pressed {
-    background: #909090;
-}
-</string>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="slider3_layout">
-       <layout class="QHBoxLayout" name="slider3_layout">
-        <item>
-         <widget class="QSlider" name="slider_3">
-         <widget class="QSlider" name="slider_3">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>140</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QSlider::groove:vertical {
-    border: 1px solid #ffffff;
-    background: #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::sub-page:vertical {
-    background: #ffffff;
-    border: 1px solid #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::add-page:vertical {
-    background: #cc3c3c;
-    border: 1px solid #cc3c3c;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::handle:vertical {
-    background: #ffffff;
-    border: 2px solid #cc3c3c;
-    width: 8px;
-    height: 5px;
-    /*border-radius: 4px;*/
-    margin: 0 -10px;  /*Adjust handle position */
-}
-
-QSlider::handle:vertical:hover {
-    background: #b0b0b0;
-}
-
-QSlider::handle:vertical:pressed {
-    background: #909090;
-}
-</string>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="slider4_layout">
-       <layout class="QHBoxLayout" name="slider4_layout">
-        <item>
-         <widget class="QSlider" name="slider_4">
-         <widget class="QSlider" name="slider_4">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>140</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QSlider::groove:vertical {
-    border: 1px solid #ffffff;
-    background: #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::sub-page:vertical {
-    background: #ffffff;
-    border: 1px solid #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::add-page:vertical {
-    background: #2887bf;
-    border: 1px solid #2887bf;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::handle:vertical {
-    background: #ffffff;
-    border: 2px solid #2887bf;
-    width: 8px;
-    height: 5px;
-    /*border-radius: 4px;*/
-    margin: 0 -10px;  /*Adjust handle position */
-}
-
-QSlider::handle:vertical:hover {
-    background: #b0b0b0;
-}
-
-QSlider::handle:vertical:pressed {
-    background: #909090;
-}
-</string>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="slider5_layout">
-       <layout class="QHBoxLayout" name="slider5_layout">
-        <item>
-         <widget class="QSlider" name="slider_5">
-         <widget class="QSlider" name="slider_5">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>140</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QSlider::groove:vertical {
-    border: 1px solid #ffffff;
-    background: #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::sub-page:vertical {
-    background: #ffffff;
-    border: 1px solid #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::add-page:vertical {
-    background: #cc3c3c;
-    border: 1px solid #cc3c3c;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::handle:vertical {
-    background: #ffffff;
-    border: 2px solid #cc3c3c;
-    width: 8px;
-    height: 5px;
-    /*border-radius: 4px;*/
-    margin: 0 -10px;  /*Adjust handle position */
-}
-
-QSlider::handle:vertical:hover {
-    background: #b0b0b0;
-}
-
-QSlider::handle:vertical:pressed {
-    background: #909090;
-}
-</string>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="slider6_layout">
-       <layout class="QHBoxLayout" name="slider6_layout">
-        <item>
-         <widget class="QSlider" name="slider_6">
-         <widget class="QSlider" name="slider_6">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>140</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QSlider::groove:vertical {
-    border: 1px solid #ffffff;
-    background: #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::sub-page:vertical {
-    background: #ffffff;
-    border: 1px solid #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::add-page:vertical {
-    background: #2887bf;
-    border: 1px solid #2887bf;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::handle:vertical {
-    background: #ffffff;
-    border: 2px solid #2887bf;
-    width: 8px;
-    height: 5px;
-    /*border-radius: 4px;*/
-    margin: 0 -10px;  /*Adjust handle position */
-}
-
-QSlider::handle:vertical:hover {
-    background: #b0b0b0;
-}
-
-QSlider::handle:vertical:pressed {
-    background: #909090;
-}
-</string>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="slider7_layout">
-       <layout class="QHBoxLayout" name="slider7_layout">
-        <item>
-         <widget class="QSlider" name="slider_7">
-         <widget class="QSlider" name="slider_7">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>140</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QSlider::groove:vertical {
-    border: 1px solid #ffffff;
-    background: #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::sub-page:vertical {
-    background: #ffffff;
-    border: 1px solid #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::add-page:vertical {
-    background: #cc3c3c;
-    border: 1px solid #cc3c3c;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::handle:vertical {
-    background: #ffffff;
-    border: 2px solid #cc3c3c;
-    width: 8px;
-    height: 5px;
-    /*border-radius: 4px;*/
-    margin: 0 -10px;  /*Adjust handle position */
-}
-
-QSlider::handle:vertical:hover {
-    background: #b0b0b0;
-}
-
-QSlider::handle:vertical:pressed {
-    background: #909090;
-}
-</string>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="slider8_layout">
-       <layout class="QHBoxLayout" name="slider8_layout">
-        <item>
-         <widget class="QSlider" name="slider_8">
-         <widget class="QSlider" name="slider_8">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>140</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QSlider::groove:vertical {
-    border: 1px solid #ffffff;
-    background: #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::sub-page:vertical {
-    background: #ffffff;
-    border: 1px solid #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::add-page:vertical {
-    background: #2887bf;
-    border: 1px solid #2887bf;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::handle:vertical {
-    background: #ffffff;
-    border: 2px solid #2887bf;
-    width: 8px;
-    height: 5px;
-    /*border-radius: 4px;*/
-    margin: 0 -10px;  /*Adjust handle position */
-}
-
-QSlider::handle:vertical:hover {
-    background: #b0b0b0;
-}
-
-QSlider::handle:vertical:pressed {
-    background: #909090;
-}
-</string>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="slider9_layout">
-       <layout class="QHBoxLayout" name="slider9_layout">
-        <item>
-         <widget class="QSlider" name="slider_9">
-         <widget class="QSlider" name="slider_9">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>140</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QSlider::groove:vertical {
-    border: 1px solid #ffffff;
-    background: #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::sub-page:vertical {
-    background: #ffffff;
-    border: 1px solid #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::add-page:vertical {
-    background: #cc3c3c;
-    border: 1px solid #cc3c3c;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::handle:vertical {
-    background: #ffffff;
-    border: 2px solid #cc3c3c;
-    width: 8px;
-    height: 5px;
-    /*border-radius: 4px;*/
-    margin: 0 -10px;  /*Adjust handle position */
-}
-
-QSlider::handle:vertical:hover {
-    background: #b0b0b0;
-}
-
-QSlider::handle:vertical:pressed {
-    background: #909090;
-}
-</string>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="slider10_layout">
-       <layout class="QHBoxLayout" name="slider10_layout">
-        <item>
-         <widget class="QSlider" name="slider_10">
-         <widget class="QSlider" name="slider_10">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>100</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>140</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">QSlider::groove:vertical {
-    border: 1px solid #ffffff;
-    background: #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::sub-page:vertical {
-    background: #ffffff;
-    border: 1px solid #ffffff;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::add-page:vertical {
-    background: #2887bf;
-    border: 1px solid #2887bf;
-    width: 4px;
-    border-radius: 2px;
-}
-
-QSlider::handle:vertical {
-    background: #ffffff;
-    border: 2px solid #2887bf;
-    width: 8px;
-    height: 5px;
-    /*border-radius: 4px;*/
-    margin: 0 -10px;  /*Adjust handle position */
-}
-
-QSlider::handle:vertical:hover {
-    background: #b0b0b0;
-}
-
-QSlider::handle:vertical:pressed {
-    background: #909090;
-}
-</string>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
     <item row="4" column="2">
      <layout class="QHBoxLayout" name="horizontalLayout_8">
       <item>
@@ -996,7 +303,121 @@ QSlider::handle:horizontal:pressed {
       </item>
      </layout>
     </item>
-    <item row="15" column="2">
+    <item row="12" column="2">
+     <spacer name="verticalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>10</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="2">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>2</width>
+        <height>5</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="10" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_30">
+      <item>
+       <widget class="QLabel" name="label_7">
+        <property name="minimumSize">
+         <size>
+          <width>900</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color:white;
+font-size: 14px;
+font-weight:600;
+border-color: transparent;</string>
+        </property>
+        <property name="text">
+         <string>Frequency:</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_21">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_23">
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="styleSheet">
+           <string notr="true">color:white;
+font-size: 14px;
+font-weight:600;
+border-color: transparent;</string>
+          </property>
+          <property name="text">
+           <string>Original Signal:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_22">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="styleSheet">
+           <string notr="true">color:white;
+font-size: 14px;
+font-weight:600;
+border-color: transparent;</string>
+          </property>
+          <property name="text">
+           <string>Modified Signal:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="11" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_24">
+      <item>
+       <layout class="QHBoxLayout" name="frequency_layout">
+        <item>
+         <widget class="QWidget" name="frequency_widget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>900</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color:rgb(24,24,24);</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="14" column="2">
      <spacer name="verticalSpacer_2">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -1011,6 +432,58 @@ QSlider::handle:horizontal:pressed {
        </size>
       </property>
      </spacer>
+    </item>
+    <item row="5" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_31">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="Line" name="line">
+        <property name="minimumSize">
+         <size>
+          <width>800</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>1</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color:#ffffff;</string>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
     </item>
     <item row="4" column="3">
      <spacer name="horizontalSpacer_4">
@@ -1028,7 +501,717 @@ QSlider::handle:horizontal:pressed {
       </property>
      </spacer>
     </item>
-    <item row="0" column="0" rowspan="16">
+    <item row="13" column="2">
+     <layout class="QHBoxLayout" name="sliders">
+      <item>
+       <layout class="QHBoxLayout" name="slider1_layout">
+        <item>
+         <widget class="QSlider" name="slider_1">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QSlider::groove:vertical {
+    border: 1px solid #ffffff;
+    background: #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::sub-page:vertical {
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::add-page:vertical {
+    background: #cc3c3c;
+    border: 1px solid #cc3c3c;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::handle:vertical {
+    background: #ffffff;
+    border: 2px solid #cc3c3c;
+    width: 8px;
+    height: 5px;
+    /*border-radius: 4px;*/
+    margin: 0 -10px;  /*Adjust handle position */
+}
+
+QSlider::handle:vertical:hover {
+    background: #b0b0b0;
+}
+
+QSlider::handle:vertical:pressed {
+    background: #909090;
+}
+</string>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="slider2_layout">
+        <item>
+         <widget class="QSlider" name="slider_2">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QSlider::groove:vertical {
+    border: 1px solid #ffffff;
+    background: #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::sub-page:vertical {
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::add-page:vertical {
+    background: #2887bf;
+    border: 1px solid #2887bf;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::handle:vertical {
+    background: #ffffff;
+    border: 2px solid #2887bf;
+    width: 8px;
+    height: 5px;
+    /*border-radius: 4px;*/
+    margin: 0 -10px;  /*Adjust handle position */
+}
+
+QSlider::handle:vertical:hover {
+    background: #b0b0b0;
+}
+
+QSlider::handle:vertical:pressed {
+    background: #909090;
+}
+</string>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="slider3_layout">
+        <item>
+         <widget class="QSlider" name="slider_3">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QSlider::groove:vertical {
+    border: 1px solid #ffffff;
+    background: #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::sub-page:vertical {
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::add-page:vertical {
+    background: #cc3c3c;
+    border: 1px solid #cc3c3c;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::handle:vertical {
+    background: #ffffff;
+    border: 2px solid #cc3c3c;
+    width: 8px;
+    height: 5px;
+    /*border-radius: 4px;*/
+    margin: 0 -10px;  /*Adjust handle position */
+}
+
+QSlider::handle:vertical:hover {
+    background: #b0b0b0;
+}
+
+QSlider::handle:vertical:pressed {
+    background: #909090;
+}
+</string>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="slider4_layout">
+        <item>
+         <widget class="QSlider" name="slider_4">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QSlider::groove:vertical {
+    border: 1px solid #ffffff;
+    background: #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::sub-page:vertical {
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::add-page:vertical {
+    background: #2887bf;
+    border: 1px solid #2887bf;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::handle:vertical {
+    background: #ffffff;
+    border: 2px solid #2887bf;
+    width: 8px;
+    height: 5px;
+    /*border-radius: 4px;*/
+    margin: 0 -10px;  /*Adjust handle position */
+}
+
+QSlider::handle:vertical:hover {
+    background: #b0b0b0;
+}
+
+QSlider::handle:vertical:pressed {
+    background: #909090;
+}
+</string>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="slider5_layout">
+        <item>
+         <widget class="QSlider" name="slider_5">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QSlider::groove:vertical {
+    border: 1px solid #ffffff;
+    background: #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::sub-page:vertical {
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::add-page:vertical {
+    background: #cc3c3c;
+    border: 1px solid #cc3c3c;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::handle:vertical {
+    background: #ffffff;
+    border: 2px solid #cc3c3c;
+    width: 8px;
+    height: 5px;
+    /*border-radius: 4px;*/
+    margin: 0 -10px;  /*Adjust handle position */
+}
+
+QSlider::handle:vertical:hover {
+    background: #b0b0b0;
+}
+
+QSlider::handle:vertical:pressed {
+    background: #909090;
+}
+</string>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="slider6_layout">
+        <item>
+         <widget class="QSlider" name="slider_6">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QSlider::groove:vertical {
+    border: 1px solid #ffffff;
+    background: #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::sub-page:vertical {
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::add-page:vertical {
+    background: #2887bf;
+    border: 1px solid #2887bf;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::handle:vertical {
+    background: #ffffff;
+    border: 2px solid #2887bf;
+    width: 8px;
+    height: 5px;
+    /*border-radius: 4px;*/
+    margin: 0 -10px;  /*Adjust handle position */
+}
+
+QSlider::handle:vertical:hover {
+    background: #b0b0b0;
+}
+
+QSlider::handle:vertical:pressed {
+    background: #909090;
+}
+</string>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="slider7_layout">
+        <item>
+         <widget class="QSlider" name="slider_7">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QSlider::groove:vertical {
+    border: 1px solid #ffffff;
+    background: #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::sub-page:vertical {
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::add-page:vertical {
+    background: #cc3c3c;
+    border: 1px solid #cc3c3c;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::handle:vertical {
+    background: #ffffff;
+    border: 2px solid #cc3c3c;
+    width: 8px;
+    height: 5px;
+    /*border-radius: 4px;*/
+    margin: 0 -10px;  /*Adjust handle position */
+}
+
+QSlider::handle:vertical:hover {
+    background: #b0b0b0;
+}
+
+QSlider::handle:vertical:pressed {
+    background: #909090;
+}
+</string>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="slider8_layout">
+        <item>
+         <widget class="QSlider" name="slider_8">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QSlider::groove:vertical {
+    border: 1px solid #ffffff;
+    background: #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::sub-page:vertical {
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::add-page:vertical {
+    background: #2887bf;
+    border: 1px solid #2887bf;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::handle:vertical {
+    background: #ffffff;
+    border: 2px solid #2887bf;
+    width: 8px;
+    height: 5px;
+    /*border-radius: 4px;*/
+    margin: 0 -10px;  /*Adjust handle position */
+}
+
+QSlider::handle:vertical:hover {
+    background: #b0b0b0;
+}
+
+QSlider::handle:vertical:pressed {
+    background: #909090;
+}
+</string>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="slider9_layout">
+        <item>
+         <widget class="QSlider" name="slider_9">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QSlider::groove:vertical {
+    border: 1px solid #ffffff;
+    background: #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::sub-page:vertical {
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::add-page:vertical {
+    background: #cc3c3c;
+    border: 1px solid #cc3c3c;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::handle:vertical {
+    background: #ffffff;
+    border: 2px solid #cc3c3c;
+    width: 8px;
+    height: 5px;
+    /*border-radius: 4px;*/
+    margin: 0 -10px;  /*Adjust handle position */
+}
+
+QSlider::handle:vertical:hover {
+    background: #b0b0b0;
+}
+
+QSlider::handle:vertical:pressed {
+    background: #909090;
+}
+</string>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="slider10_layout">
+        <item>
+         <widget class="QSlider" name="slider_10">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>140</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QSlider::groove:vertical {
+    border: 1px solid #ffffff;
+    background: #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::sub-page:vertical {
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::add-page:vertical {
+    background: #2887bf;
+    border: 1px solid #2887bf;
+    width: 4px;
+    border-radius: 2px;
+}
+
+QSlider::handle:vertical {
+    background: #ffffff;
+    border: 2px solid #2887bf;
+    width: 8px;
+    height: 5px;
+    /*border-radius: 4px;*/
+    margin: 0 -10px;  /*Adjust handle position */
+}
+
+QSlider::handle:vertical:hover {
+    background: #b0b0b0;
+}
+
+QSlider::handle:vertical:pressed {
+    background: #909090;
+}
+</string>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="9" column="2">
+     <spacer name="verticalSpacer_4">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>10</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="8" column="2">
+     <layout class="QHBoxLayout" name="spectrograms">
+      <item>
+       <layout class="QHBoxLayout" name="original_spectrogram_layout">
+        <item>
+         <widget class="QWidget" name="original_spectrogram_widget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>450</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color:rgb(24,24,24);</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="modified_spectrogram_layout">
+        <item>
+         <widget class="QWidget" name="modified_spectrogram_widget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>450</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color:rgb(24,24,24);</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="2" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="original_signal_layout">
+        <item>
+         <widget class="QWidget" name="original_signal_widget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>450</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color:rgb(24,24,24);</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="modified_signal_layout">
+        <item>
+         <widget class="QWidget" name="modified_signal_widget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>450</width>
+            <height>160</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color:rgb(24,24,24);</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="7" column="2">
+     <layout class="QHBoxLayout" name="horizontalLayout_26">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_28">
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="styleSheet">
+           <string notr="true">color:white;
+font-size: 14px;
+font-weight:600;
+border-color: transparent;</string>
+          </property>
+          <property name="text">
+           <string>Original Signal Spectrogram:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_27">
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="styleSheet">
+           <string notr="true">color:white;
+font-size: 14px;
+font-weight:600;
+border-color: transparent;</string>
+          </property>
+          <property name="text">
+           <string>Modified Signal Spectrogram:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="0" rowspan="15">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QWidget" name="widget_5" native="true">
@@ -1048,7 +1231,6 @@ QSlider::handle:horizontal:pressed {
          <string notr="true">border: 1px solid #ffffff;
 border-radius:5px</string>
         </property>
-        <widget class="QPushButton" name="upload_button">
         <widget class="QPushButton" name="upload_button">
          <property name="geometry">
           <rect>
@@ -1115,7 +1297,6 @@ border-radius: 20px;</string>
          </property>
         </widget>
         <widget class="QComboBox" name="mode_combobox">
-        <widget class="QComboBox" name="mode_combobox">
          <property name="geometry">
           <rect>
            <x>30</x>
@@ -1177,7 +1358,6 @@ border-color: transparent;</string>
          </property>
         </widget>
         <widget class="QCheckBox" name="spectrogram_checkbox">
-        <widget class="QCheckBox" name="spectrogram_checkbox">
          <property name="geometry">
           <rect>
            <x>70</x>
@@ -1213,7 +1393,6 @@ QCheckBox::indicator:checked {
          </property>
         </widget>
         <widget class="QCheckBox" name="audiogram_checkbox">
-        <widget class="QCheckBox" name="audiogram_checkbox">
          <property name="geometry">
           <rect>
            <x>90</x>
@@ -1248,7 +1427,6 @@ QCheckBox::indicator:checked {
           <string>Audiogram</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="original_play_audio_button">
         <widget class="QPushButton" name="original_play_audio_button">
          <property name="geometry">
           <rect>
@@ -1331,7 +1509,6 @@ border-color: transparent;</string>
          </property>
         </widget>
         <widget class="QPushButton" name="modified_play_audio_button">
-        <widget class="QPushButton" name="modified_play_audio_button">
          <property name="geometry">
           <rect>
            <x>60</x>
@@ -1378,133 +1555,6 @@ border-radius: 20px;</string>
       </item>
      </layout>
     </item>
-    <item row="3" column="2">
-     <spacer name="verticalSpacer">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Fixed</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>2</width>
-        <height>5</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="11" column="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_24">
-      <item>
-       <layout class="QHBoxLayout" name="frequency_layout">
-        <item>
-         <widget class="QWidget" name="frequency_widget" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>900</width>
-            <height>160</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color:rgb(24,24,24);</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-    <item row="5" column="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_31">
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="Line" name="line">
-        <property name="minimumSize">
-         <size>
-          <width>800</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>1</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color:#ffffff;</string>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item row="8" column="2">
-     <layout class="QHBoxLayout" name="spectrograms">
-      <item>
-       <layout class="QHBoxLayout" name="original_spectrogram_layout">
-        <item>
-         <widget class="QWidget" name="Original_spectrogram_widget" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>450</width>
-            <height>160</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color:rgb(24,24,24);</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="modified_spectrogram_layout">
-        <item>
-         <widget class="QWidget" name="modified_spectrogram_widget" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>450</width>
-            <height>160</height>
-           </size>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">background-color:rgb(24,24,24);</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
     <item row="8" column="1">
      <spacer name="horizontalSpacer_3">
       <property name="orientation">
@@ -1520,433 +1570,6 @@ border-radius: 20px;</string>
        </size>
       </property>
      </spacer>
-    </item>
-    <item row="12" column="2">
-     <spacer name="verticalSpacer_3">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Fixed</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>10</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_21">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_23">
-        <item>
-         <widget class="QLabel" name="label_4">
-          <property name="styleSheet">
-           <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-          </property>
-          <property name="text">
-           <string>Original Signal:</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_22">
-        <item>
-         <widget class="QLabel" name="label_3">
-          <property name="styleSheet">
-           <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-          </property>
-          <property name="text">
-           <string>Modified Signal:</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-    <item row="10" column="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_30">
-      <item>
-       <widget class="QLabel" name="label_7">
-        <property name="minimumSize">
-         <size>
-          <width>900</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-        </property>
-        <property name="text">
-         <string>Frequency:</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item row="14" column="2">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <spacer name="horizontalSpacer_5">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="layout_slider2">
-        <item>
-         <widget class="QLabel" name="label_slider2">
-          <property name="styleSheet">
-           <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-          </property>
-          <property name="text">
-           <string>0-10 Hz</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3"/>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_9">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="layout_slider1">
-        <item>
-         <widget class="QLabel" name="label_slider1">
-          <property name="styleSheet">
-           <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-          </property>
-          <property name="text">
-           <string>10-20 Hz</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_8">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="layout_slider10">
-        <item>
-         <widget class="QLabel" name="label_slider10">
-          <property name="styleSheet">
-           <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-          </property>
-          <property name="text">
-           <string>20-30 Hz</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_10">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="layout_slider9">
-        <item>
-         <widget class="QLabel" name="label_slider9">
-          <property name="styleSheet">
-           <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-          </property>
-          <property name="text">
-           <string>30-40 Hz</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_11">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="layout_slider8">
-        <item>
-         <widget class="QLabel" name="label_slider8">
-          <property name="styleSheet">
-           <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-          </property>
-          <property name="text">
-           <string>40-50 Hz</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_12">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="layout_slider7">
-        <item>
-         <widget class="QLabel" name="label_slider7">
-          <property name="styleSheet">
-           <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-          </property>
-          <property name="text">
-           <string>50-60 Hz</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_13">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="layout_slider6">
-        <item>
-         <widget class="QLabel" name="label_slider6">
-          <property name="styleSheet">
-           <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-          </property>
-          <property name="text">
-           <string>60-70 Hz</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_14">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="layout_slider5">
-        <item>
-         <widget class="QLabel" name="label_slider5">
-          <property name="styleSheet">
-           <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-          </property>
-          <property name="text">
-           <string>70-80 Hz</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_15">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="layout_slider4">
-        <item>
-         <widget class="QLabel" name="label_slider4">
-          <property name="styleSheet">
-           <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-          </property>
-          <property name="text">
-           <string>80 - 90Hz</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_16">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="layout_slider3">
-        <item>
-         <widget class="QLabel" name="label_slider3">
-          <property name="styleSheet">
-           <string notr="true">color:white;
-font-size: 14px;
-font-weight:600;
-border-color: transparent;</string>
-          </property>
-          <property name="text">
-           <string>90-100Hz</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_17">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
     </item>
    </layout>
   </widget>

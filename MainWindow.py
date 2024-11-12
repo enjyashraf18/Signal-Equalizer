@@ -18,6 +18,7 @@ from scipy.signal import butter, sosfilt
 
 
 class MainWindow(QMainWindow):
+
     def __init__(self):
         super().__init__()
         uic.loadUi("Equalizer.ui", self)
