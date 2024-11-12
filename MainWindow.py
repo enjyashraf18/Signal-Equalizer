@@ -22,7 +22,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         uic.loadUi("Equalizer.ui", self)
         # VARIABLES
-        self.mode = "Uniform"  # Default Mode
+        self.mode = "Music"  # Default Mode
         self.is_playing = False
         self.media_player = QMediaPlayer()
 
@@ -190,7 +190,7 @@ class MainWindow(QMainWindow):
                     self.plot_signal()
                     self.reset_sliders()  # resetting sliders to 100 after each upload
 
-            elif self.mode == "Animal":
+            elif self.mode == "Animal" or self.mode == "Music":
                 if self.original_wav_file_path.lower().endswith('.wav') or self.original_wav_file_path.lower().endswith(
                         '.mp3') or self.original_wav_file_path.lower().endswith('.flac'):
                     try:
@@ -224,7 +224,7 @@ class MainWindow(QMainWindow):
 
             self.setting_slider_ranges()
 
-        elif self.mode == "Animal":
+        elif self.mode == "Animal" or self.mode == "Music":
             self.original_time_plot.plot(self.time_axis, self.signal, pen='c')
             self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectogram_original_data_graph)
 
@@ -337,7 +337,7 @@ class MainWindow(QMainWindow):
 
             print(f"{slider.objectName()}: min:{minimum_value} + max: {maximum_value} + current value: {value}")
 
-        elif self.mode == "Animal":
+        elif self.mode == "Animal" or self.mode == "Music":
             self.modify_volume(value, index)
 
     def play_audio(self, is_playing, audio_type):
@@ -356,7 +356,7 @@ class MainWindow(QMainWindow):
             button.setIcon(icon)
 
         # SHAHD
-        if self.mode == "Animal":
+        if self.mode == "Animal" or self.mode == "Music":
             if hasattr(self, 'saved_audio_path') and self.saved_audio_path:
                 # Play the modified and saved audio file
                 self.sound = QtMultimedia.QSound(self.saved_audio_path)
@@ -430,7 +430,10 @@ class MainWindow(QMainWindow):
         self.save_audio()
 
     def save_audio(self):
-        save_dir = "./AnimalAudios"
+        if self.mode == "Animal":
+            save_dir = "./AnimalAudios"
+        if self.mode == "Music":
+            save_dir = "./music"
         timestamp = time.strftime("%Y%m%d_%H%M%S")
         save_path = os.path.join(save_dir, f"modified_audio_{timestamp}.wav")
 

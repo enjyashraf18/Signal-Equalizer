@@ -240,7 +240,7 @@ class MainWindow(QMainWindow):
         self.save_audio()
 
     def save_audio(self):
-        save_dir = "./AnimalAudios"
+        save_dir = "./music"
         timestamp = time.strftime("%Y%m%d_%H%M%S")
         save_path = os.path.join(save_dir, f"modified_audio_{timestamp}.wav")
 
