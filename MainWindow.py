@@ -29,9 +29,10 @@ class MainWindow(QMainWindow):
 
         # SHAHD #
         self.animals = {1: [47.0, 1172], 2: [2971.5, 5250]}
+        self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000], 5: [20, 500], 6: [500, 2000], 7: [2000, 8000], 8: [8000, 16000], 9: [2000, 8000], 10: [8000, 16000]}
         self.tolerance = 10
-        self.previous_animals_sliders_values = [1] * 4   # we want to make it more generalized
-        self.previous_music_sliders_values = [1] * 4  # we want to make it more generalized
+        self.previous_animals_sliders_values = [1] * 10   # we want to make it more generalized
+        self.previous_music_sliders_values = [1] * 10  # we want to make it more generalized
         self.signal = None
         self.original_freqs = None
         self.modified_amplitudes = None
@@ -59,7 +60,6 @@ class MainWindow(QMainWindow):
 
         #music
         self.final_music = None
-        self.final_music_freq = None
         self.bass = None
         self.piano = None
         self.guitar = None
@@ -118,7 +118,7 @@ class MainWindow(QMainWindow):
 
         for i in range(1, 11):
             slider = self.findChild(QSlider, f"slider_{i}")
-            slider.setRange(0, 100)  # contribution of frequency range in percentage
+            slider.setRange(0, 100)
             slider.setValue(100)
             slider.valueChanged.connect(lambda value, index=i: self.on_slider_change(value, index))
             # slider.setRange(1, 10)
@@ -146,7 +146,7 @@ class MainWindow(QMainWindow):
 
         # Mode Combobox
         self.mode_combobox = self.findChild(QComboBox, "mode_combobox")
-        modes = ["Uniform", "Animal", "Musical", "ECG"]
+        modes = ["Uniform", "Animal", "Music", "ECG"]
         self.mode_combobox.addItems(modes)
         self.mode_combobox.currentIndexChanged.connect(self.update_mode)
 
@@ -158,8 +158,21 @@ class MainWindow(QMainWindow):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
+
+    # def update_mode(self):
+    #     self.mode = self.mode_combobox.currentText()
+    #     self.original_time_plot.clear()
+    #     self.modified_time_plot.clear()
+    #     self.spectogram_original_data_graph.clear()
+    #     self.spectogram_modified_data_graph.clear()
+    #     self.frequency_plot.clear()
+
     def update_mode(self):
         self.mode = self.mode_combobox.currentText()
+        if self.mode != "Uniform":
+            for slider in self.sliders:
+                # slider.setValue(1)
+                slider.setRange(1, 10)
         self.original_time_plot.clear()
         self.modified_time_plot.clear()
         self.spectogram_original_data_graph.clear()
@@ -191,14 +204,11 @@ class MainWindow(QMainWindow):
                     self.plot_signal()
                     self.reset_sliders()  # resetting sliders to 100 after each upload
 
-            elif self.mode == "Animal":
+            elif self.mode == "Animal" or self.mode == "Music":
                 if self.original_wav_file_path.lower().endswith('.wav') or self.original_wav_file_path.lower().endswith(
                         '.mp3') or self.original_wav_file_path.lower().endswith('.flac'):
                     try:
-                        self.signal, self.sampling_frequency = librosa.load(
-                            self.original_wav_file_path, sr=None, mono=True)  # sr=None to keep original sampling rate
-                        if self.mode == "Music":
-                            self.update_final_music(self.signal, self.sampling_frequency)
+                        self.signal, self.sampling_frequency = librosa.load(self.original_wav_file_path, sr=None, mono=True)  # sr=None to keep original sampling rate
                         self.time_axis = np.linspace(0, len(self.signal) / self.sampling_frequency,
                                                      num=len(self.signal))
                         stft = librosa.stft(self.signal)
@@ -220,12 +230,13 @@ class MainWindow(QMainWindow):
             self.fourier_transform()
 
             self.original_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='c')
+            self.modified_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='r')
             self.frequency_plot.plot(self.positive_frequencies,
                                          self.positive_magnitudes, pen="m")  # Change to frequency plot when UI is done
 
             self.setting_slider_ranges()
 
-        elif self.mode == "Animal":
+        elif self.mode == "Animal" or self.mode == "Music":
             self.original_time_plot.plot(self.time_axis, self.signal, pen='c')
             self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectogram_original_data_graph)
 
@@ -252,8 +263,7 @@ class MainWindow(QMainWindow):
         significant_indices = np.where(self.positive_magnitudes > threshold)[0]
         self.significant_frequencies = self.positive_frequencies[significant_indices]
         self.significant_magnitudes = self.positive_magnitudes[significant_indices]
-
-        self.positive_magnitudes_db = np.log10(self.significant_magnitudes)
+        # self.positive_magnitudes_db = np.log10(self.significant_magnitudes)
 
     def plot_spectrogram(self, signal, sampling_frequency, plot_widget):
         stft = librosa.stft(signal)
@@ -325,7 +335,6 @@ class MainWindow(QMainWindow):
             self.modified_time_plot.clear()
             self.modified_time_plot.plot(self.time_axis, modified_signal.real.astype(float), pen='r')
 
-            self.modified_positive_magnitudes = np.abs(self.modified_fft_data)[:len(self.modified_fft_data) // 2]
             self.change_frequency_plot()
             # self.modified_time_plot.clear()
             # self.modified_time_plot.plot(self.positive_frequencies, modified_positive_magnitudes, pen="m")
@@ -338,7 +347,8 @@ class MainWindow(QMainWindow):
 
             print(f"{slider.objectName()}: min:{minimum_value} + max: {maximum_value} + current value: {value}")
 
-        elif self.mode == "Animal":
+        elif self.mode == "Animal" or self.mode == "Music":
+            print(f"gwa on_slider_chane  value {value} index {index}" )
             self.modify_volume(value, index)
 
     def play_audio(self, is_playing, audio_type):
@@ -357,7 +367,7 @@ class MainWindow(QMainWindow):
             button.setIcon(icon)
 
         # SHAHD
-        if self.mode == "Animal":
+        if self.mode == "Animal" or self.mode == "Music":
             if hasattr(self, 'saved_audio_path') and self.saved_audio_path:
                 # Play the modified and saved audio file
                 self.sound = QtMultimedia.QSound(self.saved_audio_path)
@@ -366,28 +376,36 @@ class MainWindow(QMainWindow):
     def change_frequency_plot(self):
         self.frequency_plot.clear()
         if self.audiogram_checkbox.isChecked():
-            print(f"freq: {len(self.significant_magnitudes)} + mag: {len(self.positive_magnitudes_db)}")
-            # self.modified_time_plot.setTitle('Audiogram')  # change the label in
+            audiogram_db_levels = []
+            for f in self.significant_frequencies:
+                band_mask = (self.frequencies >= f - 10) & (self.frequencies <= f + 10)
+                band_magnitude = np.abs(self.modified_fft_data)[band_mask]
+                avg_amplitude = np.mean(band_magnitude)
+                avg_db = 20 * np.log10(avg_amplitude + 1e-6)
+                audiogram_db_levels.append(avg_db)
+
+            # Normalizing dB values
+            target_min_db = 5
+            target_max_db = 100
+            min_db = min(audiogram_db_levels)
+            max_db = max(audiogram_db_levels)
+            normalized_db_levels = [((db - min_db) / (max_db - min_db)) * (target_max_db - target_min_db) +
+                                    target_min_db for db in audiogram_db_levels]
+
             self.frequency_plot.setLabel('bottom', 'Frequency (Hz)')
             self.frequency_plot.setLabel('left', 'Hearing Level (dB)')
-            self.frequency_plot.getAxis('bottom').setTicks([[(f, str(f)) for f in self.positive_frequencies]])
-            self.frequency_plot.invertY(True)  # Audiograms typically have inverted y-axis
             self.frequency_plot.showGrid(x=True, y=True)
 
-            # Move x-axis to the top
-            self.frequency_plot.getPlotItem().layout.removeItem(
-                self.frequency_plot.getPlotItem().getAxis('bottom'))
-            self.frequency_plot.getPlotItem().layout.addItem(
-                self.frequency_plot.getPlotItem().getAxis('bottom'), 1, 1)
+            self.frequency_plot.plot(self.significant_frequencies, normalized_db_levels,
+                                     pen='b', symbol='o')
+            # self.frequency_plot.plot(self.significant_frequencies, self.positive_magnitudes_db,
+            #                          pen='b', symbol='o')
 
-            self.frequency_plot.plot(self.significant_frequencies, self.positive_magnitudes_db,
-                                         pen=None, symbol='o')
-        else:
-            # Move x-axis to the bottom again
-            # self.frequency_plot.getPlotItem().layout.removeItem(self.modified_
-            # time_plot.getPlotItem().getAxis('bottom'), 1, 1)
-            # self.frequency_plot.getPlotItem().layout.addItem(
-            # self.frequency_plot.getPlotItem().getAxis('bottom'))
+        else:  # Frequency vs Magnitude Mode
+            self.modified_positive_magnitudes = np.abs(self.modified_fft_data)[:len(self.modified_fft_data) // 2]
+            self.frequency_plot.showGrid(x=False, y=False)
+            self.frequency_plot.setLabel('bottom', 'Frequency (Hz)')
+            self.frequency_plot.setLabel('left', 'Magnitude')
             if self.modified_positive_magnitudes is not None:
                 self.frequency_plot.plot(self.positive_frequencies, self.modified_positive_magnitudes, pen="m")
             else:
@@ -399,6 +417,7 @@ class MainWindow(QMainWindow):
         return modified_signal
 
     def modify_volume(self, slidervalue, object_number):
+        print(f"gwa modify   value {slidervalue} object number {object_number}")
         start_freq, end_freq = 0, 0
         gain = 0
         if self.mode == "Animal":
@@ -407,10 +426,12 @@ class MainWindow(QMainWindow):
             self.previous_animals_sliders_values[object_number-1] = slidervalue
             print(f"the start freq is {start_freq} and the end freq is {end_freq}. "
                   f"max of freqs in all data is {max(self.original_freqs)}")
-        if self.mode == "Music":
+        elif self.mode == "Music":
+            print("ana gwaa modify 1")
             start_freq, end_freq = self.final_music_freq[object_number]
             gain = slidervalue/self.previous_music_sliders_values[object_number-1]
             self.previous_music_sliders_values[object_number-1] = slidervalue
+            print("ana gwaa modify 2")
             print(f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
 
         start_idx = np.where(np.abs(self.original_freqs - start_freq) <= self.tolerance)[0]
@@ -431,7 +452,10 @@ class MainWindow(QMainWindow):
         self.save_audio()
 
     def save_audio(self):
-        save_dir = "./AnimalAudios"
+        if self.mode == "Animal":
+            save_dir = "./AnimalAudios"
+        if self.mode == "Music":
+            save_dir = "./music"
         timestamp = time.strftime("%Y%m%d_%H%M%S")
         save_path = os.path.join(save_dir, f"modified_audio_{timestamp}.wav")
 
