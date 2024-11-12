@@ -158,7 +158,6 @@ class MainWindow(QMainWindow):
         self.move(qr.topLeft())
 
 
-
     # def update_mode(self):
     #     self.mode = self.mode_combobox.currentText()
     #     self.original_time_plot.clear()
@@ -230,6 +229,7 @@ class MainWindow(QMainWindow):
             self.fourier_transform()
 
             self.original_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='c')
+            self.modified_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='r')
             self.frequency_plot.plot(self.positive_frequencies,
                                          self.positive_magnitudes, pen="m")  # Change to frequency plot when UI is done
 
@@ -262,8 +262,7 @@ class MainWindow(QMainWindow):
         significant_indices = np.where(self.positive_magnitudes > threshold)[0]
         self.significant_frequencies = self.positive_frequencies[significant_indices]
         self.significant_magnitudes = self.positive_magnitudes[significant_indices]
-
-        self.positive_magnitudes_db = np.log10(self.significant_magnitudes)
+        # self.positive_magnitudes_db = np.log10(self.significant_magnitudes)
 
     def plot_spectrogram(self, signal, sampling_frequency, plot_widget):
         stft = librosa.stft(signal)
@@ -335,7 +334,6 @@ class MainWindow(QMainWindow):
             self.modified_time_plot.clear()
             self.modified_time_plot.plot(self.time_axis, modified_signal.real.astype(float), pen='r')
 
-            self.modified_positive_magnitudes = np.abs(self.modified_fft_data)[:len(self.modified_fft_data) // 2]
             self.change_frequency_plot()
             # self.modified_time_plot.clear()
             # self.modified_time_plot.plot(self.positive_frequencies, modified_positive_magnitudes, pen="m")
@@ -377,28 +375,36 @@ class MainWindow(QMainWindow):
     def change_frequency_plot(self):
         self.frequency_plot.clear()
         if self.audiogram_checkbox.isChecked():
-            print(f"freq: {len(self.significant_magnitudes)} + mag: {len(self.positive_magnitudes_db)}")
-            # self.modified_time_plot.setTitle('Audiogram')  # change the label in
+            audiogram_db_levels = []
+            for f in self.significant_frequencies:
+                band_mask = (self.frequencies >= f - 10) & (self.frequencies <= f + 10)
+                band_magnitude = np.abs(self.modified_fft_data)[band_mask]
+                avg_amplitude = np.mean(band_magnitude)
+                avg_db = 20 * np.log10(avg_amplitude + 1e-6)
+                audiogram_db_levels.append(avg_db)
+
+            # Normalizing dB values
+            target_min_db = 5
+            target_max_db = 100
+            min_db = min(audiogram_db_levels)
+            max_db = max(audiogram_db_levels)
+            normalized_db_levels = [((db - min_db) / (max_db - min_db)) * (target_max_db - target_min_db) +
+                                    target_min_db for db in audiogram_db_levels]
+
             self.frequency_plot.setLabel('bottom', 'Frequency (Hz)')
             self.frequency_plot.setLabel('left', 'Hearing Level (dB)')
-            self.frequency_plot.getAxis('bottom').setTicks([[(f, str(f)) for f in self.positive_frequencies]])
-            self.frequency_plot.invertY(True)  # Audiograms typically have inverted y-axis
             self.frequency_plot.showGrid(x=True, y=True)
 
-            # Move x-axis to the top
-            self.frequency_plot.getPlotItem().layout.removeItem(
-                self.frequency_plot.getPlotItem().getAxis('bottom'))
-            self.frequency_plot.getPlotItem().layout.addItem(
-                self.frequency_plot.getPlotItem().getAxis('bottom'), 1, 1)
+            self.frequency_plot.plot(self.significant_frequencies, normalized_db_levels,
+                                     pen='b', symbol='o')
+            # self.frequency_plot.plot(self.significant_frequencies, self.positive_magnitudes_db,
+            #                          pen='b', symbol='o')
 
-            self.frequency_plot.plot(self.significant_frequencies, self.positive_magnitudes_db,
-                                         pen=None, symbol='o')
-        else:
-            # Move x-axis to the bottom again
-            # self.frequency_plot.getPlotItem().layout.removeItem(self.modified_
-            # time_plot.getPlotItem().getAxis('bottom'), 1, 1)
-            # self.frequency_plot.getPlotItem().layout.addItem(
-            # self.frequency_plot.getPlotItem().getAxis('bottom'))
+        else:  # Frequency vs Magnitude Mode
+            self.modified_positive_magnitudes = np.abs(self.modified_fft_data)[:len(self.modified_fft_data) // 2]
+            self.frequency_plot.showGrid(x=False, y=False)
+            self.frequency_plot.setLabel('bottom', 'Frequency (Hz)')
+            self.frequency_plot.setLabel('left', 'Magnitude')
             if self.modified_positive_magnitudes is not None:
                 self.frequency_plot.plot(self.positive_frequencies, self.modified_positive_magnitudes, pen="m")
             else:
