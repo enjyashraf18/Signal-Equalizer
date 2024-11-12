@@ -22,15 +22,16 @@ class MainWindow(QMainWindow):
         super().__init__()
         uic.loadUi("Equalizer.ui", self)
         # VARIABLES
-        self.mode = "Music"  # Default Mode
+        self.mode = "Uniform"  # Default Mode
         self.is_playing = False
         self.media_player = QMediaPlayer()
 
         # SHAHD #
         self.animals = {1: [47.0, 1172], 2: [2971.5, 5250]}
+        self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000], 5: [20, 500], 6: [500, 2000], 7: [2000, 8000], 8: [8000, 16000], 9: [2000, 8000], 10: [8000, 16000]}
         self.tolerance = 10
-        self.previous_animals_sliders_values = [1] * 4   # we want to make it more generalized
-        self.previous_music_sliders_values = [1] * 4  # we want to make it more generalized
+        self.previous_animals_sliders_values = [1] * 10   # we want to make it more generalized
+        self.previous_music_sliders_values = [1] * 10  # we want to make it more generalized
         self.signal = None
         self.original_freqs = None
         self.modified_amplitudes = None
@@ -58,7 +59,6 @@ class MainWindow(QMainWindow):
 
         #music
         self.final_music = None
-        self.final_music_freq = None
         self.bass = None
         self.piano = None
         self.guitar = None
@@ -117,7 +117,7 @@ class MainWindow(QMainWindow):
 
         for i in range(1, 11):
             slider = self.findChild(QSlider, f"slider_{i}")
-            slider.setRange(0, 100)  # contribution of frequency range in percentage
+            slider.setRange(0, 100)
             slider.setValue(100)
             slider.valueChanged.connect(lambda value, index=i: self.on_slider_change(value, index))
             # slider.setRange(1, 10)
@@ -145,7 +145,7 @@ class MainWindow(QMainWindow):
 
         # Mode Combobox
         self.mode_combobox = self.findChild(QComboBox, "mode_combobox")
-        modes = ["Uniform", "Animal", "Musical", "ECG"]
+        modes = ["Uniform", "Animal", "Music", "ECG"]
         self.mode_combobox.addItems(modes)
         self.mode_combobox.currentIndexChanged.connect(self.update_mode)
 
@@ -157,8 +157,22 @@ class MainWindow(QMainWindow):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
+
+
+    # def update_mode(self):
+    #     self.mode = self.mode_combobox.currentText()
+    #     self.original_time_plot.clear()
+    #     self.modified_time_plot.clear()
+    #     self.spectogram_original_data_graph.clear()
+    #     self.spectogram_modified_data_graph.clear()
+    #     self.frequency_plot.clear()
+
     def update_mode(self):
         self.mode = self.mode_combobox.currentText()
+        if self.mode != "Uniform":
+            for slider in self.sliders:
+                # slider.setValue(1)
+                slider.setRange(1, 10)
         self.original_time_plot.clear()
         self.modified_time_plot.clear()
         self.spectogram_original_data_graph.clear()
@@ -194,10 +208,7 @@ class MainWindow(QMainWindow):
                 if self.original_wav_file_path.lower().endswith('.wav') or self.original_wav_file_path.lower().endswith(
                         '.mp3') or self.original_wav_file_path.lower().endswith('.flac'):
                     try:
-                        self.signal, self.sampling_frequency = librosa.load(
-                            self.original_wav_file_path, sr=None, mono=True)  # sr=None to keep original sampling rate
-                        if self.mode == "Music":
-                            self.update_final_music(self.signal, self.sampling_frequency)
+                        self.signal, self.sampling_frequency = librosa.load(self.original_wav_file_path, sr=None, mono=True)  # sr=None to keep original sampling rate
                         self.time_axis = np.linspace(0, len(self.signal) / self.sampling_frequency,
                                                      num=len(self.signal))
                         stft = librosa.stft(self.signal)
@@ -338,6 +349,7 @@ class MainWindow(QMainWindow):
             print(f"{slider.objectName()}: min:{minimum_value} + max: {maximum_value} + current value: {value}")
 
         elif self.mode == "Animal" or self.mode == "Music":
+            print(f"gwa on_slider_chane  value {value} index {index}" )
             self.modify_volume(value, index)
 
     def play_audio(self, is_playing, audio_type):
@@ -398,6 +410,7 @@ class MainWindow(QMainWindow):
         return modified_signal
 
     def modify_volume(self, slidervalue, object_number):
+        print(f"gwa modify   value {slidervalue} object number {object_number}")
         start_freq, end_freq = 0, 0
         gain = 0
         if self.mode == "Animal":
@@ -406,10 +419,12 @@ class MainWindow(QMainWindow):
             self.previous_animals_sliders_values[object_number-1] = slidervalue
             print(f"the start freq is {start_freq} and the end freq is {end_freq}. "
                   f"max of freqs in all data is {max(self.original_freqs)}")
-        if self.mode == "Music":
+        elif self.mode == "Music":
+            print("ana gwaa modify 1")
             start_freq, end_freq = self.final_music_freq[object_number]
             gain = slidervalue/self.previous_music_sliders_values[object_number-1]
             self.previous_music_sliders_values[object_number-1] = slidervalue
+            print("ana gwaa modify 2")
             print(f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
 
         start_idx = np.where(np.abs(self.original_freqs - start_freq) <= self.tolerance)[0]
