@@ -1,15 +1,18 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QHBoxLayout, QFileDialog, QPushButton, QSlider, QLabel, QCheckBox
+from PyQt5.QtWidgets import (QMainWindow, QApplication, QWidget, QHBoxLayout, QFileDialog, QPushButton, QSlider, QLabel,
+                             QCheckBox, QComboBox)
 from PyQt5.QtGui import QIcon
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent, QAudioFormat, QAudioOutput
-from PyQt5.QtCore import QBuffer, QByteArray
+from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtCore import QUrl
 import pyqtgraph as pg
 from PyQt5 import uic, QtMultimedia
-import pandas as pd
 import numpy as np
+from pyqtgraph import ImageItem
 from scipy.io import wavfile
-from scipy.io.wavfile import write
 from scipy.fft import fft, ifft
+from animal import Animal
+import time
+import librosa
+import soundfile as sf
 import os
 
 
@@ -18,16 +21,24 @@ class MainWindow(QMainWindow):
         super().__init__()
         uic.loadUi("Equalizer.ui", self)
         # VARIABLES
-        self.mode = "Uniform"  # Change from dropdown menu
+        self.mode = "Uniform"  # Default Mode
         self.is_playing = False
         self.media_player = QMediaPlayer()
-        # self.audio_output = QAudioOutput()
 
-        # in case of .csv
-        # self.time = None
-        # self.amplitude = None
+        # SHAHD #
+        self.animals = {1: [47.0, 1172], 2: [2971.5, 5250]}
+        self.tolerance = 10
+        self.previous_animals_sliders_values = [1] * 4   # we want to make it more generalized
+        self.signal = None
+        self.original_freqs = None
+        self.modified_amplitudes = None
+        self.original_phases = None
+        self.original_magnitudes = None
+        self.img_item = None
+        self.modified_time_signal = None
+        self.saved_audio_path = None
+        # SHAHD #
 
-        # in case of .wav
         self.original_wav_file_path = None
         self.sampling_frequency = None
         self.magnitude = None
@@ -47,15 +58,19 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Signal Equalizer")
         self.setWindowIcon(QIcon("Deliverables/equalizer_icon.png"))
         self.horizontal_layout = self.findChild(QHBoxLayout, "horizontalLayout_5")
-        self.horizontal_layout_7 = self.findChild(QHBoxLayout, "horizontalLayout_7") # original signal specto
+        self.horizontal_layout_7 = self.findChild(QHBoxLayout, "horizontalLayout_7")  # original signal specto
+
+        self.specto_layout = self.findChild(QHBoxLayout, "horizontalLayout_27")
 
         # Removing placeholder widgets
         self.old_original_time_plot = self.findChild(QWidget, "widget")
-        self.old_modified_time_plot = self.findChild(QWidget, "widget_2") # widget 6
+        self.old_modified_time_plot = self.findChild(QWidget, "widget_2")  # widget 6
         self.old_frequency_plot = self.findChild(QWidget, "widget_3")  # change to correct widget
         self.horizontal_layout.removeWidget(self.old_original_time_plot)
         self.horizontal_layout.removeWidget(self.old_modified_time_plot)
-        self.horizontal_layout_7.removeWidget(self.old_frequency_plot) # change to correct layout
+
+        self.horizontal_layout_7.removeWidget(self.old_frequency_plot)  # change to correct layout
+
         self.old_original_time_plot.deleteLater()
         self.old_modified_time_plot.deleteLater()
         self.old_frequency_plot.deleteLater()
@@ -63,6 +78,12 @@ class MainWindow(QMainWindow):
         self.original_time_plot = pg.PlotWidget()
         self.modified_time_plot = pg.PlotWidget()
         self.frequency_plot = pg.PlotWidget()
+
+        self.spectogram_original_data_graph = pg.PlotWidget()
+        self.spectogram_modified_data_graph = pg.PlotWidget()
+        self.specto_layout.addWidget(self.spectogram_original_data_graph)
+        self.specto_layout.addWidget(self.spectogram_modified_data_graph)
+
         self.horizontal_layout.addWidget(self.original_time_plot)
         self.horizontal_layout.addWidget(self.modified_time_plot)
         self.horizontal_layout_7.addWidget(self.frequency_plot)  # change to correct layout
@@ -82,6 +103,7 @@ class MainWindow(QMainWindow):
             slider.setRange(0, 100)  # contribution of frequency range in percentage
             slider.setValue(100)
             slider.valueChanged.connect(lambda value, index=i: self.on_slider_change(value, index))
+            slider.setRange(1, 10)
             self.sliders.append(slider)
 
             slider_label = QLabel()  # replace with find child
@@ -104,6 +126,12 @@ class MainWindow(QMainWindow):
         self.audiogram_checkbox = self.findChild(QCheckBox, "checkBox_2")
         self.audiogram_checkbox.stateChanged.connect(self.change_frequency_plot)
 
+        # Mode Combobox
+        self.mode_combobox = self.findChild(QComboBox, "waveCompobox")
+        modes = ["Uniform", "Animal", "Musical", "ECG"]
+        self.mode_combobox.addItems(modes)
+        self.mode_combobox.currentIndexChanged.connect(self.update_mode)
+
         self.center_on_screen()
 
     def center_on_screen(self):
@@ -112,41 +140,65 @@ class MainWindow(QMainWindow):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-    def load_signal(self):
-        filename = QFileDialog.getOpenFileName(self, "Open CSV File", "", "Audio and CSV Files (*.wav *.csv)")
-        self.original_wav_file_path = filename[0]
-        if self.original_wav_file_path:
-            if self.original_wav_file_path.lower().endswith('.wav'):
-                try:
-                    self.sampling_frequency, self.magnitude = wavfile.read(self.original_wav_file_path)
-                    # If stereo, convert to mono by averaging the two channels
-                    if self.magnitude.ndim > 1:
-                        self.magnitude = np.mean(self.magnitude, axis=1)
-                    self.time_axis = np.linspace(0, len(self.magnitude) / self.sampling_frequency, num=len(self.magnitude))
-                except Exception as e:
-                    print(f"Error. Couldn't upload: {e}")
-                self.plot_signal()
-                self.reset_sliders()  # resetting sliders to 100 after each upload
-            # elif path.lower().endswith('.csv'):
-            #     try:
-            #         df = pd.read_csv(path)
-            #         self.time = df.iloc[:, 0].values
-            #         self.amplitude = df.iloc[:, 1].values
-            #     except Exception as e:
-            #         print(f"Error. Couldn't upload: {e}")
-
-    def plot_signal(self):
-        # Clearing previous upload first
+    def update_mode(self):
+        self.mode = self.mode_combobox.currentText()
         self.original_time_plot.clear()
         self.modified_time_plot.clear()
         self.frequency_plot.clear()
 
-        self.fourier_transform()
+    def load_signal(self):
+        filename = QFileDialog.getOpenFileName(self, "Open Audio File", "", "Audio Files (*.wav *.mp3 *.flac)")
+        self.original_wav_file_path = filename[0]
+        if self.original_wav_file_path:
+            if self.mode == "Uniform":
+                if self.original_wav_file_path.lower().endswith('.wav'):
+                    try:
+                        self.sampling_frequency, self.magnitude = wavfile.read(self.original_wav_file_path)
+                        # If stereo, convert to mono by averaging the two channels
+                        if self.magnitude.ndim > 1:
+                            self.magnitude = np.mean(self.magnitude, axis=1)
+                        self.time_axis = np.linspace(0, len(self.magnitude)
+                                                     / self.sampling_frequency, num=len(self.magnitude))
+                    except Exception as e:
+                        print(f"Error. Couldn't upload: {e}")
+                    self.plot_signal()
+                    self.reset_sliders()  # resetting sliders to 100 after each upload
 
-        self.original_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='c')
-        self.modified_time_plot.plot(self.positive_frequencies, self.positive_magnitudes, pen="m")  # Change to frequency plot when UI is done
+            elif self.mode == "Animal":
+                if self.original_wav_file_path.lower().endswith('.wav') or self.original_wav_file_path.lower().endswith(
+                        '.mp3') or self.original_wav_file_path.lower().endswith('.flac'):
+                    try:
+                        self.signal, self.sampling_frequency = librosa.load(
+                            self.original_wav_file_path, sr=None, mono=True)  # sr=None to keep original sampling rate
+                        self.time_axis = np.linspace(0, len(self.signal) / self.sampling_frequency,
+                                                     num=len(self.signal))
+                        stft = librosa.stft(self.signal)
+                        self.original_magnitudes, self.original_phases = librosa.magphase(stft)
+                        self.modified_amplitudes = self.original_magnitudes.copy()
+                        self.original_freqs = librosa.fft_frequencies(sr=self.sampling_frequency)
+                        self.plot_signal()
+                        # .plot_frequency_magnitude()
+                    except Exception as e:
+                        print(f"Error. Couldn't upload: {e}")
 
-        self.setting_slider_ranges()
+    def plot_signal(self):
+        if self.mode == "Uniform":
+            # Clearing previous upload first
+            self.original_time_plot.clear()
+            self.modified_time_plot.clear()
+            self.frequency_plot.clear()
+
+            self.fourier_transform()
+
+            self.original_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='c')
+            self.modified_time_plot.plot(self.positive_frequencies,
+                                         self.positive_magnitudes, pen="m")  # Change to frequency plot when UI is done
+
+            self.setting_slider_ranges()
+
+        elif self.mode == "Animal":
+            self.original_time_plot.plot(self.time_axis, self.signal, pen='c')
+            self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectogram_original_data_graph)
 
     def fourier_transform(self):
         sampling_period = 1 / self.sampling_frequency
@@ -166,8 +218,30 @@ class MainWindow(QMainWindow):
 
         self.positive_magnitudes_db = np.log10(self.significant_magnitudes)
 
-        # print(f"fft_data: {self.fft_data}")
-        # print(f"frequencies: {self.frequencies}")
+    def plot_spectrogram(self, signal, sampling_frequency, plot_widget):
+        stft = librosa.stft(signal)
+        spectrogram_data, _ = librosa.magphase(stft)
+        spectrogram_db = librosa.amplitude_to_db(spectrogram_data, ref=np.max)
+        plot_widget.clear()
+        self.img_item = ImageItem()
+        plot_widget.addItem(self.img_item)
+        cmap = pg.colormap.get('viridis')
+        self.img_item.setLookupTable(cmap.getLookupTable(0.0, 1.0, 256))
+
+        self.img_item.setImage(spectrogram_db, autoLevels=True)
+
+        time_bins = spectrogram_db.shape[1]
+        freq_bins = spectrogram_db.shape[0]
+        self.img_item.setRect(0, 0, time_bins, freq_bins)
+
+        plot_widget.setAspectLocked(False)
+
+        plot_widget.getAxis('bottom').setTicks(
+            [[(i, f"{i / sampling_frequency:.2f}") for i in range(0, time_bins, max(1, time_bins // 10))]])
+        plot_widget.getAxis('left').setTicks([[(i, f"{i * (sampling_frequency / 2) / freq_bins:.0f}") for i in
+                                             range(0, freq_bins, max(1, freq_bins // 10))]])
+
+        plot_widget.autoRange()
 
     def setting_slider_ranges(self):
         if self.mode == "Uniform":
@@ -175,10 +249,6 @@ class MainWindow(QMainWindow):
             max_frequency = self.significant_frequencies[-1]
             range_of_frequencies = max_frequency - min_frequency
             step_size = range_of_frequencies/10
-            # print(f"min freq: {self.significant_frequencies[0]}")
-            # print(f"max freq: {self.significant_frequencies[-1]}")
-            # print(f"range: {range_of_frequencies}")
-            # print(f"step: {step_size}")
             # example: 10 20 30 50 60 100 150 200 250
             # range: 240
             # each slider: 240/10 = 24 value
@@ -187,9 +257,8 @@ class MainWindow(QMainWindow):
             for k in range(1, 11):
                 slider = self.sliders[k]
                 slider_label = self.sliders_labels[k]
-
                 slider.setRange(0, 100)
-                # slider_label.setText(f"{int(min_frequency + i * step_size)}-{int(min_frequency + j * step_size)} Hz")
+                slider_label.setText(f"{int(min_frequency + i * step_size)}-{int(min_frequency + j * step_size)} Hz")
                 i += 1
                 j += 1
 
@@ -199,57 +268,64 @@ class MainWindow(QMainWindow):
             slider.setValue(100)
 
     def on_slider_change(self, value, index):
-        # # Stop sound when modifying
-        # if self.media_player.state() == QMediaPlayer.PlayingState:
-        #     self.media_player.stop()
+        if self.mode == "Uniform":
+            slider = self.sliders[index]
+            label = self.sliders_labels[index].text()
+            minimum_value = int(label.split('-')[0])
+            maximum_value = int(label.split('-')[1].split(' ')[0])
+            new_percentage = slider.value()
+            modified_frequencies_indices = np.where((minimum_value <= self.positive_frequencies) &
+                                                    (self.positive_frequencies <= maximum_value))[0]
+            # print(f"significant freq: {self.significant_frequencies}")
+            # print(f"min: {minimum_value}")
+            # print(f"max: {maximum_value}")
+            # print(f"modified indices: {modified_frequencies_indices}")
+            for index in modified_frequencies_indices:
+                self.modified_fft_data[index] = self.fft_data[index] * (new_percentage / 100)
+                self.modified_fft_data[-index - 1] = (self.fft_data[-index - 1] *
+                                                      (new_percentage / 100))  # modify negative component as well
+            modified_signal = ifft(self.modified_fft_data)
+            self.frequency_plot.clear()
+            self.frequency_plot.plot(self.time_axis, modified_signal.real.astype(float), pen='r')
 
-        slider = self.sliders[index]
-        label = self.sliders_labels[index].text()
-        minimum_value = int(label.split('-')[0])
-        maximum_value = int(label.split('-')[1].split(' ')[0])
-        new_percentage = slider.value()
-        modified_frequencies_indices = np.where((minimum_value <= self.positive_frequencies) &
-                                                (self.positive_frequencies <= maximum_value))[0]
-        # print(f"significant freq: {self.significant_frequencies}")
-        # print(f"min: {minimum_value}")
-        # print(f"max: {maximum_value}")
-        # print(f"modified indices: {modified_frequencies_indices}")
-        for index in modified_frequencies_indices:
-            self.modified_fft_data[index] = self.fft_data[index] * (new_percentage / 100)
-            self.modified_fft_data[-index - 1] = self.fft_data[-index - 1] * (new_percentage / 100)  # modify negative component as well
-        # print(f"diff: {self.fft_data} - {self.modified_fft_data}")
-        modified_signal = ifft(self.modified_fft_data)
-        self.frequency_plot.clear()
-        self.frequency_plot.plot(self.time_axis, modified_signal.real.astype(float), pen='r')
+            self.modified_positive_magnitudes = np.abs(self.modified_fft_data)[:len(self.modified_fft_data) // 2]
+            self.change_frequency_plot()
+            # self.modified_time_plot.clear()
+            # self.modified_time_plot.plot(self.positive_frequencies, modified_positive_magnitudes, pen="m")
 
-        self.modified_positive_magnitudes = np.abs(self.modified_fft_data)[:len(self.modified_fft_data) // 2]
-        self.change_frequency_plot()
-        # self.modified_time_plot.clear()
-        # self.modified_time_plot.plot(self.positive_frequencies, modified_positive_magnitudes, pen="m")
+            modified_file_path = "modified_signal.wav"
+            if os.path.exists(modified_file_path):
+                os.remove(modified_file_path)
+            wavfile.write(modified_file_path, self.sampling_frequency, modified_signal.real.astype(np.int16))
+            self.media_player.setMedia(QMediaContent())  # Clearing media content so modified is refreshed
 
-        modified_file_path = "modified_signal.wav"
-        if os.path.exists(modified_file_path):
-            os.remove(modified_file_path)
-        wavfile.write(modified_file_path, self.sampling_frequency, modified_signal.real.astype(np.int16))
-        self.media_player.setMedia(QMediaContent())  # Clearing media content so modified is refreshed
+            print(f"{slider.objectName()}: min:{minimum_value} + max: {maximum_value} + current value: {value}")
 
-        print(f"{slider.objectName()}: min:{minimum_value} + max: {maximum_value} + current value: {value}")
+        elif self.mode == "Animal":
+            self.modify_volume(value, index)
 
     def play_audio(self, is_playing, audio_type):
-        if audio_type == "uploadButton_2":  # Play original
-            self.media_player.setMedia(QMediaContent(QUrl.fromLocalFile(self.original_wav_file_path)))
-        elif audio_type == "uploadButton_3":  # Play modified
-            modified_file_path = "modified_signal.wav"  # Path to the modified signal
-            print("setting media player")
-            self.media_player.setMedia(QMediaContent(QUrl.fromLocalFile(modified_file_path)))
+        if self.mode == "Uniform":
+            if audio_type == "uploadButton_2":  # Play original
+                self.media_player.setMedia(QMediaContent(QUrl.fromLocalFile(self.original_wav_file_path)))
+            elif audio_type == "uploadButton_3":  # Play modified
+                modified_file_path = "modified_signal.wav"  # Path to the modified signal
+                self.media_player.setMedia(QMediaContent(QUrl.fromLocalFile(modified_file_path)))
 
-        self.media_player.stop() if is_playing else self.media_player.play()
+            self.media_player.stop() if is_playing else self.media_player.play()
 
-        self.is_playing = not is_playing
+            self.is_playing = not is_playing
 
-        button = self.play_original_button if audio_type == 'uploadButton_2' else self.play_modified_button
-        icon = self.play_icon if is_playing else self.pause_icon
-        button.setIcon(icon)
+            button = self.play_original_button if audio_type == 'uploadButton_2' else self.play_modified_button
+            icon = self.play_icon if is_playing else self.pause_icon
+            button.setIcon(icon)
+
+        # SHAHD
+        if self.mode == "Animal":
+            if hasattr(self, 'saved_audio_path') and self.saved_audio_path:
+                # Play the modified and saved audio file
+                self.sound = QtMultimedia.QSound(self.saved_audio_path)
+                self.sound.play()
 
     def change_frequency_plot(self):
         self.modified_time_plot.clear()
@@ -263,19 +339,65 @@ class MainWindow(QMainWindow):
             self.modified_time_plot.showGrid(x=True, y=True)
 
             # Move x-axis to the top
-            self.modified_time_plot.getPlotItem().layout.removeItem(self.modified_time_plot.getPlotItem().getAxis('bottom'))
-            self.modified_time_plot.getPlotItem().layout.addItem(self.modified_time_plot.getPlotItem().getAxis('bottom'), 1, 1)
+            self.modified_time_plot.getPlotItem().layout.removeItem(
+                self.modified_time_plot.getPlotItem().getAxis('bottom'))
+            self.modified_time_plot.getPlotItem().layout.addItem(
+                self.modified_time_plot.getPlotItem().getAxis('bottom'), 1, 1)
 
-            self.modified_time_plot.plot(self.significant_frequencies, self.positive_magnitudes_db, pen=None,symbol='o')
+            self.modified_time_plot.plot(self.significant_frequencies, self.positive_magnitudes_db,
+                                         pen=None, symbol='o')
         else:
             # Move x-axis to the bottom again
-            self.modified_time_plot.getPlotItem().layout.removeItem(self.modified_time_plot.getPlotItem().getAxis('bottom'), 1, 1)
-            self.modified_time_plot.getPlotItem().layout.addItem(self.modified_time_plot.getPlotItem().getAxis('bottom'))
-            if self.modified_positive_magnitudes:
+            # self.modified_time_plot.getPlotItem().layout.removeItem(self.modified_
+            # time_plot.getPlotItem().getAxis('bottom'), 1, 1)
+            # self.modified_time_plot.getPlotItem().layout.addItem(
+            # self.modified_time_plot.getPlotItem().getAxis('bottom'))
+            if self.modified_positive_magnitudes is not None:
                 self.modified_time_plot.plot(self.positive_frequencies, self.modified_positive_magnitudes, pen="m")
             else:
                 self.modified_time_plot.plot(self.positive_frequencies, self.positive_magnitudes, pen="m")
 
+    def inverse_fourier_transform(self, new_magnitudes):
+        new_mag_conponent = new_magnitudes * np.exp(1j * self.original_phases)
+        modified_signal = librosa.istft(new_mag_conponent)
+        return modified_signal
+
+    def modify_volume(self, slidervalue, object_number):
+        start_freq, end_freq = 0, 0
+        gain = 0
+        if self.mode == "Animal":
+            start_freq, end_freq = self.animals[object_number]
+            gain = slidervalue/self.previous_animals_sliders_values[object_number-1]
+            self.previous_animals_sliders_values[object_number-1] = slidervalue
+            print(f"the start freq is {start_freq} and the end freq is {end_freq}. "
+                  f"max of freqs in all data is {max(self.original_freqs)}")
+        start_idx = np.where(np.abs(self.original_freqs - start_freq) <= self.tolerance)[0]
+        end_idx = np.where(np.abs(self.original_freqs - end_freq) <= self.tolerance)[0]
+        print(f"the freq at start idx is {self.original_freqs[start_idx]} and the start idx is {start_idx}")
+        # if len(start_idx) > 0 and len(end_idx) > 0:
+        #     start_idx = start_idx[0]
+        #     end_idx = end_idx[0]
+        start_idx = int(start_idx[0]) if isinstance(start_idx, np.ndarray) else int(start_idx)
+        end_idx = int(end_idx[0]) if isinstance(end_idx, np.ndarray) else int(end_idx)
+        self.modified_amplitudes[start_idx:end_idx] *= gain
+        self.modified_time_signal = self.inverse_fourier_transform(self.modified_amplitudes)
+        self.modified_time_plot.clear()
+        time = np.linspace(0, len(self.modified_time_signal) / self.sampling_frequency,
+                           num=len(self.modified_time_signal))
+        self.modified_time_plot.plot(time, self.modified_time_signal, pen=(50, 100, 240))
+        self.plot_spectrogram(self.modified_time_signal, self.sampling_frequency, self.spectogram_modified_data_graph)
+        self.save_audio()
+
+    def save_audio(self):
+        save_dir = "./AnimalAudios"
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        save_path = os.path.join(save_dir, f"modified_audio_{timestamp}.wav")
+
+        # self.modified_time_signal = np.clip(self.modified_time_signal, -1, 1)  # Ensure values are between -1 and 1
+        sf.write(save_path, self.modified_time_signal,
+                 self.sampling_frequency)
+        self.saved_audio_path = save_path
+        print(f"Audio saved at: {save_path}")
 
 
 def main():
