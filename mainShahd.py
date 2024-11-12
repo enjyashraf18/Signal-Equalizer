@@ -16,7 +16,7 @@
 # class MainWindow(QMainWindow):
 #     def __init__(self):
 #         super().__init__()
-#         uic.loadUi("Equalizer.ui", self)
+#         uic.loadUi("EqualizerOld.ui", self)
 #         # VARIABLES
 #         self.mode = "Animal"  # Change from dropdown menu
 #         self.animals ={1:[47.0, 1172],2:[2971.5,5250]}

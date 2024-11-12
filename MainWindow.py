@@ -57,19 +57,25 @@ class MainWindow(QMainWindow):
         # UI
         self.setWindowTitle("Signal Equalizer")
         self.setWindowIcon(QIcon("Deliverables/equalizer_icon.png"))
-        self.horizontal_layout = self.findChild(QHBoxLayout, "horizontalLayout_5")
-        self.horizontal_layout_7 = self.findChild(QHBoxLayout, "horizontalLayout_7")  # original signal specto
-
-        self.specto_layout = self.findChild(QHBoxLayout, "horizontalLayout_27")
+        self.sliders_layout = self.findChild(QHBoxLayout, "sliders")
+        self.frequency_layout = self.findChild(QHBoxLayout, "frequency_layout")  # original signal specto
+        self.original_signal_layout = self.findChild(QHBoxLayout, "original_signal_layout")
+        self.modified_signal_layout = self.findChild(QHBoxLayout, "modified_signal_layout")
+        self.original_spectrogram_layout = self.findChild(QHBoxLayout, "original_spectrogram_layout")
+        self.modified_spectrogram_layout = self.findChild(QHBoxLayout, "modified_spectrogram_layout")
 
         # Removing placeholder widgets
-        self.old_original_time_plot = self.findChild(QWidget, "widget")
-        self.old_modified_time_plot = self.findChild(QWidget, "widget_2")  # widget 6
-        self.old_frequency_plot = self.findChild(QWidget, "widget_3")  # change to correct widget
-        self.horizontal_layout.removeWidget(self.old_original_time_plot)
-        self.horizontal_layout.removeWidget(self.old_modified_time_plot)
-
-        self.horizontal_layout_7.removeWidget(self.old_frequency_plot)  # change to correct layout
+        self.old_original_time_plot = self.findChild(QWidget, "original_signal_widget")
+        self.old_modified_time_plot = self.findChild(QWidget, "modified_signal_widget")  # widget 6
+        self.old_frequency_plot = self.findChild(QWidget, "frequency_widget")  # change to correct widget
+        self.old_original_spectrogram_widget = self.findChild(QWidget, "original_spectrogram_widget")
+        self.old_modified_spectrogram_widget = self.findChild(QWidget, "modified_spectrogram_widget")
+        
+        self.original_signal_layout.removeWidget(self.old_original_time_plot)
+        self.modified_signal_layout.removeWidget(self.old_modified_time_plot)
+        self.frequency_layout.removeWidget(self.old_frequency_plot)
+        self.original_spectrogram_layout.removeWidget(self.old_original_spectrogram_widget)
+        self.modified_spectrogram_layout.removeWidget(self.old_modified_spectrogram_widget)
 
         self.old_original_time_plot.deleteLater()
         self.old_modified_time_plot.deleteLater()
@@ -78,15 +84,14 @@ class MainWindow(QMainWindow):
         self.original_time_plot = pg.PlotWidget()
         self.modified_time_plot = pg.PlotWidget()
         self.frequency_plot = pg.PlotWidget()
-
         self.spectogram_original_data_graph = pg.PlotWidget()
         self.spectogram_modified_data_graph = pg.PlotWidget()
-        self.specto_layout.addWidget(self.spectogram_original_data_graph)
-        self.specto_layout.addWidget(self.spectogram_modified_data_graph)
 
-        self.horizontal_layout.addWidget(self.original_time_plot)
-        self.horizontal_layout.addWidget(self.modified_time_plot)
-        self.horizontal_layout_7.addWidget(self.frequency_plot)  # change to correct layout
+        self.original_signal_layout.addWidget(self.original_time_plot)
+        self.modified_signal_layout.addWidget(self.modified_time_plot)
+        self.frequency_layout.addWidget(self.frequency_plot)  # change to correct layout
+        self.original_spectrogram_layout.addWidget(self.spectogram_original_data_graph)
+        self.modified_spectrogram_layout.addWidget(self.spectogram_modified_data_graph)
 
         # Sliders and their labels
         self.sliders = []
@@ -99,7 +104,7 @@ class MainWindow(QMainWindow):
         self.sliders_labels.append(placeholder_slider_label)
 
         for i in range(1, 11):
-            slider = self.findChild(QSlider, f"verticalSlider_{i}")
+            slider = self.findChild(QSlider, f"slider_{i}")
             slider.setRange(0, 100)  # contribution of frequency range in percentage
             slider.setValue(100)
             slider.valueChanged.connect(lambda value, index=i: self.on_slider_change(value, index))
@@ -107,27 +112,27 @@ class MainWindow(QMainWindow):
             self.sliders.append(slider)
 
             slider_label = QLabel()  # replace with find child
-            self.horizontal_layout.addWidget(slider_label)  # remove later
+            self.sliders_layout.addWidget(slider_label)  # remove later
             self.sliders_labels.append(slider_label)
 
-        self.upload_button = self.findChild(QPushButton, "uploadButton")
+        self.upload_button = self.findChild(QPushButton, "upload_button")
         self.upload_button.clicked.connect(self.load_signal)
 
         # Audio Buttons
-        self.play_original_button = self.findChild(QPushButton, "uploadButton_2")
+        self.play_original_button = self.findChild(QPushButton, "original_play_audio_button")
         self.play_original_button.clicked.connect(lambda: self.play_audio(self.is_playing,
                                                                           self.play_original_button.objectName()))
-        self.play_modified_button = self.findChild(QPushButton, "uploadButton_3")
+        self.play_modified_button = self.findChild(QPushButton, "modified_play_audio_button")
         self.play_modified_button.clicked.connect(lambda: self.play_audio(self.is_playing,
                                                                           self.play_modified_button.objectName()))
         self.play_icon = QIcon("Deliverables/play-button-arrowhead.png")
         self.pause_icon = QIcon("Deliverables/pause_button.png")
 
-        self.audiogram_checkbox = self.findChild(QCheckBox, "checkBox_2")
+        self.audiogram_checkbox = self.findChild(QCheckBox, "audiogram_checkbox")
         self.audiogram_checkbox.stateChanged.connect(self.change_frequency_plot)
 
         # Mode Combobox
-        self.mode_combobox = self.findChild(QComboBox, "waveCompobox")
+        self.mode_combobox = self.findChild(QComboBox, "mode_combobox")
         modes = ["Uniform", "Animal", "Musical", "ECG"]
         self.mode_combobox.addItems(modes)
         self.mode_combobox.currentIndexChanged.connect(self.update_mode)
@@ -144,6 +149,8 @@ class MainWindow(QMainWindow):
         self.mode = self.mode_combobox.currentText()
         self.original_time_plot.clear()
         self.modified_time_plot.clear()
+        self.spectogram_original_data_graph.clear()
+        self.spectogram_modified_data_graph.clear()
         self.frequency_plot.clear()
 
     def load_signal(self):
@@ -191,7 +198,7 @@ class MainWindow(QMainWindow):
             self.fourier_transform()
 
             self.original_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='c')
-            self.modified_time_plot.plot(self.positive_frequencies,
+            self.frequency_plot.plot(self.positive_frequencies,
                                          self.positive_magnitudes, pen="m")  # Change to frequency plot when UI is done
 
             self.setting_slider_ranges()
@@ -285,8 +292,8 @@ class MainWindow(QMainWindow):
                 self.modified_fft_data[-index - 1] = (self.fft_data[-index - 1] *
                                                       (new_percentage / 100))  # modify negative component as well
             modified_signal = ifft(self.modified_fft_data)
-            self.frequency_plot.clear()
-            self.frequency_plot.plot(self.time_axis, modified_signal.real.astype(float), pen='r')
+            self.modified_time_plot.clear()
+            self.modified_time_plot.plot(self.time_axis, modified_signal.real.astype(float), pen='r')
 
             self.modified_positive_magnitudes = np.abs(self.modified_fft_data)[:len(self.modified_fft_data) // 2]
             self.change_frequency_plot()
@@ -306,9 +313,9 @@ class MainWindow(QMainWindow):
 
     def play_audio(self, is_playing, audio_type):
         if self.mode == "Uniform":
-            if audio_type == "uploadButton_2":  # Play original
+            if audio_type == "original_play_audio_button":  # Play original
                 self.media_player.setMedia(QMediaContent(QUrl.fromLocalFile(self.original_wav_file_path)))
-            elif audio_type == "uploadButton_3":  # Play modified
+            elif audio_type == "modified_play_audio_button":  # Play modified
                 modified_file_path = "modified_signal.wav"  # Path to the modified signal
                 self.media_player.setMedia(QMediaContent(QUrl.fromLocalFile(modified_file_path)))
 
@@ -316,7 +323,7 @@ class MainWindow(QMainWindow):
 
             self.is_playing = not is_playing
 
-            button = self.play_original_button if audio_type == 'uploadButton_2' else self.play_modified_button
+            button = self.play_original_button if audio_type == 'original_play_audio_button' else self.play_modified_button
             icon = self.play_icon if is_playing else self.pause_icon
             button.setIcon(icon)
 
@@ -328,34 +335,34 @@ class MainWindow(QMainWindow):
                 self.sound.play()
 
     def change_frequency_plot(self):
-        self.modified_time_plot.clear()
+        self.frequency_plot.clear()
         if self.audiogram_checkbox.isChecked():
             print(f"freq: {len(self.significant_magnitudes)} + mag: {len(self.positive_magnitudes_db)}")
             # self.modified_time_plot.setTitle('Audiogram')  # change the label in
-            self.modified_time_plot.setLabel('bottom', 'Frequency (Hz)')
-            self.modified_time_plot.setLabel('left', 'Hearing Level (dB)')
-            self.modified_time_plot.getAxis('bottom').setTicks([[(f, str(f)) for f in self.positive_frequencies]])
-            self.modified_time_plot.invertY(True)  # Audiograms typically have inverted y-axis
-            self.modified_time_plot.showGrid(x=True, y=True)
+            self.frequency_plot.setLabel('bottom', 'Frequency (Hz)')
+            self.frequency_plot.setLabel('left', 'Hearing Level (dB)')
+            self.frequency_plot.getAxis('bottom').setTicks([[(f, str(f)) for f in self.positive_frequencies]])
+            self.frequency_plot.invertY(True)  # Audiograms typically have inverted y-axis
+            self.frequency_plot.showGrid(x=True, y=True)
 
             # Move x-axis to the top
-            self.modified_time_plot.getPlotItem().layout.removeItem(
-                self.modified_time_plot.getPlotItem().getAxis('bottom'))
-            self.modified_time_plot.getPlotItem().layout.addItem(
-                self.modified_time_plot.getPlotItem().getAxis('bottom'), 1, 1)
+            self.frequency_plot.getPlotItem().layout.removeItem(
+                self.frequency_plot.getPlotItem().getAxis('bottom'))
+            self.frequency_plot.getPlotItem().layout.addItem(
+                self.frequency_plot.getPlotItem().getAxis('bottom'), 1, 1)
 
-            self.modified_time_plot.plot(self.significant_frequencies, self.positive_magnitudes_db,
+            self.frequency_plot.plot(self.significant_frequencies, self.positive_magnitudes_db,
                                          pen=None, symbol='o')
         else:
             # Move x-axis to the bottom again
-            # self.modified_time_plot.getPlotItem().layout.removeItem(self.modified_
+            # self.frequency_plot.getPlotItem().layout.removeItem(self.modified_
             # time_plot.getPlotItem().getAxis('bottom'), 1, 1)
-            # self.modified_time_plot.getPlotItem().layout.addItem(
-            # self.modified_time_plot.getPlotItem().getAxis('bottom'))
+            # self.frequency_plot.getPlotItem().layout.addItem(
+            # self.frequency_plot.getPlotItem().getAxis('bottom'))
             if self.modified_positive_magnitudes is not None:
-                self.modified_time_plot.plot(self.positive_frequencies, self.modified_positive_magnitudes, pen="m")
+                self.frequency_plot.plot(self.positive_frequencies, self.modified_positive_magnitudes, pen="m")
             else:
-                self.modified_time_plot.plot(self.positive_frequencies, self.positive_magnitudes, pen="m")
+                self.frequency_plot.plot(self.positive_frequencies, self.positive_magnitudes, pen="m")
 
     def inverse_fourier_transform(self, new_magnitudes):
         new_mag_conponent = new_magnitudes * np.exp(1j * self.original_phases)

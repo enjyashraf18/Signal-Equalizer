@@ -54,7 +54,7 @@ background-color: rgb(42, 42, 42);</string>
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="play_signal">
+       <widget class="QPushButton" name="pushButton_4">
         <property name="minimumSize">
          <size>
           <width>36</width>
@@ -90,7 +90,7 @@ font-weight:800;</string>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="rewind">
+       <widget class="QPushButton" name="pushButton_3">
         <property name="minimumSize">
          <size>
           <width>36</width>
@@ -126,7 +126,7 @@ font-weight:800;</string>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="zoom_in">
+       <widget class="QPushButton" name="pushButton_2">
         <property name="minimumSize">
          <size>
           <width>36</width>
@@ -162,7 +162,7 @@ font-weight:800;</string>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="zoom_out">
+       <widget class="QPushButton" name="pushButton">
         <property name="minimumSize">
          <size>
           <width>36</width>
@@ -217,7 +217,7 @@ font-weight:800;</string>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="speed_slider">
+       <widget class="QSlider" name="horizontalSlider">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -399,9 +399,9 @@ border-color: transparent;</string>
     <item row="11" column="2">
      <layout class="QHBoxLayout" name="horizontalLayout_24">
       <item>
-       <layout class="QHBoxLayout" name="frequency_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_25">
         <item>
-         <widget class="QWidget" name="frequency_widget" native="true">
+         <widget class="QWidget" name="widget_6" native="true">
           <property name="minimumSize">
            <size>
             <width>900</width>
@@ -502,11 +502,11 @@ border-color: transparent;</string>
      </spacer>
     </item>
     <item row="13" column="2">
-     <layout class="QHBoxLayout" name="sliders">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <layout class="QHBoxLayout" name="slider1_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_18">
         <item>
-         <widget class="QSlider" name="slider_1">
+         <widget class="QSlider" name="verticalSlider_1">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -561,9 +561,9 @@ QSlider::handle:vertical:pressed {
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="slider2_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_17">
         <item>
-         <widget class="QSlider" name="slider_2">
+         <widget class="QSlider" name="verticalSlider_2">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -618,9 +618,9 @@ QSlider::handle:vertical:pressed {
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="slider3_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_16">
         <item>
-         <widget class="QSlider" name="slider_3">
+         <widget class="QSlider" name="verticalSlider_3">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -675,9 +675,9 @@ QSlider::handle:vertical:pressed {
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="slider4_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_15">
         <item>
-         <widget class="QSlider" name="slider_4">
+         <widget class="QSlider" name="verticalSlider_4">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -732,9 +732,9 @@ QSlider::handle:vertical:pressed {
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="slider5_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_14">
         <item>
-         <widget class="QSlider" name="slider_5">
+         <widget class="QSlider" name="verticalSlider_5">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -789,9 +789,9 @@ QSlider::handle:vertical:pressed {
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="slider6_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_13">
         <item>
-         <widget class="QSlider" name="slider_6">
+         <widget class="QSlider" name="verticalSlider_6">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -846,9 +846,9 @@ QSlider::handle:vertical:pressed {
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="slider7_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_12">
         <item>
-         <widget class="QSlider" name="slider_7">
+         <widget class="QSlider" name="verticalSlider_7">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -903,9 +903,9 @@ QSlider::handle:vertical:pressed {
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="slider8_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_11">
         <item>
-         <widget class="QSlider" name="slider_8">
+         <widget class="QSlider" name="verticalSlider_8">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -960,9 +960,9 @@ QSlider::handle:vertical:pressed {
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="slider9_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
         <item>
-         <widget class="QSlider" name="slider_9">
+         <widget class="QSlider" name="verticalSlider_9">
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -1017,9 +1017,9 @@ QSlider::handle:vertical:pressed {
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="slider10_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
-         <widget class="QSlider" name="slider_10">
+         <widget class="QSlider" name="verticalSlider_10">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -1098,11 +1098,11 @@ QSlider::handle:vertical:pressed {
      </spacer>
     </item>
     <item row="8" column="2">
-     <layout class="QHBoxLayout" name="spectrograms">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
-       <layout class="QHBoxLayout" name="original_spectrogram_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
         <item>
-         <widget class="QWidget" name="original_spectrogram_widget" native="true">
+         <widget class="QWidget" name="widget_3" native="true">
           <property name="minimumSize">
            <size>
             <width>450</width>
@@ -1117,9 +1117,9 @@ QSlider::handle:vertical:pressed {
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="modified_spectrogram_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
-         <widget class="QWidget" name="modified_spectrogram_widget" native="true">
+         <widget class="QWidget" name="widget_4" native="true">
           <property name="minimumSize">
            <size>
             <width>450</width>
@@ -1138,9 +1138,9 @@ QSlider::handle:vertical:pressed {
     <item row="2" column="2">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <layout class="QHBoxLayout" name="original_signal_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
-         <widget class="QWidget" name="original_signal_widget" native="true">
+         <widget class="QWidget" name="widget" native="true">
           <property name="minimumSize">
            <size>
             <width>450</width>
@@ -1155,9 +1155,9 @@ QSlider::handle:vertical:pressed {
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="modified_signal_layout">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QWidget" name="modified_signal_widget" native="true">
+         <widget class="QWidget" name="widget_2" native="true">
           <property name="minimumSize">
            <size>
             <width>450</width>
@@ -1186,7 +1186,7 @@ font-weight:600;
 border-color: transparent;</string>
           </property>
           <property name="text">
-           <string>Original signal Spectrogram:</string>
+           <string>Original Signal Spectrogram:</string>
           </property>
          </widget>
         </item>
@@ -1231,7 +1231,7 @@ border-color: transparent;</string>
          <string notr="true">border: 1px solid #ffffff;
 border-radius:5px</string>
         </property>
-        <widget class="QPushButton" name="upload_button">
+        <widget class="QPushButton" name="uploadButton">
          <property name="geometry">
           <rect>
            <x>60</x>
@@ -1296,7 +1296,7 @@ border-radius: 20px;</string>
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
-        <widget class="QComboBox" name="mode_combobox">
+        <widget class="QComboBox" name="waveCompobox">
          <property name="geometry">
           <rect>
            <x>30</x>
@@ -1314,7 +1314,7 @@ border-radius: 20px;</string>
                 border: 1px solid transparent;
                 border-radius: 15px; /* Rounded corners */
             }
-
+            
             QComboBox QAbstractItemView {
                 background-color: #444444;    /* Dropdown list background */
                 color: #ffffff;               /* Dropdown list text color */
@@ -1357,7 +1357,7 @@ border-color: transparent;</string>
           <string>Choose Mode:</string>
          </property>
         </widget>
-        <widget class="QCheckBox" name="spectrogram_checkbox">
+        <widget class="QCheckBox" name="checkBox">
          <property name="geometry">
           <rect>
            <x>70</x>
@@ -1392,7 +1392,7 @@ QCheckBox::indicator:checked {
           <string>Hide Spectrogram</string>
          </property>
         </widget>
-        <widget class="QCheckBox" name="audiogram_checkbox">
+        <widget class="QCheckBox" name="checkBox_2">
          <property name="geometry">
           <rect>
            <x>90</x>
@@ -1427,7 +1427,7 @@ QCheckBox::indicator:checked {
           <string>Audiogram</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="original_play_audio_button">
+        <widget class="QPushButton" name="uploadButton_2">
          <property name="geometry">
           <rect>
            <x>60</x>
@@ -1508,7 +1508,7 @@ border-color: transparent;</string>
           <string>Audio After:</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="modified_play_audio_button">
+        <widget class="QPushButton" name="uploadButton_3">
          <property name="geometry">
           <rect>
            <x>60</x>
