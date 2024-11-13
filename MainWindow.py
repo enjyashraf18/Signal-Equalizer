@@ -5,6 +5,8 @@ from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtCore import QUrl
 import pyqtgraph as pg
 from PyQt5 import uic, QtMultimedia
+from PyQt5 import QtCore, QtGui
+from pyqtgraph.Qt import QtCore, QtGui
 import numpy as np
 from pyqtgraph import ImageItem
 from scipy.io import wavfile
@@ -18,7 +20,6 @@ from scipy.signal import butter, sosfilt
 
 
 class MainWindow(QMainWindow):
-
     def __init__(self):
         super().__init__()
         uic.loadUi("Equalizer.ui", self)
@@ -29,10 +30,12 @@ class MainWindow(QMainWindow):
 
         # SHAHD #
         self.animals = {1: [47.0, 1172], 2: [2971.5, 5250]}
-        self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000], 5: [20, 500], 6: [500, 2000], 7: [2000, 8000], 8: [8000, 16000], 9: [2000, 8000], 10: [8000, 16000]}
+        self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000]}
+        self.final_ECG_freq = {1: [4, 6], 2: [500, 600], 3: [3, 8], 4: [700, 800]}
         self.tolerance = 10
         self.previous_animals_sliders_values = [1] * 10   # we want to make it more generalized
         self.previous_music_sliders_values = [1] * 10  # we want to make it more generalized
+        self.previous_ECG_sliders_values = [1] * 10  # we want to make it more generalized
         self.signal = None
         self.original_freqs = None
         self.modified_amplitudes = None
@@ -109,6 +112,12 @@ class MainWindow(QMainWindow):
         # Sliders and their labels
         self.sliders = []
         self.sliders_labels = []
+
+        #task_1 stuff
+        # self.default_speed = 25
+        # self.timer = QtCore.QTimer()
+        # self.timer.setInterval(self.default_speed)
+        # self.timer.timeout.connect(self.updateSignals)
 
         # Avoiding Zero-Index Confusion
         placeholder_slider = QSlider()
@@ -204,7 +213,7 @@ class MainWindow(QMainWindow):
                     self.plot_signal()
                     self.reset_sliders()  # resetting sliders to 100 after each upload
 
-            elif self.mode == "Animal" or self.mode == "Music":
+            elif self.mode == "Animal" or self.mode == "Music" or self.mode == "ECG":
                 if self.original_wav_file_path.lower().endswith('.wav') or self.original_wav_file_path.lower().endswith(
                         '.mp3') or self.original_wav_file_path.lower().endswith('.flac'):
                     try:
@@ -219,6 +228,7 @@ class MainWindow(QMainWindow):
                         # .plot_frequency_magnitude()
                     except Exception as e:
                         print(f"Error. Couldn't upload: {e}")
+            # self.timer.start()
 
     def plot_signal(self):
         if self.mode == "Uniform":
@@ -236,7 +246,7 @@ class MainWindow(QMainWindow):
 
             self.setting_slider_ranges()
 
-        elif self.mode == "Animal" or self.mode == "Music":
+        elif self.mode == "Animal" or self.mode == "Music" or self.mode == "ECG":
             self.original_time_plot.plot(self.time_axis, self.signal, pen='c')
             self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectogram_original_data_graph)
 
@@ -314,6 +324,7 @@ class MainWindow(QMainWindow):
             slider = self.sliders[i]
             slider.setValue(100)
 
+
     def on_slider_change(self, value, index):
         if self.mode == "Uniform":
             slider = self.sliders[index]
@@ -347,7 +358,7 @@ class MainWindow(QMainWindow):
 
             print(f"{slider.objectName()}: min:{minimum_value} + max: {maximum_value} + current value: {value}")
 
-        elif self.mode == "Animal" or self.mode == "Music":
+        elif self.mode == "Animal" or self.mode == "Music" or self.mode == "ECG":
             print(f"gwa on_slider_chane  value {value} index {index}" )
             self.modify_volume(value, index)
 
@@ -367,7 +378,7 @@ class MainWindow(QMainWindow):
             button.setIcon(icon)
 
         # SHAHD
-        if self.mode == "Animal" or self.mode == "Music":
+        if self.mode == "Animal" or self.mode == "Music" or self.mode == "ECG":
             if hasattr(self, 'saved_audio_path') and self.saved_audio_path:
                 # Play the modified and saved audio file
                 self.sound = QtMultimedia.QSound(self.saved_audio_path)
@@ -426,6 +437,7 @@ class MainWindow(QMainWindow):
             self.previous_animals_sliders_values[object_number-1] = slidervalue
             print(f"the start freq is {start_freq} and the end freq is {end_freq}. "
                   f"max of freqs in all data is {max(self.original_freqs)}")
+
         elif self.mode == "Music":
             print("ana gwaa modify 1")
             start_freq, end_freq = self.final_music_freq[object_number]
@@ -434,9 +446,17 @@ class MainWindow(QMainWindow):
             print("ana gwaa modify 2")
             print(f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
 
+        elif self.mode == "ECG":
+            start_freq, end_freq = self.final_ECG_freq[object_number]
+            gain = slidervalue * 10/self.previous_ECG_sliders_values[object_number-1]
+            self.previous_ECG_sliders_values[object_number-1] = slidervalue* 10
+            print(
+                f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
+
         start_idx = np.where(np.abs(self.original_freqs - start_freq) <= self.tolerance)[0]
         end_idx = np.where(np.abs(self.original_freqs - end_freq) <= self.tolerance)[0]
         print(f"the freq at start idx is {self.original_freqs[start_idx]} and the start idx is {start_idx}")
+        print(f"shoghl habiba final {start_idx}, {end_idx}")
         # if len(start_idx) > 0 and len(end_idx) > 0:
         #     start_idx = start_idx[0]
         #     end_idx = end_idx[0]
@@ -456,6 +476,8 @@ class MainWindow(QMainWindow):
             save_dir = "./AnimalAudios"
         if self.mode == "Music":
             save_dir = "./music"
+        if self.mode == "ECG":
+            save_dir = "./ECG"
         timestamp = time.strftime("%Y%m%d_%H%M%S")
         save_path = os.path.join(save_dir, f"modified_audio_{timestamp}.wav")
 
@@ -464,6 +486,53 @@ class MainWindow(QMainWindow):
                  self.sampling_frequency)
         self.saved_audio_path = save_path
         print(f"Audio saved at: {save_path}")
+
+    # def rewind_signal(self):
+    #     self.timer.start()
+    #     signal.time = []
+    #     signal.magnitude = []
+    #     signal.line.setData([], [])
+
+    # def play_signal(self):
+    #     self.timer.start()
+    #     return
+    #
+    # def pause_signal(self):
+    #     self.timer.stop()
+    #     return
+    #
+    # def change_speed(self, value):
+    #     self.default_speed = 50 - value
+    #     self.timer.setInterval(self.default_speed)
+    #     return
+    #
+    # def zoom(self, zoomIn=True):
+    #
+    #     # Get the ViewBox of the plot widget
+    #     view_box = self.plot_graph.getViewBox()
+    #
+    #     # Get the current range for both axes
+    #     x_range, y_range = view_box.viewRange()
+    #
+    #     # Factor for zooming: use 0.8 for zoom in, and 1.25 for zoom out
+    #     zoom_factor = 0.8 if zoomIn else 1.25
+    #
+    #     # Calculate the center of the current range
+    #     x_center = (x_range[0] + x_range[1]) / 2
+    #     y_center = (y_range[0] + y_range[1]) / 2
+    #
+    #     # Calculate the new range for x-axis and y-axis, keeping the same zoom factor for both
+    #     new_x_range = [
+    #         x_center - (x_center - x_range[0]) * zoom_factor,
+    #         x_center + (x_range[1] - x_center) * zoom_factor
+    #     ]
+    #     new_y_range = [
+    #         y_center - (y_center - y_range[0]) * zoom_factor,
+    #         y_center + (y_range[1] - y_center) * zoom_factor
+    #     ]
+    #
+    #     # Set the new range for both x and y axes
+    #     view_box.setRange(xRange=new_x_range, yRange=new_y_range)
 
 
 def main():
