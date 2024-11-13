@@ -31,10 +31,10 @@ class MainWindow(QMainWindow):
         self.media_player = QMediaPlayer()
 
         # SHAHD #
-        self.animals = {1: [47.0, 1172], 2: [2971.5, 5250]}
+        self.animals = {1: [47.0, 1172], 2: [2971.5, 5250],3: [1205,2863], 4: [7031,15796]}
         self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000]}
         self.final_ECG_freq = {1: [4, 6], 2: [500, 600], 3: [3, 8], 4: [700, 800]}
-        self.animals_labels = {1: "animal 1", 2: "animal 2", 3: "animal 3", 4: "animal 4"}
+        self.animals_labels = {1: "Lion", 2: "Bird", 3: "Monkey", 4: "Bat"}
         self.music_label = {1: "Bass", 2: "Piano", 3: "Quitar", 4: "Cymbal"}
         self.ecg_label = {1: "Normal ECG", 2: "Atrial Flutter", 3: "Atrial Fibrillation", 4: "Ventricular Tachycardia"}
         self.tolerance = 10
@@ -213,6 +213,11 @@ class MainWindow(QMainWindow):
         self.mode_combobox.currentIndexChanged.connect(self.update_mode)
 
         self.center_on_screen()
+        self.iconplay = QtGui.QIcon()
+        self.iconplay.addPixmap(QtGui.QPixmap("Deliverables/play-button.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
+        self.iconpause = QtGui.QIcon()
+        self.iconpause.addPixmap(QtGui.QPixmap("Deliverables/video-pause-button.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
     def center_on_screen(self):
         qr = self.frameGeometry()
@@ -251,6 +256,8 @@ class MainWindow(QMainWindow):
         filename = QFileDialog.getOpenFileName(self, "Open Audio File", "", "Audio Files (*.wav *.mp3 *.flac)")
         self.original_wav_file_path = filename[0]
         if self.original_wav_file_path:
+            self.play_button.setIcon(self.iconpause)
+            self.checked = True
             if self.mode == "Uniform":
                 if self.original_wav_file_path.lower().endswith('.wav'):
                     try:
@@ -336,6 +343,7 @@ class MainWindow(QMainWindow):
 
         self.change_label(number_of_new_sliders)
 
+    def spectrogram_toggle(self,):
     def fourier_transform(self):
         if self.mode == "Uniform":
             sampling_period = 1 / self.sampling_frequency
@@ -573,15 +581,13 @@ class MainWindow(QMainWindow):
         print(f"Audio saved at: {save_path}")
 
     def cine_mode(self):
-        if self.mode == "Uniform":
-            self.signal = self.magnitude
-            self.modified_time_signal = self.modified_signal.real.astype(float)
         if self.signal is not None and len(self.signal) > 0:
             self.idx_original_time_signal, self.time_data_original_signal, self.magnitude_data_original_signal = self.update_graphs_cine_mode(
                 self.signal, self.original_time_plot, self.idx_original_time_signal,
                 self.time_data_original_signal, self.magnitude_data_original_signal,
                 self.original_time_plot_data_item)
             if len(self.modified_time_signal) > 0:
+                self.modified_time_plot.clear()
                 self.idx_modified_time_signal, self.time_data_modified_signal, self.magnitude_data_modified_signal = self.update_graphs_cine_mode(
                     self.modified_time_signal, self.modified_time_plot,
                     self.idx_modified_time_signal,
@@ -647,11 +653,14 @@ class MainWindow(QMainWindow):
         if self.checked:
             # self.play_button.setIcon(self.iconplay)
             self.pause_signal()
+            self.play_button.setIcon(self.iconplay)
             self.checked = False
+
 
         else:
             # self.play_button.setIcon(self.iconpause)
             self.play_signal1()
+            self.play_button.setIcon(self.iconpause)
             self.checked = True
 
     def change_speed(self, value):
