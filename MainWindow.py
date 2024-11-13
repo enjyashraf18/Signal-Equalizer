@@ -17,6 +17,8 @@ import librosa
 import soundfile as sf
 import os
 from scipy.signal import butter, sosfilt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
 
 
 class MainWindow(QMainWindow):
@@ -42,7 +44,7 @@ class MainWindow(QMainWindow):
         self.original_phases = None
         self.original_magnitudes = None
         self.img_item = None
-        self.modified_time_signal = None
+        self.modified_time_signal = []
         self.saved_audio_path = None
         # SHAHD #
 
@@ -100,24 +102,41 @@ class MainWindow(QMainWindow):
         self.original_time_plot = pg.PlotWidget()
         self.modified_time_plot = pg.PlotWidget()
         self.frequency_plot = pg.PlotWidget()
-        self.spectogram_original_data_graph = pg.PlotWidget()
-        self.spectogram_modified_data_graph = pg.PlotWidget()
+        # self.spectogram_original_data_graph = pg.PlotWidget()
+        # self.spectogram_modified_data_graph = pg.PlotWidget()
 
         self.original_signal_layout.addWidget(self.original_time_plot)
         self.modified_signal_layout.addWidget(self.modified_time_plot)
-        self.original_spectrogram_layout.addWidget(self.spectogram_original_data_graph)
-        self.modified_spectrogram_layout.addWidget(self.spectogram_modified_data_graph)
+        # self.original_spectrogram_layout.addWidget(self.spectogram_original_data_graph)
+        # self.modified_spectrogram_layout.addWidget(self.spectogram_modified_data_graph)
         self.frequency_layout.addWidget(self.frequency_plot)
+
+        self.original_time_plot_data_item = self.original_time_plot.plot([], [], pen='blue')
+        self.modified_time_plot_data_item = self.modified_time_plot.plot([], [], pen='green')
+        self.frequency_plot = pg.PlotWidget()
+        self.spectrogram_original_figure = Figure(facecolor='black')
+        self.spectrogram_original_canvas = FigureCanvas(self.spectrogram_original_figure)
+        self.spectrogram_modified_figure = Figure(facecolor='black')
+        self.spectrogram_modified_canvas = FigureCanvas(self.spectrogram_modified_figure)
+
+        # Add the canvas to your layout instead of pg.PlotWidget
+        self.original_spectrogram_layout.addWidget(self.spectrogram_original_canvas)
+        self.modified_spectrogram_layout.addWidget(self.spectrogram_modified_canvas)
 
         # Sliders and their labels
         self.sliders = []
         self.sliders_labels = []
 
-        #task_1 stuff
-        # self.default_speed = 25
-        # self.timer = QtCore.QTimer()
-        # self.timer.setInterval(self.default_speed)
-        # self.timer.timeout.connect(self.updateSignals)
+        self.default_speed = 25
+        self.timer = QtCore.QTimer()
+        self.timer.setInterval(self.default_speed)
+        self.timer.timeout.connect(self.cine_mode)
+        self.idx_original_time_signal = 0
+        self.idx_modified_time_signal = 0
+        self.time_data_original_signal = []
+        self.magnitude_data_original_signal = []
+        self.time_data_modified_signal = []
+        self.magnitude_data_modified_signal = []
 
         # Avoiding Zero-Index Confusion
         placeholder_slider = QSlider()
@@ -167,15 +186,6 @@ class MainWindow(QMainWindow):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-
-    # def update_mode(self):
-    #     self.mode = self.mode_combobox.currentText()
-    #     self.original_time_plot.clear()
-    #     self.modified_time_plot.clear()
-    #     self.spectogram_original_data_graph.clear()
-    #     self.spectogram_modified_data_graph.clear()
-    #     self.frequency_plot.clear()
-
     def update_mode(self):
         self.mode = self.mode_combobox.currentText()
         if self.mode != "Uniform":
@@ -184,9 +194,17 @@ class MainWindow(QMainWindow):
                 slider.setRange(1, 10)
         self.original_time_plot.clear()
         self.modified_time_plot.clear()
-        self.spectogram_original_data_graph.clear()
-        self.spectogram_modified_data_graph.clear()
+        self.spectrogram_original_figure.clear()
         self.frequency_plot.clear()
+
+
+    # def update_mode(self):
+    #     self.mode = self.mode_combobox.currentText()
+    #     self.original_time_plot.clear()
+    #     self.modified_time_plot.clear()
+    #     self.spectogram_original_data_graph.clear()
+    #     self.spectogram_modified_data_graph.clear()
+    #     self.frequency_plot.clear()
 
 
     def bandwidth_filter(data, lower_freq, higher_freq, sr, order=5):
@@ -228,27 +246,24 @@ class MainWindow(QMainWindow):
                         # .plot_frequency_magnitude()
                     except Exception as e:
                         print(f"Error. Couldn't upload: {e}")
-            # self.timer.start()
+            self.timer.start()
 
     def plot_signal(self):
-        if self.mode == "Uniform":
-            # Clearing previous upload first
-            self.original_time_plot.clear()
-            self.modified_time_plot.clear()
-            self.frequency_plot.clear()
+        # Clearing previous upload first
+        self.original_time_plot.clear()
+        self.modified_time_plot.clear()
+        self.frequency_plot.clear()
+        self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectrogram_original_canvas,
+                              self.spectrogram_original_figure)
+        self.setting_slider_ranges()
+        # self.spectrogram_original_figure.clear()
 
-            self.fourier_transform()
+        self.fourier_transform()
+        # self.original_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='c')
+        # self.modified_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='r')
+        self.frequency_plot.plot(self.positive_frequencies,
+                                     self.positive_magnitudes, pen="m")  # Change to frequency plot when UI is done
 
-            self.original_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='c')
-            self.modified_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='r')
-            self.frequency_plot.plot(self.positive_frequencies,
-                                         self.positive_magnitudes, pen="m")  # Change to frequency plot when UI is done
-
-            self.setting_slider_ranges()
-
-        elif self.mode == "Animal" or self.mode == "Music" or self.mode == "ECG":
-            self.original_time_plot.plot(self.time_axis, self.signal, pen='c')
-            self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectogram_original_data_graph)
 
     def update_final_music(self, signal, sr):
         self.bass =self.bandwidth_filter(signal, 20, 500, sr)
@@ -275,30 +290,30 @@ class MainWindow(QMainWindow):
         self.significant_magnitudes = self.positive_magnitudes[significant_indices]
         # self.positive_magnitudes_db = np.log10(self.significant_magnitudes)
 
-    def plot_spectrogram(self, signal, sampling_frequency, plot_widget):
-        stft = librosa.stft(signal)
-        spectrogram_data, _ = librosa.magphase(stft)
-        spectrogram_db = librosa.amplitude_to_db(spectrogram_data, ref=np.max)
-        plot_widget.clear()
-        self.img_item = ImageItem()
-        plot_widget.addItem(self.img_item)
-        cmap = pg.colormap.get('viridis')
-        self.img_item.setLookupTable(cmap.getLookupTable(0.0, 1.0, 256))
+    def plot_spectrogram(self, signal, sampling_frequency, plot_widget_draw, plot_widget_clear):
+        if not isinstance(signal, np.ndarray):
+            signal = np.array(signal)
 
-        self.img_item.setImage(spectrogram_db, autoLevels=True)
+        stft = np.abs(librosa.stft(signal))
 
-        time_bins = spectrogram_db.shape[1]
-        freq_bins = spectrogram_db.shape[0]
-        self.img_item.setRect(0, 0, time_bins, freq_bins)
+        plot_widget_clear.clear()
+        ax = plot_widget_clear.add_subplot(111)
+        ax.set_facecolor('black')
 
-        plot_widget.setAspectLocked(False)
+        img = librosa.display.specshow(librosa.amplitude_to_db(stft, ref=np.max),
+                                       sr=sampling_frequency,
+                                       y_axis='log',
+                                       x_axis='time',
+                                       ax=ax)
 
-        plot_widget.getAxis('bottom').setTicks(
-            [[(i, f"{i / sampling_frequency:.2f}") for i in range(0, time_bins, max(1, time_bins // 10))]])
-        plot_widget.getAxis('left').setTicks([[(i, f"{i * (sampling_frequency / 2) / freq_bins:.0f}") for i in
-                                             range(0, freq_bins, max(1, freq_bins // 10))]])
-
-        plot_widget.autoRange()
+        # plot_widget_clear.colorbar(img, ax=ax)
+        ax.axis('off')
+        ax.tick_params(colors='white')
+        ax.xaxis.label.set_color('white')
+        ax.yaxis.label.set_color('white')
+        ax.title.set_color('white')
+        plot_widget_clear.subplots_adjust(left=0, right=1, top=1, bottom=0)
+        plot_widget_draw.draw()
 
     def setting_slider_ranges(self):
         if self.mode == "Uniform":
@@ -467,8 +482,11 @@ class MainWindow(QMainWindow):
         self.modified_time_plot.clear()
         time = np.linspace(0, len(self.modified_time_signal) / self.sampling_frequency,
                            num=len(self.modified_time_signal))
-        self.modified_time_plot.plot(time, self.modified_time_signal, pen=(50, 100, 240))
-        self.plot_spectrogram(self.modified_time_signal, self.sampling_frequency, self.spectogram_modified_data_graph)
+
+        # self.modified_time_plot.plot(time, self.modified_time_signal, pen=(50, 100, 240))
+        # self.plot_spectrogram(self.modified_time_signal, self.sampling_frequency, self.spectogram_modified_data_graph)
+        self.plot_spectrogram(self.modified_time_signal, self.sampling_frequency, self.spectrogram_modified_canvas,
+                              self.spectrogram_modified_figure)
         self.save_audio()
 
     def save_audio(self):
@@ -487,52 +505,56 @@ class MainWindow(QMainWindow):
         self.saved_audio_path = save_path
         print(f"Audio saved at: {save_path}")
 
-    # def rewind_signal(self):
-    #     self.timer.start()
-    #     signal.time = []
-    #     signal.magnitude = []
-    #     signal.line.setData([], [])
+    def cine_mode(self):
+        if self.signal is not None and len(self.signal) > 0:
+            self.idx_original_time_signal, self.time_data_original_signal, self.magnitude_data_original_signal = self.update_graphs_cine_mode(
+                self.signal, self.original_time_plot, self.idx_original_time_signal,
+                self.time_data_original_signal, self.magnitude_data_original_signal,
+                self.original_time_plot_data_item)
+            if len(self.modified_time_signal) > 0:
+                self.idx_modified_time_signal, self.time_data_modified_signal, self.magnitude_data_modified_signal = self.update_graphs_cine_mode(
+                    self.modified_time_signal, self.modified_time_plot,
+                    self.idx_modified_time_signal,
+                    self.time_data_modified_signal, self.magnitude_data_modified_signal,
+                    self.modified_time_plot_data_item)
 
-    # def play_signal(self):
-    #     self.timer.start()
-    #     return
-    #
-    # def pause_signal(self):
-    #     self.timer.stop()
-    #     return
-    #
-    # def change_speed(self, value):
-    #     self.default_speed = 50 - value
-    #     self.timer.setInterval(self.default_speed)
-    #     return
-    #
-    # def zoom(self, zoomIn=True):
-    #
-    #     # Get the ViewBox of the plot widget
-    #     view_box = self.plot_graph.getViewBox()
-    #
-    #     # Get the current range for both axes
-    #     x_range, y_range = view_box.viewRange()
-    #
-    #     # Factor for zooming: use 0.8 for zoom in, and 1.25 for zoom out
-    #     zoom_factor = 0.8 if zoomIn else 1.25
-    #
-    #     # Calculate the center of the current range
-    #     x_center = (x_range[0] + x_range[1]) / 2
-    #     y_center = (y_range[0] + y_range[1]) / 2
-    #
-    #     # Calculate the new range for x-axis and y-axis, keeping the same zoom factor for both
-    #     new_x_range = [
-    #         x_center - (x_center - x_range[0]) * zoom_factor,
-    #         x_center + (x_range[1] - x_center) * zoom_factor
-    #     ]
-    #     new_y_range = [
-    #         y_center - (y_center - y_range[0]) * zoom_factor,
-    #         y_center + (y_range[1] - y_center) * zoom_factor
-    #     ]
-    #
-    #     # Set the new range for both x and y axes
-    #     view_box.setRange(xRange=new_x_range, yRange=new_y_range)
+    def update_graphs_cine_mode(self, signal, plot_widget, index, time, magnitude, plot_data_item):
+        batch_size = 500
+        length_in_one_frame = int(len(signal) / 10)
+        if index < len(signal):
+            for i in range(index, min(len(signal), index + batch_size)):
+                time.append(self.time_axis[i])
+                magnitude.append(signal[i])
+            # plot_data_item.setData(time, magnitude)
+            plot_widget.plot(time, magnitude, pen='blue')
+            if len(time) > length_in_one_frame:
+                plot_widget.setXRange(time[-length_in_one_frame], time[-1])
+            else:
+                plot_widget.setXRange(self.time_axis[0], self.time_axis[length_in_one_frame - 1])
+            plot_widget.update()
+            index += batch_size
+        return index, time, magnitude
+
+    def rewind_signal(self):
+        self.timer.start()
+        # signal.time = []
+        # signal.magnitude = []
+        # signal.line.setData([], [])
+
+    def play_signal(self):
+        self.timer.start()
+        return
+
+    def pause_signal(self):
+        self.timer.stop()
+        return
+
+    def change_speed(self, value):
+        self.default_speed = 50 - value
+        self.timer.setInterval(self.default_speed)
+        return
+
+
 
 
 def main():
