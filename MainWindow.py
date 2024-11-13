@@ -62,6 +62,7 @@ class MainWindow(QMainWindow):
         self.significant_magnitudes = None
         self.fft_data = None
         self.modified_fft_data = None
+        self.modified_signal = None
 
         #music
         self.final_music = None
@@ -69,6 +70,8 @@ class MainWindow(QMainWindow):
         self.piano = None
         self.guitar = None
         self.cymbal = None
+
+        self.line_for_rewind = None
 
         # UI
         self.setWindowTitle("Signal Equalizer")
@@ -119,6 +122,7 @@ class MainWindow(QMainWindow):
         self.spectrogram_modified_figure = Figure(facecolor='black')
         self.spectrogram_modified_canvas = FigureCanvas(self.spectrogram_modified_figure)
 
+
         # Add the canvas to your layout instead of pg.PlotWidget
         self.original_spectrogram_layout.addWidget(self.spectrogram_original_canvas)
         self.modified_spectrogram_layout.addWidget(self.spectrogram_modified_canvas)
@@ -127,10 +131,21 @@ class MainWindow(QMainWindow):
         self.sliders = []
         self.sliders_labels = []
 
-        self.default_speed = 25
+        self.default_speed = 10
+
+        self.speed_slider = self.findChild(QSlider, "speed_slider")
+        # self.speed_slider.setValue(self.default_speed)
+        self.speed_slider.setRange(1, 5)
+        self.speed_slider.valueChanged.connect(lambda value: self.change_speed(value))
+
+
         self.timer = QtCore.QTimer()
         self.timer.setInterval(self.default_speed)
         self.timer.timeout.connect(self.cine_mode)
+
+        self.modified_timer = QtCore.QTimer()
+        self.modified_timer.setInterval(self.default_speed)
+        self.modified_timer.timeout.connect(self.cine_mode)
         self.idx_original_time_signal = 0
         self.idx_modified_time_signal = 0
         self.time_data_original_signal = []
@@ -138,11 +153,15 @@ class MainWindow(QMainWindow):
         self.time_data_modified_signal = []
         self.magnitude_data_modified_signal = []
 
+
+
+
         # Avoiding Zero-Index Confusion
         placeholder_slider = QSlider()
         placeholder_slider_label = QLabel()
         self.sliders.append(placeholder_slider)
         self.sliders_labels.append(placeholder_slider_label)
+        self.checked = False
 
         for i in range(1, 11):
             slider = self.findChild(QSlider, f"slider_{i}")
@@ -158,6 +177,19 @@ class MainWindow(QMainWindow):
 
         self.upload_button = self.findChild(QPushButton, "upload_button")
         self.upload_button.clicked.connect(self.load_signal)
+
+        self.play_button = self.findChild(QPushButton,"play_signal")
+        self.play_button.clicked.connect(self.togglePlaySignal)
+        # self.play_button.toggled.connect(lambda checked: self.togglePlaySignal(self.checked))
+
+        self.rewind_button = self.findChild(QPushButton, "rewind")
+        self.rewind_button.clicked.connect(self.rewind_signal)
+
+        self.zoom_in_button = self.findChild(QPushButton, "zoom_in")
+        self.zoom_in_button.clicked.connect(lambda: self.zoom_for_both_signals(zoomIn=True))
+
+        self.zoom_out_button = self.findChild(QPushButton, "zoom_out")
+        self.zoom_out_button.clicked.connect(lambda: self.zoom_for_both_signals(zoomIn=False))
 
         # Audio Buttons
         self.play_original_button = self.findChild(QPushButton, "original_play_audio_button")
@@ -224,6 +256,7 @@ class MainWindow(QMainWindow):
                         # If stereo, convert to mono by averaging the two channels
                         if self.magnitude.ndim > 1:
                             self.magnitude = np.mean(self.magnitude, axis=1)
+                        self.modified_signal = self.magnitude
                         self.time_axis = np.linspace(0, len(self.magnitude)
                                                      / self.sampling_frequency, num=len(self.magnitude))
                     except Exception as e:
@@ -247,22 +280,25 @@ class MainWindow(QMainWindow):
                     except Exception as e:
                         print(f"Error. Couldn't upload: {e}")
             self.timer.start()
+            self.modified_timer.start()
 
     def plot_signal(self):
         # Clearing previous upload first
         self.original_time_plot.clear()
         self.modified_time_plot.clear()
         self.frequency_plot.clear()
-        self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectrogram_original_canvas,
-                              self.spectrogram_original_figure)
+        # self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectrogram_origiy3 //nal_canvas,
+        #                       self.spectrogram_original_figure)
+        self.fourier_transform()
         self.setting_slider_ranges()
         # self.spectrogram_original_figure.clear()
 
-        self.fourier_transform()
+
+        print("b3d fourier")
         # self.original_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='c')
         # self.modified_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='r')
         self.frequency_plot.plot(self.positive_frequencies,
-                                     self.positive_magnitudes, pen="m")  # Change to frequency plot when UI is done
+                                     self.positive_magnitudes, pen="m")
 
 
     def update_final_music(self, signal, sr):
@@ -274,21 +310,22 @@ class MainWindow(QMainWindow):
         self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4:[8000, 16000]}
 
     def fourier_transform(self):
-        sampling_period = 1 / self.sampling_frequency
-        self.fft_data = fft(self.magnitude)  # each value is a frequency component (mag & phase)
-        self.modified_fft_data = self.fft_data.copy()
-        self.frequencies = np.fft.fftfreq(len(self.fft_data), sampling_period)  # carries value of each component (Hz)
+        if self.mode == "Uniform":
+            sampling_period = 1 / self.sampling_frequency
+            self.fft_data = fft(self.magnitude)  # each value is a frequency component (mag & phase)
+            self.modified_fft_data = self.fft_data.copy()
+            self.frequencies = np.fft.fftfreq(len(self.fft_data), sampling_period)  # carries value of each component (Hz)
 
-        self.positive_magnitudes = np.abs(self.fft_data)[
-                                   :len(self.fft_data) // 2]  # Magnitude spectrum (second half is mirror)
-        self.positive_frequencies = self.frequencies[
-                                    :len(self.frequencies) // 2]  # +ve frequencies only (start to half)
+            self.positive_magnitudes = np.abs(self.fft_data)[
+                                       :len(self.fft_data) // 2]  # Magnitude spectrum (second half is mirror)
+            self.positive_frequencies = self.frequencies[
+                                        :len(self.frequencies) // 2]  # +ve frequencies only (start to half)
 
-        threshold = 0.15 * np.max(self.positive_magnitudes)  # 10% of the maximum magnitude
-        significant_indices = np.where(self.positive_magnitudes > threshold)[0]
-        self.significant_frequencies = self.positive_frequencies[significant_indices]
-        self.significant_magnitudes = self.positive_magnitudes[significant_indices]
-        # self.positive_magnitudes_db = np.log10(self.significant_magnitudes)
+            threshold = 0.15 * np.max(self.positive_magnitudes)  # 10% of the maximum magnitude
+            significant_indices = np.where(self.positive_magnitudes > threshold)[0]
+            self.significant_frequencies = self.positive_frequencies[significant_indices]
+            self.significant_magnitudes = self.positive_magnitudes[significant_indices]
+            # self.positive_magnitudes_db = np.log10(self.significant_magnitudes)
 
     def plot_spectrogram(self, signal, sampling_frequency, plot_widget_draw, plot_widget_clear):
         if not isinstance(signal, np.ndarray):
@@ -357,9 +394,9 @@ class MainWindow(QMainWindow):
                 self.modified_fft_data[index] = self.fft_data[index] * (new_percentage / 100)
                 self.modified_fft_data[-index - 1] = (self.fft_data[-index - 1] *
                                                       (new_percentage / 100))  # modify negative component as well
-            modified_signal = ifft(self.modified_fft_data)
+            self.modified_signal = ifft(self.modified_fft_data)
             self.modified_time_plot.clear()
-            self.modified_time_plot.plot(self.time_axis, modified_signal.real.astype(float), pen='r')
+            self.modified_time_plot.plot(self.time_axis, self.modified_signal.real.astype(float), pen='r')
 
             self.change_frequency_plot()
             # self.modified_time_plot.clear()
@@ -368,7 +405,7 @@ class MainWindow(QMainWindow):
             modified_file_path = "modified_signal.wav"
             if os.path.exists(modified_file_path):
                 os.remove(modified_file_path)
-            wavfile.write(modified_file_path, self.sampling_frequency, modified_signal.real.astype(np.int16))
+            wavfile.write(modified_file_path, self.sampling_frequency, self.modified_signal.real.astype(np.int16))
             self.media_player.setMedia(QMediaContent())  # Clearing media content so modified is refreshed
 
             print(f"{slider.objectName()}: min:{minimum_value} + max: {maximum_value} + current value: {value}")
@@ -378,26 +415,29 @@ class MainWindow(QMainWindow):
             self.modify_volume(value, index)
 
     def play_audio(self, is_playing, audio_type):
-        if self.mode == "Uniform":
-            if audio_type == "original_play_audio_button":  # Play original
-                self.media_player.setMedia(QMediaContent(QUrl.fromLocalFile(self.original_wav_file_path)))
-            elif audio_type == "modified_play_audio_button":  # Play modified
+        # if self.mode == "Uniform":
+        if audio_type == "original_play_audio_button":  # Play original
+            self.media_player.setMedia(QMediaContent(QUrl.fromLocalFile(self.original_wav_file_path)))
+        elif audio_type == "modified_play_audio_button":  # Play modified
+            if self.mode == "Uniform":
                 modified_file_path = "modified_signal.wav"  # Path to the modified signal
-                self.media_player.setMedia(QMediaContent(QUrl.fromLocalFile(modified_file_path)))
+            else:
+                modified_file_path = self.saved_audio_path
+            self.media_player.setMedia(QMediaContent(QUrl.fromLocalFile(modified_file_path)))
 
-            self.media_player.stop() if is_playing else self.media_player.play()
-            self.is_playing = not is_playing
+        self.media_player.stop() if is_playing else self.media_player.play()
+        self.is_playing = not is_playing
 
-            button = self.play_original_button if audio_type == 'original_play_audio_button' else self.play_modified_button
-            icon = self.play_icon if is_playing else self.pause_icon
-            button.setIcon(icon)
+        button = self.play_original_button if audio_type == 'original_play_audio_button' else self.play_modified_button
+        icon = self.play_icon if is_playing else self.pause_icon
+        button.setIcon(icon)
 
         # SHAHD
-        if self.mode == "Animal" or self.mode == "Music" or self.mode == "ECG":
-            if hasattr(self, 'saved_audio_path') and self.saved_audio_path:
-                # Play the modified and saved audio file
-                self.sound = QtMultimedia.QSound(self.saved_audio_path)
-                self.sound.play()
+        # if self.mode == "Animal" or self.mode == "Music" or self.mode == "ECG":
+        #     if hasattr(self, 'saved_audio_path') and self.saved_audio_path:
+        #         # Play the modified and saved audio file
+        #         self.sound = QtMultimedia.QSound(self.saved_audio_path)
+        #         self.sound.play()
 
     def change_frequency_plot(self):
         self.frequency_plot.clear()
@@ -506,6 +546,9 @@ class MainWindow(QMainWindow):
         print(f"Audio saved at: {save_path}")
 
     def cine_mode(self):
+        if self.mode == "Uniform":
+            self.signal = self.magnitude
+            self.modified_time_signal = self.modified_signal.real.astype(float)
         if self.signal is not None and len(self.signal) > 0:
             self.idx_original_time_signal, self.time_data_original_signal, self.magnitude_data_original_signal = self.update_graphs_cine_mode(
                 self.signal, self.original_time_plot, self.idx_original_time_signal,
@@ -526,7 +569,7 @@ class MainWindow(QMainWindow):
                 time.append(self.time_axis[i])
                 magnitude.append(signal[i])
             # plot_data_item.setData(time, magnitude)
-            plot_widget.plot(time, magnitude, pen='blue')
+            self.line_for_rewind = plot_widget.plot(time, magnitude, pen='blue')
             if len(time) > length_in_one_frame:
                 plot_widget.setXRange(time[-length_in_one_frame], time[-1])
             else:
@@ -537,26 +580,80 @@ class MainWindow(QMainWindow):
 
     def rewind_signal(self):
         self.timer.start()
-        # signal.time = []
-        # signal.magnitude = []
-        # signal.line.setData([], [])
+        self.modified_timer.start()
+        self.idx_original_time_signal = 0
+        self.time_data_original_signal = []
+        self.magnitude_data_original_signal = []
+        self.idx_modified_time_signal = 0
+        self.time_data_modified_signal = []
+        self.magnitude_data_modified_signal = []
+        self.original_time_plot.clear()
+        self.modified_time_plot.clear()
+        self.line_for_rewind.setData([], [])
+        self.cine_mode()
 
-    def play_signal(self):
+    # def link_signals(self):
+    #     self.Channel1Viewer.rewindSignal()
+    #     self.Channel2Viewer.rewindSignal()
+    #     self.PlayChannel2.toggled.disconnect()
+    #     self.Channel2Editor.RewindButton.clicked.disconnect()
+    #     self.Channel1Editor.SpeedSlider.valueChanged.disconnect()
+    #     self.PlayChannel1.toggled.connect(lambda checked: self.togglePlaySignal(checked, "both"))
+    #     self.Channel1Editor.RewindButton.clicked.connect(self.wrappedRewind)
+    #     self.Channel2Editor.SpeedSlider.valueChanged.connect(self.syncSliders)
+
+
+    def play_signal1(self):
+        print("ana gwa play")
         self.timer.start()
+        self.modified_timer.start()
         return
 
     def pause_signal(self):
+        print("ana gwa pause")
         self.timer.stop()
+        self.modified_timer.stop()
         return
+
+
+    def togglePlaySignal(self):
+        if self.checked:
+            # self.play_button.setIcon(self.iconplay)
+            self.pause_signal()
+            self.checked = False
+
+        else:
+            # self.play_button.setIcon(self.iconpause)
+            self.play_signal1()
+            self.checked = True
 
     def change_speed(self, value):
-        self.default_speed = 50 - value
+        self.default_speed = 50
+        self.default_speed *= value
         self.timer.setInterval(self.default_speed)
+        self.modified_timer.setInterval(self.default_speed)
         return
 
+    def zoom(self, zoomIn, plot_widget):
 
+        view_box = plot_widget.getViewBox()
+        x_range, y_range = view_box.viewRange()
+        zoom_factor = 0.8 if zoomIn else 1.25
+        x_center = (x_range[0] + x_range[1]) / 2
+        y_center = (y_range[0] + y_range[1]) / 2
+        new_x_range = [
+            x_center - (x_center - x_range[0]) * zoom_factor,
+            x_center + (x_range[1] - x_center) * zoom_factor
+        ]
+        new_y_range = [
+            y_center - (y_center - y_range[0]) * zoom_factor,
+            y_center + (y_range[1] - y_center) * zoom_factor
+        ]
+        view_box.setRange(xRange=new_x_range, yRange=new_y_range)
 
-
+    def zoom_for_both_signals(self, zoomIn=True):
+        self.zoom(zoomIn,self.original_time_plot )
+        self.zoom(zoomIn, self.modified_time_plot)
 def main():
     app = QApplication([])
     main_window = MainWindow()
