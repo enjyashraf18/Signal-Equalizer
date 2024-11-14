@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import (QMainWindow, QApplication, QWidget, QHBoxLayout, QF
                              QCheckBox, QComboBox)
 from PyQt5.QtGui import QIcon
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import QUrl, Qt
 import pyqtgraph as pg
 from PyQt5 import uic, QtMultimedia
 from PyQt5 import QtCore, QtGui
@@ -122,8 +122,12 @@ class MainWindow(QMainWindow):
         self.frequency_plot = pg.PlotWidget()
         self.spectrogram_original_figure = Figure(facecolor='black')
         self.spectrogram_original_canvas = FigureCanvas(self.spectrogram_original_figure)
+        self.spectrogram_original_canvas.setMinimumHeight(160)
+        self.spectrogram_original_canvas.setMaximumHeight(16000)
         self.spectrogram_modified_figure = Figure(facecolor='black')
         self.spectrogram_modified_canvas = FigureCanvas(self.spectrogram_modified_figure)
+        self.spectrogram_modified_canvas.setMinimumHeight(160)
+        self.spectrogram_modified_canvas.setMaximumHeight(16000)
 
 
         # Add the canvas to your layout instead of pg.PlotWidget
@@ -218,6 +222,12 @@ class MainWindow(QMainWindow):
 
         self.iconpause = QtGui.QIcon()
         self.iconpause.addPixmap(QtGui.QPixmap("Deliverables/video-pause-button.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+
+        self.spectrogram_original_label = self.findChild(QLabel, "original_spectrogram_label")
+        self.spectrogram_modified_label = self.findChild(QLabel, "modified_spectrogram_label")
+        self.spectrogram_checkbox = self.findChild(QCheckBox, "spectrogram_checkbox")
+        self.spectrogram_checkbox.stateChanged.connect(
+            lambda state: self.spectrogram_toggle(state))
 
     def center_on_screen(self):
         qr = self.frameGeometry()
@@ -343,7 +353,19 @@ class MainWindow(QMainWindow):
 
         self.change_label(number_of_new_sliders)
 
-    def spectrogram_toggle(self,):
+    def spectrogram_toggle(self,state):
+        if state == Qt.Checked: #hidespectrogram
+            self.spectrogram_modified_canvas.hide()
+            self.spectrogram_original_canvas.hide()
+            self.spectrogram_modified_label.hide()
+            self.spectrogram_original_label.hide()
+
+        else:
+            self.spectrogram_modified_canvas.show()
+            self.spectrogram_original_canvas.show()
+            self.spectrogram_modified_label.show()
+            self.spectrogram_original_label.show()
+
     def fourier_transform(self):
         if self.mode == "Uniform":
             sampling_period = 1 / self.sampling_frequency
@@ -565,12 +587,8 @@ class MainWindow(QMainWindow):
         self.save_audio()
 
     def save_audio(self):
-        if self.mode == "Animal":
-            save_dir = "./AnimalAudios"
-        if self.mode == "Music":
-            save_dir = "./music"
-        if self.mode == "ECG":
-            save_dir = "./ECG"
+
+        save_dir = "./saved audios"
         timestamp = time.strftime("%Y%m%d_%H%M%S")
         save_path = os.path.join(save_dir, f"modified_audio_{timestamp}.wav")
 

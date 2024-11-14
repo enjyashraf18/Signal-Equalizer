@@ -7,7 +7,7 @@ from PyQt5.QtCore import Qt
 import pyqtgraph as pg
 
 # Read the .wav file
-sample_rate, data_y = wavfile.read("Datasets/ECG/atrial_fibrilation.wav")
+sample_rate, data_y = wavfile.read("Datasets/ECG/atrial_flutter.wav")
 
 data_x = np.divide(np.linspace(0,len(data_y)),sample_rate)
 print("Sample Rate:", sample_rate)
@@ -51,7 +51,7 @@ class SignalPlotter(QMainWindow):
         self.frequency_domain(self.signal_data_y)
         self.plot_signal(data_y)
 
-        self.slider.valueChanged.connect(lambda: self.Change_amp(500,600))
+        self.slider.valueChanged.connect(lambda: self.Change_amp(4,6))
         
     def plot_signal(self, signal_data):
         # Generate a time axis for the signal
@@ -102,7 +102,7 @@ class SignalPlotter(QMainWindow):
         indices = np.where((self.frequencies >= min_freq) & (self.frequencies <= max_freq))[0]
     
         # Step 3: Scale the magnitude of these frequencies in the copied magnitude array
-        new_signal_data_y[indices] *= mag_change 
+        new_signal_data_y[indices] *= mag_change *10
         # self.plot_widget.clear()
         self.plot_widget2.clear()
         # self.plot_signal(new_signal_data_y)

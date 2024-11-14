@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5a7d0f27-d850-4661-881f-79a46609caba" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Signal-Equalizer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Signal-Equalizer.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECGHandeling.py" beforeDir="false" afterPath="$PROJECT_DIR$/ECGHandeling.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Equalizer.ui" beforeDir="false" afterPath="$PROJECT_DIR$/Equalizer.ui" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/MainWindow.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
