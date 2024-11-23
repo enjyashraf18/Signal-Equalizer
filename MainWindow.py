@@ -33,10 +33,12 @@ class MainWindow(QMainWindow):
         # SHAHD #
         self.animals = {1: [47.0, 1172], 2: [2971.5, 5250],3: [1205,2863], 4: [7031,15796]}
         self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000]}
+
         self.final_ECG_freq = {1: [4, 6], 2: [500, 600], 3: [3, 8], 4: [700, 800]}
         self.animals_labels = {1: "Lion", 2: "Bird", 3: "Monkey", 4: "Bat"}
         self.music_label = {1: "Bass", 2: "Piano", 3: "Quitar", 4: "Cymbal"}
         self.ecg_label = {1: "Normal ECG", 2: "Atrial Flutter", 3: "Atrial Fibrillation", 4: "Ventricular Tachycardia"}
+
         self.tolerance = 10
         self.previous_animals_sliders_values = [1] * 10   # we want to make it more generalized
         self.previous_music_sliders_values = [1] * 10  # we want to make it more generalized
@@ -171,14 +173,16 @@ class MainWindow(QMainWindow):
         self.checked = False
 
         for i in range(1, 11):
-            slider = self.findChild(QSlider, f"slider_{11 - i}")
+
+            slider = self.findChild(QSlider, f"slider_{11-i}")
+
             slider.setRange(0, 100)
             slider.setValue(100)
             slider.valueChanged.connect(lambda value, index=i: self.on_slider_change(value, index))
             # slider.setRange(1, 10)
             self.sliders.append(slider)
-
             slider_label = self.findChild(QLabel, f"label_slider{11 - i}")
+
             self.sliders_labels.append(slider_label)
 
         self.upload_button = self.findChild(QPushButton, "upload_button")
@@ -228,6 +232,31 @@ class MainWindow(QMainWindow):
         self.spectrogram_checkbox = self.findChild(QCheckBox, "spectrogram_checkbox")
         self.spectrogram_checkbox.stateChanged.connect(
             lambda state: self.spectrogram_toggle(state))
+
+    def change_label(self,number_of_labels):
+        if self.mode == "Uniform":
+            pass
+        elif self.mode == "Animal":
+            for i in range(1,number_of_labels):
+                self.sliders_labels[i].setText(self.animals_labels[i])
+
+        elif self.mode == "Music":
+            for i in range(1,number_of_labels):
+                self.sliders_labels[i].setText(self.music_label[i])
+
+        elif self.mode == "ECG":
+            for i in range(1,number_of_labels):
+                self.sliders_labels[i].setText(self.ecg_label[i])
+    def hide_show_sliders(self,number_of_previous_sliders,number_of_new_sliders):
+        for i in range(1,number_of_previous_sliders):
+            self.sliders[i].hide()
+            self.sliders_labels[i].hide()
+        for i in range(1,number_of_new_sliders):
+            self.sliders[i].show()
+            self.sliders_labels[i].show()
+
+        self.change_label(number_of_new_sliders)
+
 
     def center_on_screen(self):
         qr = self.frameGeometry()
@@ -561,9 +590,8 @@ class MainWindow(QMainWindow):
         elif self.mode == "ECG":
             start_freq, end_freq = self.final_ECG_freq[object_number]
             gain = slidervalue * 10/self.previous_ECG_sliders_values[object_number-1]
-            self.previous_ECG_sliders_values[object_number-1] = slidervalue* 10
-            print(
-                f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
+            self.previous_ECG_sliders_values[object_number-1] = gain
+            print(f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
 
         start_idx = np.where(np.abs(self.original_freqs - start_freq) <= self.tolerance)[0]
         end_idx = np.where(np.abs(self.original_freqs - end_freq) <= self.tolerance)[0]
