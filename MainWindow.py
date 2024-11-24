@@ -34,7 +34,8 @@ class MainWindow(QMainWindow):
         self.animals = {1: [47.0, 1172], 2: [2971.5, 5250],3: [1205,2863], 4: [7031,15796]}
         self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000]}
 
-        self.final_ECG_freq = {1: [4, 6], 2: [500, 600], 3: [3, 8], 4: [700, 800]}
+        self.final_ECG_freq = {1: [4, 6], 2: [1, 4.5], 3: [3, 8], 4: [700, 800]}
+        self.uniform_label = {1: "0-10Hz", 2: "10-20Hz", 3: "20-30Hz", 4: "30-40Hz"}
         self.animals_labels = {1: "Lion", 2: "Bird", 3: "Monkey", 4: "Bat"}
         self.music_label = {1: "Bass", 2: "Piano", 3: "Quitar", 4: "Cymbal"}
         self.ecg_label = {1: "Normal ECG", 2: "Atrial Flutter", 3: "Atrial Fibrillation", 4: "Ventricular Tachycardia"}
@@ -235,7 +236,9 @@ class MainWindow(QMainWindow):
 
     def change_label(self,number_of_labels):
         if self.mode == "Uniform":
-            pass
+            for i in range(1, 5):
+                self.sliders_labels[i].setText(self.uniform_label[i])
+
         elif self.mode == "Animal":
             for i in range(1,number_of_labels):
                 self.sliders_labels[i].setText(self.animals_labels[i])
@@ -357,30 +360,6 @@ class MainWindow(QMainWindow):
         self.final_music = self.guitar + self.bass+ self.piano +self.cymbal
         self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4:[8000, 16000]}
 
-    def change_label(self, number_of_labels):
-        if self.mode == "Uniform":
-            pass
-        elif self.mode == "Animal":
-            for i in range(1, number_of_labels):
-                self.sliders_labels[i].setText(self.animals_labels[i])
-
-        elif self.mode == "Music":
-            for i in range(1, number_of_labels):
-                self.sliders_labels[i].setText(self.music_label[i])
-
-        elif self.mode == "ECG":
-            for i in range(1, number_of_labels):
-                self.sliders_labels[i].setText(self.ecg_label[i])
-
-    def hide_show_sliders(self, number_of_previous_sliders, number_of_new_sliders):
-        for i in range(1, number_of_previous_sliders):
-            self.sliders[i].hide()
-            self.sliders_labels[i].hide()
-        for i in range(1, number_of_new_sliders):
-            self.sliders[i].show()
-            self.sliders_labels[i].show()
-
-        self.change_label(number_of_new_sliders)
 
     def spectrogram_toggle(self,state):
         if state == Qt.Checked: #hidespectrogram
@@ -516,7 +495,9 @@ class MainWindow(QMainWindow):
 
         button = self.play_original_button if audio_type == 'original_play_audio_button' else self.play_modified_button
         icon = self.play_icon if is_playing else self.pause_icon
+        text = "Play Audio" if is_playing else "Pause Audio"
         button.setIcon(icon)
+        button.setText(text)
 
         # SHAHD
         # if self.mode == "Animal" or self.mode == "Music" or self.mode == "ECG":

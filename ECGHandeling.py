@@ -42,7 +42,7 @@ class SignalPlotter(QMainWindow):
         self.slider = QSlider(Qt.Horizontal)
         self.slider.setMinimum(1)       # Minimum slider value
         self.slider.setMaximum(5)     # Maximum slider value
-        self.slider.setValue(1)        # Initial slider value
+        self.slider.setValue(3)        # Initial slider value
         self.slider.setTickPosition(QSlider.TicksBelow)   # Tick marks below slider
         self.slider.setTickInterval(5)  
         layout.addWidget(self.slider)
@@ -51,7 +51,8 @@ class SignalPlotter(QMainWindow):
         self.frequency_domain(self.signal_data_y)
         self.plot_signal(data_y)
 
-        self.slider.valueChanged.connect(lambda: self.Change_amp(4,6))
+        self.slider.valueChanged.connect(lambda: self.Change_amp(1,4.5))
+        self.slider_mag = [0.01, 0.1, 1, 10, 100]
         
     def plot_signal(self, signal_data):
         # Generate a time axis for the signal
@@ -70,7 +71,7 @@ class SignalPlotter(QMainWindow):
         self.frequencies = np.fft.rfftfreq(len(signal_data_y), data_x[1] - data_x[0])
         
         # Compute magnitudes and check min/max frequencies
-        self.magnitude = np.abs(self.fft_result) / 3000  # Adjust scaling if necessary
+        self.magnitude = np.abs(self.fft_result)   # Adjust scaling if necessary
         max_frequency = np.max(self.frequencies)
         min_frequency = np.min(self.frequencies)
         print(f"The max frequency is {max_frequency}")
@@ -88,21 +89,21 @@ class SignalPlotter(QMainWindow):
     def inverse_fft(self,new_magnitude_data_y):
         new_magnitude_data_y = new_magnitude_data_y.astype(np.complex128)
         new_magnitude_data_y *= np.exp(1j * self.phase)
-        modified_signal = np.fft.irfft(new_magnitude_data_y) * 3000
+        modified_signal = np.fft.irfft(new_magnitude_data_y)
         self.plot_widget.clear()
         self.plot_signal(modified_signal)
 
     def Change_amp(self, min_freq, max_freq):
-        
+
         try:
-            mag_change = self.slider.value()
+            mag_change = self.slider_mag[self.slider.value()-1]
         except AttributeError as e:
             print(e)
         new_signal_data_y = self.magnitude.copy()
         indices = np.where((self.frequencies >= min_freq) & (self.frequencies <= max_freq))[0]
-    
+
         # Step 3: Scale the magnitude of these frequencies in the copied magnitude array
-        new_signal_data_y[indices] *= mag_change *10
+        new_signal_data_y[indices] *= mag_change
         # self.plot_widget.clear()
         self.plot_widget2.clear()
         # self.plot_signal(new_signal_data_y)
