@@ -41,9 +41,9 @@ class MainWindow(QMainWindow):
         self.ecg_label = {1: "Normal ECG", 2: "Atrial Flutter", 3: "Atrial Fibrillation", 4: "Ventricular Tachycardia"}
 
         self.tolerance = 10
-        self.previous_animals_sliders_values = [1] * 10   # we want to make it more generalized
-        self.previous_music_sliders_values = [1] * 10  # we want to make it more generalized
-        self.previous_ECG_sliders_values = [1] * 10  # we want to make it more generalized
+        self.previous_animals_sliders_values = [1] * 4   # we want to make it more generalized
+        self.previous_music_sliders_values = [1] * 4  # we want to make it more generalized
+        self.previous_ECG_sliders_values = [1] * 4  # we want to make it more generalized
         self.signal = None
         self.original_freqs = None
         self.modified_amplitudes = None
@@ -230,6 +230,7 @@ class MainWindow(QMainWindow):
         self.spectrogram_checkbox = self.findChild(QCheckBox, "spectrogram_checkbox")
         self.spectrogram_checkbox.stateChanged.connect(
             lambda state: self.spectrogram_toggle(state))
+        self.first_play_click = True
 
     def change_label(self,number_of_labels):
         if self.mode == "Uniform":
@@ -298,7 +299,7 @@ class MainWindow(QMainWindow):
         filename = QFileDialog.getOpenFileName(self, "Open Audio File", "", "Audio Files (*.wav *.mp3 *.flac)")
         self.original_wav_file_path = filename[0]
         if self.original_wav_file_path:
-            self.play_button.setIcon(self.iconpause)
+            self.play_button.setIcon(self.iconplay)
             self.checked = True
             if self.original_wav_file_path.lower().endswith('.wav') or self.original_wav_file_path.lower().endswith(
                     '.mp3') or self.original_wav_file_path.lower().endswith('.flac'):
@@ -315,26 +316,23 @@ class MainWindow(QMainWindow):
                     # .plot_frequency_magnitude()
                 except Exception as e:
                     print(f"Error. Couldn't upload: {e}")
-            self.timer.start()
-            self.modified_timer.start()
+           # self.timer.start()
+            #self.modified_timer.start()
 
     def plot_signal(self):
         # Clearing previous upload first
         self.original_time_plot.clear()
         self.modified_time_plot.clear()
         self.frequency_plot.clear()
-        # self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectrogram_origiy3 //nal_canvas,
-        #                       self.spectrogram_original_figure)
         self.fourier_transform()
         self.setting_slider_ranges()
-        # self.spectrogram_original_figure.clear()
-
-
-        print("b3d fourier")
-        # self.original_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='c')
-        # self.modified_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='r')
-        self.frequency_plot.plot(self.positive_frequencies,
-                                     self.positive_magnitudes, pen="m")
+        self.spectrogram_original_figure.clear()
+        self.spectrogram_modified_figure.clear()
+        # the below is the method to plot in uniform mode
+        #self.original_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='c')
+        self.original_time_plot.plot(self.time_axis, self.signal, pen='c')
+        self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectrogram_original_canvas,self.spectrogram_original_figure)
+        self.frequency_plot.plot(self.positive_frequencies,self.positive_magnitudes, pen="m")
 
 
     def update_final_music(self, signal, sr):
@@ -393,13 +391,13 @@ class MainWindow(QMainWindow):
                                        x_axis='time',
                                        ax=ax)
 
-        # plot_widget_clear.colorbar(img, ax=ax)
-        ax.axis('off')
+        plot_widget_clear.colorbar(img, ax=ax)
+        #ax.axis('off')
         ax.tick_params(colors='white')
         ax.xaxis.label.set_color('white')
         ax.yaxis.label.set_color('white')
         ax.title.set_color('white')
-        plot_widget_clear.subplots_adjust(left=0, right=1, top=1, bottom=0)
+        #plot_widget_clear.subplots_adjust(left=0, right=1, top=1, bottom=0)
         plot_widget_draw.draw()
 
     def setting_slider_ranges(self):
@@ -554,8 +552,9 @@ class MainWindow(QMainWindow):
         elif self.mode == "ECG":
             start_freq, end_freq = self.final_ECG_freq[object_number]
             gain = slidervalue * 10/self.previous_ECG_sliders_values[object_number-1]
-            self.previous_ECG_sliders_values[object_number-1] = gain
-            print(f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
+            self.previous_ECG_sliders_values[object_number-1] = slidervalue* 10
+            print(
+                f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
 
         start_idx = np.where(np.abs(self.original_freqs - start_freq) <= self.tolerance)[0]
         end_idx = np.where(np.abs(self.original_freqs - end_freq) <= self.tolerance)[0]
@@ -572,8 +571,8 @@ class MainWindow(QMainWindow):
         time = np.linspace(0, len(self.modified_time_signal) / self.sampling_frequency,
                            num=len(self.modified_time_signal))
 
-        # self.modified_time_plot.plot(time, self.modified_time_signal, pen=(50, 100, 240))
-        # self.plot_spectrogram(self.modified_time_signal, self.sampling_frequency, self.spectogram_modified_data_graph)
+        self.modified_time_plot.plot(time, self.modified_time_signal, pen=(50, 100, 240))
+
         self.plot_spectrogram(self.modified_time_signal, self.sampling_frequency, self.spectrogram_modified_canvas,
                               self.spectrogram_modified_figure)
         self.save_audio()
@@ -648,6 +647,10 @@ class MainWindow(QMainWindow):
 
     def play_signal1(self):
         print("ana gwa play")
+        if self.first_play_click:
+            self.modified_time_plot.clear()
+            self.original_time_plot.clear()
+            self.first_play_click = False
         self.timer.start()
         self.modified_timer.start()
         return
@@ -661,17 +664,13 @@ class MainWindow(QMainWindow):
 
     def togglePlaySignal(self):
         if self.checked:
-            # self.play_button.setIcon(self.iconplay)
-            self.pause_signal()
-            self.play_button.setIcon(self.iconplay)
-            self.checked = False
-
-
-        else:
-            # self.play_button.setIcon(self.iconpause)
             self.play_signal1()
             self.play_button.setIcon(self.iconpause)
             self.checked = True
+        else:
+            self.pause_signal()
+            self.play_button.setIcon(self.iconplay)
+            self.checked = False
 
     def change_speed(self, value):
         self.default_speed = 50
