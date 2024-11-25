@@ -122,7 +122,6 @@ class MainWindow(QMainWindow):
 
         self.original_time_plot_data_item = self.original_time_plot.plot([], [], pen='blue')
         self.modified_time_plot_data_item = self.modified_time_plot.plot([], [], pen='green')
-        self.frequency_plot = pg.PlotWidget()
         self.spectrogram_original_figure = Figure(facecolor='black')
         self.spectrogram_original_canvas = FigureCanvas(self.spectrogram_original_figure)
         self.spectrogram_original_canvas.setMinimumHeight(160)
@@ -277,6 +276,7 @@ class MainWindow(QMainWindow):
         self.original_time_plot.clear()
         self.modified_time_plot.clear()
         self.spectrogram_original_figure.clear()
+        self.spectrogram_modified_figure.clear()
         self.frequency_plot.clear()
 
 
@@ -308,12 +308,13 @@ class MainWindow(QMainWindow):
                     self.time_axis = np.linspace(0, len(self.signal) / self.sampling_frequency,
                                                  num=len(self.signal))
                     stft = librosa.stft(self.signal)
+                    self.frequency_magnitude  = np.mean(np.abs(stft), axis = 1)
                     self.original_magnitudes, self.original_phases = librosa.magphase(stft)
                     self.modified_amplitudes = self.original_magnitudes.copy()
                     self.original_freqs = librosa.fft_frequencies(sr=self.sampling_frequency)
+                    print(f"the len of the original freq is {self.original_freqs.shape} and the len of original mag is {self.original_magnitudes.shape}")
                     self.plot_signal()
                     self.reset_sliders()  # resetting sliders to 100 after each upload
-                    # .plot_frequency_magnitude()
                 except Exception as e:
                     print(f"Error. Couldn't upload: {e}")
            # self.timer.start()
@@ -332,7 +333,8 @@ class MainWindow(QMainWindow):
         #self.original_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='c')
         self.original_time_plot.plot(self.time_axis, self.signal, pen='c')
         self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectrogram_original_canvas,self.spectrogram_original_figure)
-        self.frequency_plot.plot(self.positive_frequencies,self.positive_magnitudes, pen="m")
+        print(f"the len of the freq mag is {self.frequency_magnitude.shape}")
+        self.frequency_plot.plot(self.original_freqs, self.frequency_magnitude, pen="m")
 
 
     def update_final_music(self, signal, sr):
@@ -488,8 +490,8 @@ class MainWindow(QMainWindow):
         #         self.sound.play()
 
     def change_frequency_plot(self):
-        self.frequency_plot.clear()
         if self.audiogram_checkbox.isChecked():
+            self.frequency_plot.clear()
             audiogram_db_levels = []
             for f in self.significant_frequencies:
                 band_mask = (self.frequencies >= f - 10) & (self.frequencies <= f + 10)
@@ -516,14 +518,15 @@ class MainWindow(QMainWindow):
             #                          pen='b', symbol='o')
 
         else:  # Frequency vs Magnitude Mode
-            self.modified_positive_magnitudes = np.abs(self.modified_fft_data)[:len(self.modified_fft_data) // 2]
+            self.frequency_plot.clear()
+            # self.modified_positive_magnitudes = np.abs(self.modified_fft_data)[:len(self.modified_fft_data) // 2]
             self.frequency_plot.showGrid(x=False, y=False)
             self.frequency_plot.setLabel('bottom', 'Frequency (Hz)')
             self.frequency_plot.setLabel('left', 'Magnitude')
-            if self.modified_positive_magnitudes is not None:
-                self.frequency_plot.plot(self.positive_frequencies, self.modified_positive_magnitudes, pen="m")
+            if self.modified_time_signal is not None:
+                self.frequency_plot.plot(self.original_freqs, self.modified_amplitudes, pen="m")
             else:
-                self.frequency_plot.plot(self.positive_frequencies, self.positive_magnitudes, pen="m")
+                self.frequency_plot.plot(self.original_freqs, self.original_magnitudes, pen="m")
 
     def inverse_fourier_transform(self, new_magnitudes):
         new_mag_conponent = new_magnitudes * np.exp(1j * self.original_phases)
