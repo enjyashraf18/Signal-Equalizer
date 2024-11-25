@@ -76,6 +76,7 @@ class MainWindow(QMainWindow):
         self.piano = None
         self.guitar = None
         self.cymbal = None
+        self.is_resetting_sliders = False
 
         self.line_for_rewind = None
 
@@ -273,11 +274,7 @@ class MainWindow(QMainWindow):
             self.hide_show_sliders(11,5)
         else:
             self.hide_show_sliders(5, 11)
-        self.original_time_plot.clear()
-        self.modified_time_plot.clear()
-        self.spectrogram_original_figure.clear()
-        self.spectrogram_modified_figure.clear()
-        self.frequency_plot.clear()
+        self.reset_varriables_and_graphs()
 
 
     # def update_mode(self):
@@ -293,9 +290,21 @@ class MainWindow(QMainWindow):
         # filtered_data el mafrod teb2a sos y3ni second order sections
         filtered_data = butter(order, [lower_freq, higher_freq], btype='band', fs=sr, output='sos')
         return sosfilt(filtered_data, data)
+    def reset_varriables_and_graphs(self):
+        self.modified_amplitudes = None
+        self.modified_time_signal = None
+        self.original_magnitudes = None
+        self.original_freqs = None
+        self.frequency_magnitude = None
+        self.original_time_plot.clear()
+        self.modified_time_plot.clear()
+        self.spectrogram_original_figure.clear()
+        self.spectrogram_modified_figure.clear()
+        self.frequency_plot.clear()
 
 
     def load_signal(self):
+        self.reset_varriables_and_graphs()
         filename = QFileDialog.getOpenFileName(self, "Open Audio File", "", "Audio Files (*.wav *.mp3 *.flac)")
         self.original_wav_file_path = filename[0]
         if self.original_wav_file_path:
@@ -435,11 +444,15 @@ class MainWindow(QMainWindow):
                 j += 1
 
     def reset_sliders(self):
+        self.is_resetting_sliders = True
         for i in range(1, 11):
             slider = self.sliders[i]
             slider.setValue(100)
+        self.is_resetting_sliders = False
 
     def on_slider_change(self, value, index):
+        if self.is_resetting_sliders: 
+            return
         if self.mode == "Uniform":
             self.modify_volume(value, index) # MERGE BOTH FUNCTIONS JUST FIND WHAT MODIFY VOLUME NEEDS FROM UNIFORM
 
