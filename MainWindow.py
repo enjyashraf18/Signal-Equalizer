@@ -77,6 +77,7 @@ class MainWindow(QMainWindow):
         self.piano = None
         self.guitar = None
         self.cymbal = None
+        self.is_resetting_sliders = False
 
         self.line_for_rewind = None
 
@@ -274,11 +275,7 @@ class MainWindow(QMainWindow):
             self.hide_show_sliders(11,5)
         else:
             self.hide_show_sliders(5, 11)
-        self.original_time_plot.clear()
-        self.modified_time_plot.clear()
-        self.spectrogram_original_figure.clear()
-        self.spectrogram_modified_figure.clear()
-        self.frequency_plot.clear()
+        self.reset_varriables_and_graphs()
 
 
     # def update_mode(self):
@@ -294,9 +291,21 @@ class MainWindow(QMainWindow):
         # filtered_data el mafrod teb2a sos y3ni second order sections
         filtered_data = butter(order, [lower_freq, higher_freq], btype='band', fs=sr, output='sos')
         return sosfilt(filtered_data, data)
+    def reset_varriables_and_graphs(self):
+        self.modified_amplitudes = None
+        self.modified_time_signal = None
+        self.original_magnitudes = None
+        self.original_freqs = None
+        self.frequency_magnitude = None
+        self.original_time_plot.clear()
+        self.modified_time_plot.clear()
+        self.spectrogram_original_figure.clear()
+        self.spectrogram_modified_figure.clear()
+        self.frequency_plot.clear()
 
 
     def load_signal(self):
+        self.reset_varriables_and_graphs()
         filename = QFileDialog.getOpenFileName(self, "Open Audio File", "", "Audio Files (*.wav *.mp3 *.flac)")
         self.original_wav_file_path = filename[0]
         if self.original_wav_file_path:
@@ -336,6 +345,9 @@ class MainWindow(QMainWindow):
         self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectrogram_original_canvas,self.spectrogram_original_figure)
         print(f"the len of the freq mag is {self.frequency_magnitude.shape}")
         self.frequency_plot.plot(self.original_freqs, self.frequency_magnitude, pen="m")
+        self.frequency_plot.showGrid(x=False, y=False)
+        self.frequency_plot.setLabel('bottom', 'Frequency (Hz)')
+        self.frequency_plot.setLabel('left', 'Magnitude')
 
 
     def update_final_music(self, signal, sr):
@@ -396,11 +408,21 @@ class MainWindow(QMainWindow):
 
         plot_widget_clear.colorbar(img, ax=ax)
         #ax.axis('off')
-        ax.tick_params(colors='white')
-        ax.xaxis.label.set_color('white')
-        ax.yaxis.label.set_color('white')
-        ax.title.set_color('white')
-        #plot_widget_clear.subplots_adjust(left=0, right=1, top=1, bottom=0)
+        ax.tick_params(colors='gray')
+        ax.xaxis.label.set_color('gray')
+        ax.yaxis.label.set_color('gray')
+        ax.title.set_color('gray')
+        plot_widget_clear.subplots_adjust(left=0.15, right=1.1, top=1, bottom=0.15)
+        y_ticks = ax.get_yticks()  # Get default tick positions
+        y_tick_labels = []
+        for tick in y_ticks:
+            if tick >= 1000:
+                y_tick_labels.append(f"{int(tick / 1000)} K")
+            else:
+                y_tick_labels.append(f"{int(tick)}")
+
+        ax.set_yticks(y_ticks)
+        ax.set_yticklabels(y_tick_labels, color='gray')
         plot_widget_draw.draw()
 
     def setting_slider_ranges(self):
@@ -423,11 +445,15 @@ class MainWindow(QMainWindow):
                 j += 1
 
     def reset_sliders(self):
+        self.is_resetting_sliders = True
         for i in range(1, 11):
             slider = self.sliders[i]
             slider.setValue(2)
+        self.is_resetting_sliders = False
 
     def on_slider_change(self, value, index):
+        if self.is_resetting_sliders: 
+            return
         if self.mode == "Uniform":
             self.modify_volume(value, index) # MERGE BOTH FUNCTIONS JUST FIND WHAT MODIFY VOLUME NEEDS FROM UNIFORM
 
@@ -525,9 +551,9 @@ class MainWindow(QMainWindow):
             self.frequency_plot.setLabel('bottom', 'Frequency (Hz)')
             self.frequency_plot.setLabel('left', 'Magnitude')
             if self.modified_time_signal is not None:
-                self.frequency_plot.plot(self.original_freqs, self.modified_amplitudes, pen="m")
+                self.frequency_plot.plot(self.original_freqs, np.mean(self.modified_amplitudes, axis= 1), pen="m")
             else:
-                self.frequency_plot.plot(self.original_freqs, self.original_magnitudes, pen="m")
+                self.frequency_plot.plot(self.original_freqs, self.frequency_magnitude, pen="m")
 
     def inverse_fourier_transform(self, new_magnitudes):
         new_mag_conponent = new_magnitudes * np.exp(1j * self.original_phases)
@@ -579,6 +605,7 @@ class MainWindow(QMainWindow):
 
         self.plot_spectrogram(self.modified_time_signal, self.sampling_frequency, self.spectrogram_modified_canvas,
                               self.spectrogram_modified_figure)
+        self.change_frequency_plot()
         self.save_audio()
 
     def save_audio(self):
