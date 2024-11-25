@@ -319,7 +319,11 @@ class MainWindow(QMainWindow):
                                                  num=len(self.signal))
                     stft = librosa.stft(self.signal)
                     self.frequency_magnitude  = np.mean(np.abs(stft), axis = 1)
-                    self.original_magnitudes, self.original_phases = librosa.magphase(stft)
+
+                    if self.mode == "ECG":
+                        self.original_magnitudes, self.original_phases = librosa.magphase(stft[:, 0])
+                    else:
+                        self.original_magnitudes, self.original_phases = librosa.magphase(stft)
                     self.modified_amplitudes = self.original_magnitudes.copy()
                     self.original_freqs = librosa.fft_frequencies(sr=self.sampling_frequency)
                     print(f"the len of the original freq is {self.original_freqs.shape} and the len of original mag is {self.original_magnitudes.shape}")
@@ -557,7 +561,20 @@ class MainWindow(QMainWindow):
 
     def inverse_fourier_transform(self, new_magnitudes):
         new_mag_conponent = new_magnitudes * np.exp(1j * self.original_phases)
-        modified_signal = librosa.istft(new_mag_conponent)
+        if self.mode == "ECG":
+            # new_magnitude_data_y = new_mag_conponent.reshape(len(new_mag_conponent), 2) #idk eh el actual shape
+            # modified_signal = librosa.istft(new_magnitude_data_y)
+
+            #seperating them to create 2d dataa to match ba2y el shapes bta3t el modes
+            real_part = np.real(new_mag_conponent)
+            imag_part = np.imag(new_mag_conponent)
+            new_magnitude_data_y = np.stack((real_part, imag_part), axis=-1)
+
+            #remove axis and use hop_lenght b 512 w dy default value
+            # modified_signal = librosa.istft(new_magnitude_data_y, hop_length=512)
+            modified_signal = librosa.istft(new_magnitude_data_y)
+        else:
+            modified_signal = librosa.istft(new_mag_conponent)
         return modified_signal
 
     def modify_volume(self, slidervalue, object_number):
