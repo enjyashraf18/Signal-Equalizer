@@ -35,7 +35,8 @@ class MainWindow(QMainWindow):
         self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000]}
 
         self.final_ECG_freq = {1: [4, 6], 2: [1, 4.5], 3: [3, 8], 4: [700, 800]}
-        self.uniform_label = {1: "0-10Hz", 2: "10-20Hz", 3: "20-30Hz", 4: "30-40Hz"}
+        self.magnitudes = [0.0001, 0.1, 1, 10, 100]
+        self.uniform_label = {1: "0-10Hz", 2: "10-20Hz", 3: "20-30Hz", 4: "30-40Hz", 5: "40-50Hz", 6: "50-60Hz", 7: "60-70Hz", 8: "70-80Hz", 9: "80-90Hz", 10:"90-100Hz"}
         self.animals_labels = {1: "Lion", 2: "Bird", 3: "Monkey", 4: "Bat"}
         self.music_label = {1: "Bass", 2: "Piano", 3: "Guitar", 4: "Cymbal"}
         self.ecg_label = {1: "Normal ECG", 2: "Atrial Flutter", 3: "Atrial Fibrillation", 4: "Ventricular Tachycardia"}
@@ -174,9 +175,9 @@ class MainWindow(QMainWindow):
 
         for i in range(1, 11):
             slider = self.findChild(QSlider, f"slider_{11-i}")
-            slider.setRange(0, 100)
-            slider.setValue(100)
-            slider.valueChanged.connect(lambda value, index=i: self.on_slider_change(value, index))
+            slider.setRange(0, 4)
+            slider.setValue(2)
+            slider.valueChanged.connect(lambda value, index=i: self.on_slider_change(self.magnitudes[value], index))
             # slider.setRange(1, 10)
             self.sliders.append(slider)
             slider_label = self.findChild(QLabel, f"label_slider{11 - i}")
@@ -233,7 +234,7 @@ class MainWindow(QMainWindow):
 
     def change_label(self,number_of_labels):
         if self.mode == "Uniform":
-            for i in range(1, 5):
+            for i in range(1, number_of_labels):
                 self.sliders_labels[i].setText(self.uniform_label[i])
 
         elif self.mode == "Animal":
@@ -424,7 +425,7 @@ class MainWindow(QMainWindow):
     def reset_sliders(self):
         for i in range(1, 11):
             slider = self.sliders[i]
-            slider.setValue(100)
+            slider.setValue(2)
 
     def on_slider_change(self, value, index):
         if self.mode == "Uniform":

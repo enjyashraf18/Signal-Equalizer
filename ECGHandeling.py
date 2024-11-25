@@ -51,8 +51,8 @@ class SignalPlotter(QMainWindow):
         self.frequency_domain(self.signal_data_y)
         self.plot_signal(data_y)
 
-        self.slider.valueChanged.connect(lambda: self.Change_amp(1.2,4.5))
-        self.slider_mag = [0.01, 0.1, 1, 10, 100]
+        self.slider.valueChanged.connect(lambda: self.Change_amp(1.2, 4.5))
+        self.slider_mag = [0, 0.1, 1, 10, 100]
         
     def plot_signal(self, signal_data):
         # Generate a time axis for the signal
