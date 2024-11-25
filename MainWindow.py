@@ -335,6 +335,9 @@ class MainWindow(QMainWindow):
         self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectrogram_original_canvas,self.spectrogram_original_figure)
         print(f"the len of the freq mag is {self.frequency_magnitude.shape}")
         self.frequency_plot.plot(self.original_freqs, self.frequency_magnitude, pen="m")
+        self.frequency_plot.showGrid(x=False, y=False)
+        self.frequency_plot.setLabel('bottom', 'Frequency (Hz)')
+        self.frequency_plot.setLabel('left', 'Magnitude')
 
 
     def update_final_music(self, signal, sr):
@@ -395,11 +398,21 @@ class MainWindow(QMainWindow):
 
         plot_widget_clear.colorbar(img, ax=ax)
         #ax.axis('off')
-        ax.tick_params(colors='white')
-        ax.xaxis.label.set_color('white')
-        ax.yaxis.label.set_color('white')
-        ax.title.set_color('white')
-        #plot_widget_clear.subplots_adjust(left=0, right=1, top=1, bottom=0)
+        ax.tick_params(colors='gray')
+        ax.xaxis.label.set_color('gray')
+        ax.yaxis.label.set_color('gray')
+        ax.title.set_color('gray')
+        plot_widget_clear.subplots_adjust(left=0.15, right=1.1, top=1, bottom=0.15)
+        y_ticks = ax.get_yticks()  # Get default tick positions
+        y_tick_labels = []
+        for tick in y_ticks:
+            if tick >= 1000:
+                y_tick_labels.append(f"{int(tick / 1000)} K")
+            else:
+                y_tick_labels.append(f"{int(tick)}")
+
+        ax.set_yticks(y_ticks)
+        ax.set_yticklabels(y_tick_labels, color='gray')
         plot_widget_draw.draw()
 
     def setting_slider_ranges(self):
@@ -524,9 +537,9 @@ class MainWindow(QMainWindow):
             self.frequency_plot.setLabel('bottom', 'Frequency (Hz)')
             self.frequency_plot.setLabel('left', 'Magnitude')
             if self.modified_time_signal is not None:
-                self.frequency_plot.plot(self.original_freqs, self.modified_amplitudes, pen="m")
+                self.frequency_plot.plot(self.original_freqs, np.mean(self.modified_amplitudes, axis= 1), pen="m")
             else:
-                self.frequency_plot.plot(self.original_freqs, self.original_magnitudes, pen="m")
+                self.frequency_plot.plot(self.original_freqs, self.frequency_magnitude, pen="m")
 
     def inverse_fourier_transform(self, new_magnitudes):
         new_mag_conponent = new_magnitudes * np.exp(1j * self.original_phases)
@@ -578,6 +591,7 @@ class MainWindow(QMainWindow):
 
         self.plot_spectrogram(self.modified_time_signal, self.sampling_frequency, self.spectrogram_modified_canvas,
                               self.spectrogram_modified_figure)
+        self.change_frequency_plot()
         self.save_audio()
 
     def save_audio(self):
