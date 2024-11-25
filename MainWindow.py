@@ -142,11 +142,12 @@ class MainWindow(QMainWindow):
         self.sliders = []
         self.sliders_labels = []
 
-        self.default_speed = 10
+        self.default_speed = 100
 
         self.speed_slider = self.findChild(QSlider, "speed_slider")
         # self.speed_slider.setValue(self.default_speed)
-        self.speed_slider.setRange(1, 5)
+        self.speed_slider.setRange(1, 200)
+        self.speed_slider.setValue(self.default_speed)
         self.speed_slider.valueChanged.connect(lambda value: self.change_speed(value))
 
 
@@ -643,7 +644,7 @@ class MainWindow(QMainWindow):
                 self.signal, self.original_time_plot, self.idx_original_time_signal,
                 self.time_data_original_signal, self.magnitude_data_original_signal,
                 self.original_time_plot_data_item)
-            if len(self.modified_time_signal) > 0:
+            if self.modified_time_signal is not None:
                 self.modified_time_plot.clear()
                 self.idx_modified_time_signal, self.time_data_modified_signal, self.magnitude_data_modified_signal = self.update_graphs_cine_mode(
                     self.modified_time_signal, self.modified_time_plot,
@@ -669,6 +670,8 @@ class MainWindow(QMainWindow):
         return index, time, magnitude
 
     def rewind_signal(self):
+        self.play_button.setIcon(self.iconpause)
+        self.checked = False
         self.timer.start()
         self.modified_timer.start()
         self.idx_original_time_signal = 0
@@ -714,15 +717,16 @@ class MainWindow(QMainWindow):
         if self.checked:
             self.play_signal1()
             self.play_button.setIcon(self.iconpause)
-            self.checked = True
+            self.checked = False
         else:
             self.pause_signal()
             self.play_button.setIcon(self.iconplay)
-            self.checked = False
+            self.checked = True
 
     def change_speed(self, value):
-        self.default_speed = 50
-        self.default_speed *= value
+        self.default_speed = 200-value
+        print(f"speed is {self.default_speed}")
+        # self.default_speed = int(100/value)
         self.timer.setInterval(self.default_speed)
         self.modified_timer.setInterval(self.default_speed)
         return
