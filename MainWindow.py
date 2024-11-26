@@ -606,6 +606,13 @@ class MainWindow(QMainWindow):
             self.previous_ECG_sliders_values[object_number-1] = slider_value* 10
             print(
                 f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
+        elif self.mode == "Uniform":
+            # slider = self.sliders[object_number]
+            label = self.sliders_labels[object_number].text()
+            start_freq = int(label.split('-')[0])
+            end_freq = int(label.split('-')[1].split(' ')[0])
+            gain = slider_value / 100
+            # self.modified_amplitudes = self.original_magnitudes.copy()
 
         start_idx = np.where(np.abs(self.original_freqs - start_freq) <= self.tolerance)[0]
         end_idx = np.where(np.abs(self.original_freqs - end_freq) <= self.tolerance)[0]
