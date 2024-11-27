@@ -331,8 +331,9 @@ class MainWindow(QMainWindow):
                         self.original_freqs = np.fft.rfftfreq(len(self.signal), data_x_ecg[1] - data_x_ecg[0])
                     else:
                         if self.mode == "Uniform":
-                            self.signal = librosa.effects.preemphasis(self.signal, coef=1)
-                            self.signal = self.signal[1000:len(self.signal) - 1000]
+                            # self.signal = librosa.effects.preemphasis(self.signal, coef=1)
+                            # self.signal = self.signal[1000:len(self.signal) - 1000]
+                            pass
 
                         self.time_axis = np.linspace(0, len(self.signal) / self.sampling_frequency, num=len(self.signal))
 
