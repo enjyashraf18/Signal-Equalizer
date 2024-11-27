@@ -590,6 +590,8 @@ class MainWindow(QMainWindow):
             self.frequency_plot.setLabel('left', 'Hearing Level')
             self.frequency_plot.showGrid(x=True, y=True)
             self.frequency_plot.setLogMode(x=True, y=False)
+            ticks = [[(10 ** i, f"10^{i}") for i in range(1, 5)]]
+            self.frequency_plot.getAxis('bottom').setTicks(ticks)
             # ticks = [(10, '10'), (100, '100'), (1000, '1000'), (10000, '10000')]
             # self.frequency_plot.getAxis('bottom').setTicks([ticks])
         else:  # Frequency vs Magnitude Mode
@@ -597,6 +599,7 @@ class MainWindow(QMainWindow):
             self.frequency_plot.setLabel('left', 'Magnitude')
             self.frequency_plot.showGrid(x=True, y=True)
             self.frequency_plot.setLogMode(x=False, y=False)
+            self.frequency_plot.getAxis('bottom').setTicks(None)
 
         if self.modified_time_signal is None:
             if self.mode == "Uniform":
@@ -760,7 +763,7 @@ class MainWindow(QMainWindow):
 
     def save_audio(self):
 
-        save_dir = "./saved audios"
+        save_dir = "saved_audios"
         timestamp = time.strftime("%Y%m%d_%H%M%S")
         save_path = os.path.join(save_dir, f"modified_audio_{timestamp}.wav")
 
