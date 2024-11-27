@@ -19,6 +19,7 @@ import os
 from scipy.signal import butter, sosfilt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+from scipy.signal import butter, filtfilt
 
 
 class MainWindow(QMainWindow):
@@ -133,7 +134,6 @@ class MainWindow(QMainWindow):
         self.spectrogram_modified_canvas.setMinimumHeight(160)
         self.spectrogram_modified_canvas.setMaximumHeight(16000)
 
-
         # Add the canvas to your layout instead of pg.PlotWidget
         self.original_spectrogram_layout.addWidget(self.spectrogram_original_canvas)
         self.modified_spectrogram_layout.addWidget(self.spectrogram_modified_canvas)
@@ -174,10 +174,10 @@ class MainWindow(QMainWindow):
 
         for i in range(1, 11):
             slider = self.findChild(QSlider, f"slider_{11-i}")
-            if self.mode == "Uniform":
-                slider.setRange(0, 200)
-                slider.setValue(100)
-                slider.valueChanged.connect(lambda value, index=i: self.modify_volume(value, index))
+            # if self.mode == "Uniform":
+            slider.setRange(0, 200)
+            slider.setValue(100)
+            slider.valueChanged.connect(lambda value, index=i: self.modify_volume(value, index))
             # else:
             #     print("INSIDE ELSE1")
             #     slider.setRange(0, 4)
@@ -295,6 +295,7 @@ class MainWindow(QMainWindow):
         # filtered_data el mafrod teb2a sos y3ni second order sections
         filtered_data = butter(order, [lower_freq, higher_freq], btype='band', fs=sr, output='sos')
         return sosfilt(filtered_data, data)
+
     def reset_variables_and_graphs(self):
         self.modified_amplitudes = None
         self.modified_time_signal = None
@@ -307,7 +308,6 @@ class MainWindow(QMainWindow):
         self.spectrogram_modified_figure.clear()
         self.frequency_plot.clear()
 
-
     def load_signal(self):
         self.reset_variables_and_graphs()
         filename = QFileDialog.getOpenFileName(self, "Open Audio File", "", "Audio Files (*.wav *.mp3 *.flac)")
@@ -319,7 +319,7 @@ class MainWindow(QMainWindow):
                     '.mp3') or self.original_wav_file_path.lower().endswith('.flac'):
                 try:
                     self.signal, self.sampling_frequency = librosa.load(self.original_wav_file_path, sr=None, mono=True)  # sr=None to keep original sampling rate
-
+                    print(f"self.signal: {self.signal}")
                     if self.mode == "ECG":
                         self.time_axis = np.arange(len(self.signal))
                         data_x_ecg = np.divide(np.linspace(0, len(self.signal)), self.sampling_frequency)
@@ -329,15 +329,31 @@ class MainWindow(QMainWindow):
                         self.original_phases = np.angle(stft)
                         self.frequency_magnitude = np.abs(stft)
                         self.original_freqs = np.fft.rfftfreq(len(self.signal), data_x_ecg[1] - data_x_ecg[0])
-
                     else:
+                        if self.mode == "Uniform":
+                            self.signal = librosa.effects.preemphasis(self.signal, coef=1)
+                            # self.signal = self.signal[1000:len(self.signal) - 1000]
+
                         self.time_axis = np.linspace(0, len(self.signal) / self.sampling_frequency, num=len(self.signal))
+
                         stft = librosa.stft(self.signal)
                         self.original_magnitudes, self.original_phases = librosa.magphase(stft)
                         self.frequency_magnitude = np.mean(np.abs(stft), axis=1)
                         self.original_freqs = librosa.fft_frequencies(sr=self.sampling_frequency)
 
                     self.modified_amplitudes = self.original_magnitudes.copy()
+
+                    if self.mode == "Uniform":
+                        # Filter out low frequencies (below 64 Hz)
+                        low_freq_threshold = 64
+                        # print(f"size: {len(self.signal)}")
+                        significant_indices = np.where(self.frequency_magnitude > 0.05)[0]
+                        self.original_magnitudes = self.original_magnitudes[significant_indices]
+                        self.original_phases = self.original_phases[significant_indices]
+                        self.frequency_magnitude = self.frequency_magnitude[significant_indices]
+                        self.original_freqs = self.original_freqs[significant_indices]
+                        self.modified_amplitudes = self.modified_amplitudes[significant_indices]
+
                     print(f"the len of the original freq is {self.original_freqs.shape} and the len of original mag is {self.original_magnitudes.shape}")
                     self.plot_signal()
                     self.reset_sliders()  # resetting sliders to 100 after each upload
@@ -361,7 +377,15 @@ class MainWindow(QMainWindow):
         print("and fl plot 2")
         self.original_time_plot.plot(self.time_axis, self.signal, pen='c')
         print("and fl plot 3")
-        self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectrogram_original_canvas,self.spectrogram_original_figure)
+        # if self.mode == "Uniform":
+        #     # Filter the signal before passing it to the spectrogram
+        #     low_freq_threshold = 64
+        #     filtered_signal = self.high_pass_filter(self.signal, self.sampling_frequency, low_freq_threshold)
+        #     self.plot_spectrogram(filtered_signal, self.sampling_frequency, self.spectrogram_original_canvas,
+        #                           self.spectrogram_original_figure)
+        #
+        # else:
+        self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectrogram_original_canvas, self.spectrogram_original_figure)
         print("and fl plot 4")
         # print(f"the len of the freq mag is {self.frequency_magnitude.shape}")
         self.change_frequency_plot()
@@ -412,9 +436,23 @@ class MainWindow(QMainWindow):
     #         self.significant_magnitudes = self.positive_magnitudes[significant_indices]
     #         # self.positive_magnitudes_db = np.log10(self.significant_magnitudes)
 
+
+    # def high_pass_filter(self, signal, sampling_rate, cutoff):
+    #     nyquist = 0.5 * sampling_rate
+    #     normal_cutoff = cutoff / nyquist
+    #     b, a = butter(1, normal_cutoff, btype='high', analog=False)  # 1st-order filter
+    #     filtered_signal = filtfilt(b, a, signal)
+    #     return filtered_signal
+
+
     def plot_spectrogram(self, signal, sampling_frequency, plot_widget_draw, plot_widget_clear):
         if not isinstance(signal, np.ndarray):
             signal = np.array(signal)
+
+        # if self.mode == "Uniform":
+            # significant_indices = np.where(signal > 0)[0]
+            # signal = signal[significant_indices]
+            # self.signal = self.high_pass_filter(self.signal, self.sampling_frequency, 150)
 
         stft = np.abs(librosa.stft(signal))
 
@@ -449,13 +487,16 @@ class MainWindow(QMainWindow):
 
     def setting_slider_ranges(self):
         if self.mode == "Uniform":
-            threshold = 0.15 * np.max(self.frequency_magnitude)  # 15% of max magnitude
-            significant_indices = np.where(self.frequency_magnitude > threshold)[0]
-            self.significant_frequencies = self.original_freqs[significant_indices]
-            self.significant_magnitudes = self.frequency_magnitude[significant_indices]
+            # threshold = 0.01 * np.max(self.frequency_magnitude)  # 15% of max magnitude
+            # significant_indices = np.where(self.frequency_magnitude > threshold)[0]
+            # self.significant_frequencies = self.original_freqs[significant_indices]
+            # self.significant_magnitudes = self.frequency_magnitude[significant_indices]
+            #
+            # min_frequency = self.significant_frequencies[0]
+            # max_frequency = self.significant_frequencies[-1]
 
-            min_frequency = self.significant_frequencies[0]
-            max_frequency = self.significant_frequencies[-1]
+            min_frequency = self.original_freqs[0]
+            max_frequency = self.original_freqs[-1]
             print(f"min freq: {min_frequency} + max freq: {max_frequency}")
             range_of_frequencies = max_frequency - min_frequency
             step_size = range_of_frequencies / 10
@@ -476,12 +517,12 @@ class MainWindow(QMainWindow):
         self.is_resetting_sliders = True
         for i in range(1, 11):
             slider = self.sliders[i]
-            if self.mode == "Uniform":
-                slider.setRange(0, 200)
-                slider.setValue(100)
-            else:
-                slider.setRange(0, 4)
-                slider.setValue(2)
+            # if self.mode == "Uniform":
+            slider.setRange(0, 200)
+            slider.setValue(100)
+            # else:
+            #     slider.setRange(0, 4)
+            #     slider.setValue(2)
         self.is_resetting_sliders = False
 
     # def on_slider_change(self, value, index):
@@ -591,31 +632,35 @@ class MainWindow(QMainWindow):
         start_freq, end_freq = 0, 0
         gain = 0
         if self.mode == "Animal":
-            slider_value = self.magnitudes[slider_value]
+            # slider_value = self.magnitudes[slider_value]
             print(f"gwa modify value {slider_value} object number {object_number}")
             start_freq, end_freq = self.animals[object_number]
-            gain = slider_value/self.previous_animals_sliders_values[object_number-1]
+            # gain = slider_value/self.previous_animals_sliders_values[object_number-1]
+            gain = slider_value / 100
             self.previous_animals_sliders_values[object_number-1] = slider_value
             print(f"the start freq is {start_freq} and the end freq is {end_freq}. "
                   f"max of freqs in all data is {max(self.original_freqs)}")
 
         elif self.mode == "Music":
             print("ana gwaa modify 1")
-            slider_value = self.magnitudes[slider_value]
+            # slider_value = self.magnitudes[slider_value]
             print(f"gwa modify value {slider_value} object number {object_number}")
             start_freq, end_freq = self.final_music_freq[object_number]
-            gain = slider_value/self.previous_music_sliders_values[object_number-1]
+            # gain = slider_value/self.previous_music_sliders_values[object_number-1]
+            gain = slider_value / 100
             self.previous_music_sliders_values[object_number-1] = slider_value
             print("ana gwaa modify 2")
             print(f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
 
         elif self.mode == "ECG":
-            slider_value = self.magnitudes[slider_value]
+            # slider_value = self.magnitudes[slider_value]
             print(f"gwa modify value {slider_value} object number {object_number}")
             start_freq, end_freq = self.final_ECG_freq[object_number]
             print(f"start and end {start_freq, end_freq}")
-            gain = slider_value * 10/self.previous_ECG_sliders_values[object_number-1]
+            # gain = slider_value * 10/self.previous_ECG_sliders_values[object_number-1]
+            gain = slider_value / 100
             self.previous_ECG_sliders_values[object_number-1] = slider_value* 10
+
         elif self.mode == "Uniform":
             # slider = self.sliders[object_number]
             label = self.sliders_labels[object_number].text()
@@ -632,10 +677,7 @@ class MainWindow(QMainWindow):
             end_idx = np.where(np.abs(self.original_freqs - end_freq) <= self.tolerance)[0]
             start_idx = int(start_idx[0]) if isinstance(start_idx, np.ndarray) else int(start_idx)
             end_idx = int(end_idx[0]) if isinstance(end_idx, np.ndarray) else int(end_idx)
-            if self.mode == "Uniform":
-                self.modified_amplitudes[start_idx:end_idx] = self.original_magnitudes[start_idx:end_idx] * gain
-            else:
-                self.modified_amplitudes[start_idx:end_idx] *= gain
+            self.modified_amplitudes[start_idx:end_idx] = self.original_magnitudes[start_idx:end_idx] * gain
         self.modified_time_signal = self.inverse_fourier_transform(self.modified_amplitudes)
         self.modified_time_plot.clear()
 
