@@ -19,7 +19,7 @@ import os
 from scipy.signal import butter, sosfilt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from scipy.signal import butter, filtfilt
+from pyqtgraph import AxisItem
 
 
 class MainWindow(QMainWindow):
@@ -369,14 +369,7 @@ class MainWindow(QMainWindow):
         print("and fl plot 2")
         self.original_time_plot.plot(self.time_axis, self.signal, pen='c')
         print("and fl plot 3")
-        # if self.mode == "Uniform":
-        #     # Filter the signal before passing it to the spectrogram
-        #     low_freq_threshold = 64
-        #     filtered_signal = self.high_pass_filter(self.signal, self.sampling_frequency, low_freq_threshold)
-        #     self.plot_spectrogram(filtered_signal, self.sampling_frequency, self.spectrogram_original_canvas,
-        #                           self.spectrogram_original_figure)
-        #
-        # else:
+
         self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectrogram_original_canvas, self.spectrogram_original_figure)
         print("and fl plot 4")
         # print(f"the len of the freq mag is {self.frequency_magnitude.shape}")
@@ -427,14 +420,6 @@ class MainWindow(QMainWindow):
     #         self.significant_frequencies = self.positive_frequencies[significant_indices]
     #         self.significant_magnitudes = self.positive_magnitudes[significant_indices]
     #         # self.positive_magnitudes_db = np.log10(self.significant_magnitudes)
-
-
-    # def high_pass_filter(self, signal, sampling_rate, cutoff):
-    #     nyquist = 0.5 * sampling_rate
-    #     normal_cutoff = cutoff / nyquist
-    #     b, a = butter(1, normal_cutoff, btype='high', analog=False)  # 1st-order filter
-    #     filtered_signal = filtfilt(b, a, signal)
-    #     return filtered_signal
 
 
     def plot_spectrogram(self, signal, sampling_frequency, plot_widget_draw, plot_widget_clear):
@@ -590,18 +575,13 @@ class MainWindow(QMainWindow):
             self.frequency_plot.setLabel('left', 'Hearing Level')
             self.frequency_plot.showGrid(x=True, y=True)
             self.frequency_plot.setLogMode(x=True, y=False)
-            # ticks = [[(10 ** i, f"10^{i}") for i in range(1, 5)]]
-            # self.frequency_plot.getAxis('bottom').setTicks(ticks)
-            # ticks = [(10, '10'), (100, '100'), (1000, '1000'), (10000, '10000'), (10**5, '10^5'), (10**6, '10^6')]
-            # self.frequency_plot.getAxis('bottom').setTicks([ticks])
+
         else:  # Frequency vs Magnitude Mode
             self.frequency_plot.setLabel('bottom', 'Frequency (Hz)')
             self.frequency_plot.setLabel('left', 'Magnitude')
             self.frequency_plot.showGrid(x=True, y=True)
             self.frequency_plot.setLogMode(x=False, y=False)
-            self.frequency_plot.getAxis('bottom').setTicks(None)
-            ticks = [[(10 ** i, f"10^{i}") for i in range(1, 5)]]
-            self.frequency_plot.getAxis('bottom').setTicks(ticks)
+            # self.frequency_plot.getAxis('bottom').setTicks(None)
 
         if self.modified_time_signal is None:
             if self.mode == "Uniform":
@@ -888,6 +868,12 @@ class MainWindow(QMainWindow):
     def zoom_for_both_signals(self, zoomIn=True):
         self.zoom(zoomIn,self.original_time_plot )
         self.zoom(zoomIn, self.modified_time_plot)
+
+class CustomLogAxis(AxisItem):
+    def tickStrings(self, values, scale, spacing):
+        # Generate custom tick labels for logarithmic scale
+        return [f"10^{int(np.log10(v))}" if v > 0 else "" for v in values]
+
 def main():
     app = QApplication([])
     main_window = MainWindow()
