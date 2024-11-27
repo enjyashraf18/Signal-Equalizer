@@ -330,13 +330,7 @@ class MainWindow(QMainWindow):
                         self.frequency_magnitude = np.abs(stft)
                         self.original_freqs = np.fft.rfftfreq(len(self.signal), data_x_ecg[1] - data_x_ecg[0])
                     else:
-                        if self.mode == "Uniform":
-                            # self.signal = librosa.effects.preemphasis(self.signal, coef=1)
-                            # self.signal = self.signal[1000:len(self.signal) - 1000]
-                            pass
-
                         self.time_axis = np.linspace(0, len(self.signal) / self.sampling_frequency, num=len(self.signal))
-
                         stft = librosa.stft(self.signal)
                         self.original_magnitudes, self.original_phases = librosa.magphase(stft)
                         self.frequency_magnitude = np.mean(np.abs(stft), axis=1)
@@ -344,16 +338,13 @@ class MainWindow(QMainWindow):
 
                     self.modified_amplitudes = self.original_magnitudes.copy()
 
-                    if self.mode == "Uniform":
-                        # Filter out low frequencies (below 64 Hz)
-                        low_freq_threshold = 64
-                        # print(f"size: {len(self.signal)}")
-                        significant_indices = np.where(self.frequency_magnitude > 0.05)[0]
-                        self.original_magnitudes = self.original_magnitudes[significant_indices]
-                        self.original_phases = self.original_phases[significant_indices]
-                        self.frequency_magnitude = self.frequency_magnitude[significant_indices]
-                        self.original_freqs = self.original_freqs[significant_indices]
-                        self.modified_amplitudes = self.modified_amplitudes[significant_indices]
+                    # if self.mode == "Uniform":
+                    #     significant_indices = np.where(self.frequency_magnitude > 0.05)[0]
+                    #     self.original_magnitudes = self.original_magnitudes[significant_indices]
+                    #     self.original_phases = self.original_phases[significant_indices]
+                    #     self.frequency_magnitude = self.frequency_magnitude[significant_indices]
+                    #     self.original_freqs = self.original_freqs[significant_indices]
+                    #     self.modified_amplitudes = self.modified_amplitudes[significant_indices]
 
                     print(f"the len of the original freq is {self.original_freqs.shape} and the len of original mag is {self.original_magnitudes.shape}")
                     self.plot_signal()
@@ -449,7 +440,7 @@ class MainWindow(QMainWindow):
     def plot_spectrogram(self, signal, sampling_frequency, plot_widget_draw, plot_widget_clear):
         if not isinstance(signal, np.ndarray):
             signal = np.array(signal)
-        # if self.mode == "Uniform":
+
             # significant_indices = np.where(signal > 0)[0]
             # signal = signal[significant_indices]
             # self.signal = self.high_pass_filter(self.signal, self.sampling_frequency, 150)
@@ -459,6 +450,8 @@ class MainWindow(QMainWindow):
         plot_widget_clear.clear()
         ax = plot_widget_clear.add_subplot(111)
         ax.set_facecolor('black')
+        if self.mode == "Uniform":
+            ax.set_ylim(1500, 2100)
 
         img = librosa.display.specshow(librosa.amplitude_to_db(stft, ref=np.max),
                                        sr=sampling_frequency,
@@ -487,16 +480,16 @@ class MainWindow(QMainWindow):
 
     def setting_slider_ranges(self):
         if self.mode == "Uniform":
-            # threshold = 0.01 * np.max(self.frequency_magnitude)  # 15% of max magnitude
-            # significant_indices = np.where(self.frequency_magnitude > threshold)[0]
-            # self.significant_frequencies = self.original_freqs[significant_indices]
-            # self.significant_magnitudes = self.frequency_magnitude[significant_indices]
-            #
-            # min_frequency = self.significant_frequencies[0]
-            # max_frequency = self.significant_frequencies[-1]
+            threshold = 0.01 * np.max(self.frequency_magnitude)  # 15% of max magnitude
+            significant_indices = np.where(self.frequency_magnitude > threshold)[0]
+            self.significant_frequencies = self.original_freqs[significant_indices]
+            self.significant_magnitudes = self.frequency_magnitude[significant_indices]
 
-            min_frequency = self.original_freqs[0]
-            max_frequency = self.original_freqs[-1]
+            min_frequency = self.significant_frequencies[0]
+            max_frequency = self.significant_frequencies[-1]
+
+            # min_frequency = self.original_freqs[0]
+            # max_frequency = self.original_freqs[-1]
             print(f"min freq: {min_frequency} + max freq: {max_frequency}")
             range_of_frequencies = max_frequency - min_frequency
             step_size = range_of_frequencies / 10
@@ -606,12 +599,21 @@ class MainWindow(QMainWindow):
             self.frequency_plot.setLogMode(x=False, y=False)
 
         if self.modified_time_signal is None:
-            print("gwa change freq is none")
-            self.frequency_plot.plot(self.original_freqs, self.frequency_magnitude, pen="m")
+            if self.mode == "Uniform":
+                significant_indices = np.where(self.frequency_magnitude > 0.05)[0]
+                frequencies = self.original_freqs[significant_indices]
+                frequency_magnitude = self.frequency_magnitude[significant_indices]
+                self.frequency_plot.plot(frequencies, frequency_magnitude, pen="m")
+            else:
+                self.frequency_plot.plot(self.original_freqs, self.frequency_magnitude, pen="m")
         else:
-            print("gwa change freq is not none")
             if self.mode == "ECG":
                 self.frequency_plot.plot(self.original_freqs, self.modified_amplitudes, pen="m")
+            elif self.mode == "Uniform":
+                significant_indices = np.where(self.frequency_magnitude > 0.05)[0]
+                frequencies = self.original_freqs[significant_indices]
+                modified_amplitudes = self.modified_amplitudes[significant_indices]
+                self.frequency_plot.plot(frequencies, np.mean(modified_amplitudes, axis=1), pen="m")
             else:
                 self.frequency_plot.plot(self.original_freqs, np.mean(self.modified_amplitudes, axis=1), pen="m")
 
