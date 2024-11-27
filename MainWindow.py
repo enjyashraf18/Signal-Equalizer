@@ -590,9 +590,9 @@ class MainWindow(QMainWindow):
             self.frequency_plot.setLabel('left', 'Hearing Level')
             self.frequency_plot.showGrid(x=True, y=True)
             self.frequency_plot.setLogMode(x=True, y=False)
-            ticks = [[(10 ** i, f"10^{i}") for i in range(1, 5)]]
-            self.frequency_plot.getAxis('bottom').setTicks(ticks)
-            # ticks = [(10, '10'), (100, '100'), (1000, '1000'), (10000, '10000')]
+            # ticks = [[(10 ** i, f"10^{i}") for i in range(1, 5)]]
+            # self.frequency_plot.getAxis('bottom').setTicks(ticks)
+            # ticks = [(10, '10'), (100, '100'), (1000, '1000'), (10000, '10000'), (10**5, '10^5'), (10**6, '10^6')]
             # self.frequency_plot.getAxis('bottom').setTicks([ticks])
         else:  # Frequency vs Magnitude Mode
             self.frequency_plot.setLabel('bottom', 'Frequency (Hz)')
@@ -600,6 +600,8 @@ class MainWindow(QMainWindow):
             self.frequency_plot.showGrid(x=True, y=True)
             self.frequency_plot.setLogMode(x=False, y=False)
             self.frequency_plot.getAxis('bottom').setTicks(None)
+            ticks = [[(10 ** i, f"10^{i}") for i in range(1, 5)]]
+            self.frequency_plot.getAxis('bottom').setTicks(ticks)
 
         if self.modified_time_signal is None:
             if self.mode == "Uniform":
