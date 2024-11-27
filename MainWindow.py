@@ -332,7 +332,7 @@ class MainWindow(QMainWindow):
                     else:
                         if self.mode == "Uniform":
                             self.signal = librosa.effects.preemphasis(self.signal, coef=1)
-                            # self.signal = self.signal[1000:len(self.signal) - 1000]
+                            self.signal = self.signal[1000:len(self.signal) - 1000]
 
                         self.time_axis = np.linspace(0, len(self.signal) / self.sampling_frequency, num=len(self.signal))
 
@@ -448,7 +448,6 @@ class MainWindow(QMainWindow):
     def plot_spectrogram(self, signal, sampling_frequency, plot_widget_draw, plot_widget_clear):
         if not isinstance(signal, np.ndarray):
             signal = np.array(signal)
-
         # if self.mode == "Uniform":
             # significant_indices = np.where(signal > 0)[0]
             # signal = signal[significant_indices]
