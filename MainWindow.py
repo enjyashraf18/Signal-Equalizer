@@ -495,12 +495,12 @@ class MainWindow(QMainWindow):
         self.is_resetting_sliders = True
         for i in range(1, 11):
             slider = self.sliders[i]
-            # if self.mode == "Uniform":
-            slider.setRange(0, 200)
-            slider.setValue(100)
-            # else:
-            #     slider.setRange(0, 4)
-            #     slider.setValue(2)
+            if self.mode == "ECG":
+                slider.setRange(0, 4)
+                slider.setValue(2)
+            else:
+                slider.setRange(0, 200)
+                slider.setValue(100)
         self.is_resetting_sliders = False
 
     # def on_slider_change(self, value, index):
@@ -640,12 +640,12 @@ class MainWindow(QMainWindow):
             print(f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
 
         elif self.mode == "ECG":
-            # slider_value = self.magnitudes[slider_value]
+            slider_value = self.magnitudes[slider_value]
             print(f"gwa modify value {slider_value} object number {object_number}")
             start_freq, end_freq = self.final_ECG_freq[object_number]
             print(f"start and end {start_freq, end_freq}")
-            # gain = slider_value * 10/self.previous_ECG_sliders_values[object_number-1]
-            gain = slider_value / 100
+            gain = slider_value * 10/self.previous_ECG_sliders_values[object_number-1]
+            # gain = slider_value / 100
             self.previous_ECG_sliders_values[object_number-1] = slider_value* 10
 
         elif self.mode == "Uniform":
@@ -664,7 +664,10 @@ class MainWindow(QMainWindow):
             end_idx = np.where(np.abs(self.original_freqs - end_freq) <= self.tolerance)[0]
             start_idx = int(start_idx[0]) if isinstance(start_idx, np.ndarray) else int(start_idx)
             end_idx = int(end_idx[0]) if isinstance(end_idx, np.ndarray) else int(end_idx)
-            self.modified_amplitudes[start_idx:end_idx] = self.original_magnitudes[start_idx:end_idx] * gain
+            if self.mode == "ECG":
+                self.modified_amplitudes[start_idx:end_idx] *= gain
+            else:
+                self.modified_amplitudes[start_idx:end_idx] = self.original_magnitudes[start_idx:end_idx] * gain
         self.modified_time_signal = self.inverse_fourier_transform(self.modified_amplitudes)
         self.modified_time_plot.clear()
 
