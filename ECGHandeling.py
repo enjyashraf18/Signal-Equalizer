@@ -60,8 +60,7 @@ class SignalPlotter(QMainWindow):
         
         # Plot the signal on the plot widget
         self.plot_widget.plot(time_axis, signal_data, pen='b')  # 'b' for blue line
-        self.plot_widget2
-    
+
     def frequency_domain(self,signal_data_y):
 
         # Perform FFT on the input signal

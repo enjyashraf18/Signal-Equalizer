@@ -319,17 +319,25 @@ class MainWindow(QMainWindow):
                     '.mp3') or self.original_wav_file_path.lower().endswith('.flac'):
                 try:
                     self.signal, self.sampling_frequency = librosa.load(self.original_wav_file_path, sr=None, mono=True)  # sr=None to keep original sampling rate
-                    self.time_axis = np.linspace(0, len(self.signal) / self.sampling_frequency,
-                                                 num=len(self.signal))
-                    stft = librosa.stft(self.signal)
-                    self.frequency_magnitude  = np.mean(np.abs(stft), axis = 1)
 
                     if self.mode == "ECG":
-                        self.original_magnitudes, self.original_phases = librosa.magphase(stft[:, 0])
+                        self.time_axis = np.arange(len(self.signal))
+                        data_x_ecg = np.divide(np.linspace(0, len(self.signal)), self.sampling_frequency)
+                        # dy kda single array of frequency components
+                        stft = np.fft.rfft(self.signal)
+                        self.original_magnitudes = np.abs(stft)
+                        self.original_phases = np.angle(stft)
+                        self.frequency_magnitude = np.abs(stft)
+                        self.original_freqs = np.fft.rfftfreq(len(self.signal), data_x_ecg[1] - data_x_ecg[0])
+
                     else:
+                        self.time_axis = np.linspace(0, len(self.signal) / self.sampling_frequency, num=len(self.signal))
+                        stft = librosa.stft(self.signal)
                         self.original_magnitudes, self.original_phases = librosa.magphase(stft)
+                        self.frequency_magnitude = np.mean(np.abs(stft), axis=1)
+                        self.original_freqs = librosa.fft_frequencies(sr=self.sampling_frequency)
+
                     self.modified_amplitudes = self.original_magnitudes.copy()
-                    self.original_freqs = librosa.fft_frequencies(sr=self.sampling_frequency)
                     print(f"the len of the original freq is {self.original_freqs.shape} and the len of original mag is {self.original_magnitudes.shape}")
                     self.plot_signal()
                     self.reset_sliders()  # resetting sliders to 100 after each upload
@@ -339,6 +347,7 @@ class MainWindow(QMainWindow):
             #self.modified_timer.start()
 
     def plot_signal(self):
+        print("and fl plot 1")
         # Clearing previous upload first
         self.original_time_plot.clear()
         self.modified_time_plot.clear()
@@ -349,10 +358,14 @@ class MainWindow(QMainWindow):
         self.spectrogram_modified_figure.clear()
         # the below is the method to plot in uniform mode
         #self.original_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='c')
+        print("and fl plot 2")
         self.original_time_plot.plot(self.time_axis, self.signal, pen='c')
+        print("and fl plot 3")
         self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectrogram_original_canvas,self.spectrogram_original_figure)
-        print(f"the len of the freq mag is {self.frequency_magnitude.shape}")
+        print("and fl plot 4")
+        # print(f"the len of the freq mag is {self.frequency_magnitude.shape}")
         self.change_frequency_plot()
+        print("and fl plot 5")
         # self.frequency_plot.plot(self.original_freqs, self.frequency_magnitude, pen="m")
         # self.frequency_plot.showGrid(x=False, y=False)
         # self.frequency_plot.setLabel('bottom', 'Frequency (Hz)')
@@ -552,29 +565,27 @@ class MainWindow(QMainWindow):
             self.frequency_plot.setLogMode(x=False, y=False)
 
         if self.modified_time_signal is None:
+            print("gwa change freq is none")
             self.frequency_plot.plot(self.original_freqs, self.frequency_magnitude, pen="m")
         else:
-            self.frequency_plot.plot(self.original_freqs, np.mean(self.modified_amplitudes, axis=1), pen="m")
+            print("gwa change freq is not none")
+            if self.mode == "ECG":
+                self.frequency_plot.plot(self.original_freqs, self.modified_amplitudes, pen="m")
+            else:
+                self.frequency_plot.plot(self.original_freqs, np.mean(self.modified_amplitudes, axis=1), pen="m")
 
     def inverse_fourier_transform(self, new_magnitudes):
-        new_mag_conponent = new_magnitudes * np.exp(1j * self.original_phases)
         if self.mode == "ECG":
-            # new_magnitude_data_y = new_mag_conponent.reshape(len(new_mag_conponent), 2) #idk eh el actual shape
-            # modified_signal = librosa.istft(new_magnitude_data_y)
-
-            #seperating them to create 2d dataa to match ba2y el shapes bta3t el modes
-            real_part = np.real(new_mag_conponent)
-            imag_part = np.imag(new_mag_conponent)
-            new_magnitude_data_y = np.stack((real_part, imag_part), axis=-1)
-
-            #remove axis and use hop_lenght b 512 w dy default value
-            # modified_signal = librosa.istft(new_magnitude_data_y, hop_length=512)
-            modified_signal = librosa.istft(new_magnitude_data_y)
+            print("aaa")
+            new_mag_conponent = new_magnitudes.astype(np.complex128)
+            new_mag_conponent *= np.exp(1j * self.original_phases)
+            modified_signal = np.fft.irfft(new_mag_conponent)
         else:
+            new_mag_conponent = new_magnitudes * np.exp(1j * self.original_phases)
             modified_signal = librosa.istft(new_mag_conponent)
         return modified_signal
 
-    def modify_volume(self, slider_value, object_number): # MN ENJY / HABIBA
+    def modify_volume(self, slider_value, object_number):
         if self.is_resetting_sliders:
             return
         start_freq, end_freq = 0, 0
@@ -602,10 +613,9 @@ class MainWindow(QMainWindow):
             slider_value = self.magnitudes[slider_value]
             print(f"gwa modify value {slider_value} object number {object_number}")
             start_freq, end_freq = self.final_ECG_freq[object_number]
+            print(f"start and end {start_freq, end_freq}")
             gain = slider_value * 10/self.previous_ECG_sliders_values[object_number-1]
             self.previous_ECG_sliders_values[object_number-1] = slider_value* 10
-            print(
-                f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
         elif self.mode == "Uniform":
             # slider = self.sliders[object_number]
             label = self.sliders_labels[object_number].text()
@@ -614,23 +624,26 @@ class MainWindow(QMainWindow):
             gain = slider_value / 100
             # self.modified_amplitudes = self.original_magnitudes.copy()
 
-        start_idx = np.where(np.abs(self.original_freqs - start_freq) <= self.tolerance)[0]
-        end_idx = np.where(np.abs(self.original_freqs - end_freq) <= self.tolerance)[0]
-        print(f"the freq at start idx is {self.original_freqs[start_idx]} and the start idx is {start_idx}")
-        print(f"shoghl habiba final {start_idx}, {end_idx}")
-        # if len(start_idx) > 0 and len(end_idx) > 0:
-        #     start_idx = start_idx[0]
-        #     end_idx = end_idx[0]
-        start_idx = int(start_idx[0]) if isinstance(start_idx, np.ndarray) else int(start_idx)
-        end_idx = int(end_idx[0]) if isinstance(end_idx, np.ndarray) else int(end_idx)
-        if self.mode == "Uniform":
-            self.modified_amplitudes[start_idx:end_idx] = self.original_magnitudes[start_idx:end_idx] * gain
+        if self.mode == "ECG":
+            indices = np.where((self.original_freqs >= start_freq) & (self.original_freqs <= end_freq))[0]
+            self.modified_amplitudes[indices] *= gain
         else:
-            self.modified_amplitudes[start_idx:end_idx] *= gain
+            start_idx = np.where(np.abs(self.original_freqs - start_freq) <= self.tolerance)[0]
+            end_idx = np.where(np.abs(self.original_freqs - end_freq) <= self.tolerance)[0]
+            start_idx = int(start_idx[0]) if isinstance(start_idx, np.ndarray) else int(start_idx)
+            end_idx = int(end_idx[0]) if isinstance(end_idx, np.ndarray) else int(end_idx)
+            if self.mode == "Uniform":
+                self.modified_amplitudes[start_idx:end_idx] = self.original_magnitudes[start_idx:end_idx] * gain
+            else:
+                self.modified_amplitudes[start_idx:end_idx] *= gain
         self.modified_time_signal = self.inverse_fourier_transform(self.modified_amplitudes)
         self.modified_time_plot.clear()
-        time = np.linspace(0, len(self.modified_time_signal) / self.sampling_frequency,
-                           num=len(self.modified_time_signal))
+
+        if self.mode == "ECG":
+            time = np.arange(len(self.modified_time_signal))
+        else:
+            time = np.linspace(0, len(self.modified_time_signal) / self.sampling_frequency,
+                               num=len(self.modified_time_signal))
 
         self.modified_time_plot.plot(time, self.modified_time_signal, pen=(50, 100, 240))
 
