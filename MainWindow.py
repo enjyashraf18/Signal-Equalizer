@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
         self.media_player = QMediaPlayer()
 
         # SHAHD #
-        self.animals = {1: [47.0, 1172], 2: [2971.5, 5250],3: [1205,2863], 4: [7031,15796]}
+        self.animals = {1: [0, 1200], 2: [2900, 5500],3: [1200,2900], 4: [5500,15796]}
         self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000]}
 
         self.final_ECG_freq = {1: [4, 6], 2: [1, 4.5], 3: [3, 8], 4: [700, 800]}
