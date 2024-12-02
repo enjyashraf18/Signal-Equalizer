@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
         self.animals = {1: [0, 1200], 2: [2900, 5500],3: [1200,2900], 4: [5500,15796]}
         self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000]}
 
-        self.final_ECG_freq = {1: [4, 6], 2: [1, 4.5], 3: [3, 8], 4: [700, 800]}
+        self.final_ECG_freq = {1: [4, 6], 2: [51, 60], 3: [1101, 1200], 4: [120, 200]}
         self.magnitudes = [0.0001, 0.1, 1, 10, 100]
         self.uniform_label = {1: "0-10Hz", 2: "10-20Hz", 3: "20-30Hz", 4: "30-40Hz", 5: "40-50Hz", 6: "50-60Hz", 7: "60-70Hz", 8: "70-80Hz", 9: "80-90Hz", 10:"90-100Hz"}
         self.animals_labels = {1: "Lion", 2: "Bird", 3: "Monkey", 4: "Bat"}
