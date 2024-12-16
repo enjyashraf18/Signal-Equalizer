@@ -34,6 +34,29 @@ class MainWindow(QMainWindow):
         # SHAHD #
         self.animals = {1: [0, 1200], 2: [2900, 5500],3: [1200,2900], 4: [5500,15796]}
         self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000]}
+        # self.mixed_mode_freq = {  # arranged ascendingly in frequency
+        #     1: [70, 492],  # Violin
+        #     2: [500, 2000],  # Piano
+        #     4: [2900, 5500],  # Monkey
+        #     5: [5500, 8000],  # Bat
+        #     3: [8000, 16000]  # Cymbal
+        # }
+        # self.mixed_mode_freq = {  # arranged ascendingly in frequency
+        #         6: [46, 581],  # Bear
+        #         2: [500, 800],  # Piano
+        #         1: [1600, 1900],  # Clarinet
+        #         4: [2900, 5500],  # Monkey
+        #         5: [5500, 8000],  # Bat
+        #         3: [8000, 16000]  # Cymbal
+        #     }
+        self.mixed_mode_freq = {
+            1: [20, 500],
+            2: [407, 1200],
+            3: [1200, 2600],
+            4: [5000, 8000],
+            5: [8000, 20000],
+            6: [2600, 4500]
+        }
 
         self.final_ECG_freq = {1: [4, 6], 2: [51, 60], 3: [1101, 1200], 4: [120, 200]}
         self.magnitudes = [0.0001, 0.1, 1, 10, 100]
@@ -42,10 +65,14 @@ class MainWindow(QMainWindow):
         self.music_label = {1: "Bass", 2: "Piano", 3: "Guitar", 4: "Cymbal"}
         self.ecg_label = {1: "Normal ECG", 2: "Atrial Flutter", 3: "Atrial Fibrillation", 4: "Ventricular Tachycardia"}
 
+        # self.mixed_mode_labels = {1: "Flute", 2: "Piano", 3: "Cymbal", 4: "Monkey", 5: "Bat", 6: "Bear"}
+        self.mixed_mode_labels = {1: "Bass", 2: "Piano", 3: "Monkey", 4: "Bat", 5: "Cymbal", 6: "Cat"}
+
         self.tolerance = 10
         self.previous_animals_sliders_values = [1] * 4   # we want to make it more generalized
         self.previous_music_sliders_values = [1] * 4  # we want to make it more generalized
         self.previous_ECG_sliders_values = [1] * 4  # we want to make it more generalized
+        self.previous_mixed_slider_values = [1] * 6
         self.signal = None
         self.original_freqs = None
         self.modified_amplitudes = None
@@ -218,7 +245,7 @@ class MainWindow(QMainWindow):
 
         # Mode Combobox
         self.mode_combobox = self.findChild(QComboBox, "mode_combobox")
-        modes = ["Uniform", "Animal", "Music", "ECG"]
+        modes = ["Uniform", "Animal", "Music", "ECG", "Mixed"]
         self.mode_combobox.addItems(modes)
         self.mode_combobox.currentIndexChanged.connect(self.update_mode)
 
@@ -236,7 +263,7 @@ class MainWindow(QMainWindow):
             lambda state: self.spectrogram_toggle(state))
         self.first_play_click = True
 
-    def change_label(self,number_of_labels):
+    def change_label(self, number_of_labels):
         if self.mode == "Uniform":
             for i in range(1, number_of_labels):
                 self.sliders_labels[i].setText(self.uniform_label[i])
@@ -251,17 +278,29 @@ class MainWindow(QMainWindow):
                 # self.sliders_labels[i].setText(self.music_label[i])
                 self.sliders_labels[i].setPixmap(QPixmap(f"Deliverables/{self.music_label[i]}.png"))
 
+        elif self.mode == "Mixed":
+            for i in range(1, 7):
+                self.sliders_labels[i].setText(self.mixed_mode_labels[i])
+
         elif self.mode == "ECG":
-            for i in range(1,number_of_labels):
+            for i in range(1 ,number_of_labels):
                 self.sliders_labels[i].setText(self.ecg_label[i])
 
-    def hide_show_sliders(self,number_of_previous_sliders,number_of_new_sliders):
-        for i in range(1,number_of_previous_sliders):
-            self.sliders[i].hide()
-            self.sliders_labels[i].hide()
-        for i in range(1,number_of_new_sliders):
-            self.sliders[i].show()
-            self.sliders_labels[i].show()
+    def hide_show_sliders(self, number_of_previous_sliders, number_of_new_sliders):
+        if self.mode == "Mixed":
+            for i in range(1, 11):
+                self.sliders[i].hide()
+                self.sliders_labels[i].hide()
+            for i in range(1, 7):
+                self.sliders[i].show()
+                self.sliders_labels[i].show()
+        else:
+            for i in range(1, number_of_previous_sliders):
+                self.sliders[i].hide()
+                self.sliders_labels[i].hide()
+            for i in range(1, number_of_new_sliders):
+                self.sliders[i].show()
+                self.sliders_labels[i].show()
 
         self.change_label(number_of_new_sliders)
 
@@ -276,7 +315,9 @@ class MainWindow(QMainWindow):
         self.mode = self.mode_combobox.currentText()
         print(f"{self.mode}")
         if self.mode != "Uniform":
-            self.hide_show_sliders(11,5)
+            self.hide_show_sliders(11, 5)
+        elif self.mode == "Mixed":
+            self.hide_show_sliders(11, 8)
         else:
             self.hide_show_sliders(5, 11)
         self.reset_variables_and_graphs()
@@ -355,7 +396,7 @@ class MainWindow(QMainWindow):
             #self.modified_timer.start()
 
     def plot_signal(self):
-        print("and fl plot 1")
+        # print("and fl plot 1")
         # Clearing previous upload first
         self.original_time_plot.clear()
         self.modified_time_plot.clear()
@@ -366,15 +407,15 @@ class MainWindow(QMainWindow):
         self.spectrogram_modified_figure.clear()
         # the below is the method to plot in uniform mode
         #self.original_time_plot.plot(self.time_axis, self.magnitude.astype(float), pen='c')
-        print("and fl plot 2")
+        # print("and fl plot 2")
         self.original_time_plot.plot(self.time_axis, self.signal, pen='c')
-        print("and fl plot 3")
+        # print("and fl plot 3")
 
         self.plot_spectrogram(self.signal, self.sampling_frequency, self.spectrogram_original_canvas, self.spectrogram_original_figure)
-        print("and fl plot 4")
+        # print("and fl plot 4")
         # print(f"the len of the freq mag is {self.frequency_magnitude.shape}")
         self.change_frequency_plot()
-        print("and fl plot 5")
+        # print("and fl plot 5")
         # self.frequency_plot.plot(self.original_freqs, self.frequency_magnitude, pen="m")
         # self.frequency_plot.showGrid(x=False, y=False)
         # self.frequency_plot.setLabel('bottom', 'Frequency (Hz)')
@@ -614,6 +655,7 @@ class MainWindow(QMainWindow):
         return modified_signal
 
     def modify_volume(self, slider_value, object_number):
+        print(f"{object_number}")
         if self.is_resetting_sliders:
             return
         start_freq, end_freq = 0, 0
@@ -629,14 +671,14 @@ class MainWindow(QMainWindow):
                   f"max of freqs in all data is {max(self.original_freqs)}")
 
         elif self.mode == "Music":
-            print("ana gwaa modify 1")
+            # print("ana gwaa modify 1")
             # slider_value = self.magnitudes[slider_value]
             print(f"gwa modify value {slider_value} object number {object_number}")
             start_freq, end_freq = self.final_music_freq[object_number]
             # gain = slider_value/self.previous_music_sliders_values[object_number-1]
             gain = slider_value / 100
             self.previous_music_sliders_values[object_number-1] = slider_value
-            print("ana gwaa modify 2")
+            # print("ana gwaa modify 2")
             print(f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
 
         elif self.mode == "ECG":
@@ -656,6 +698,10 @@ class MainWindow(QMainWindow):
             gain = slider_value / 100
             # self.modified_amplitudes = self.original_magnitudes.copy()
 
+        elif self.mode == "Mixed":
+            start_freq, end_freq = self.mixed_mode_freq[object_number]
+            gain = slider_value / 100
+            self.previous_mixed_slider_values[object_number - 1] = slider_value
         if self.mode == "ECG":
             indices = np.where((self.original_freqs >= start_freq) & (self.original_freqs <= end_freq))[0]
             self.modified_amplitudes[indices] *= gain
@@ -753,6 +799,8 @@ class MainWindow(QMainWindow):
         save_path = os.path.join(save_dir, f"modified_audio_{timestamp}.wav")
 
         # self.modified_time_signal = np.clip(self.modified_time_signal, -1, 1)  # Ensure values are between -1 and 1
+        # if self.mode == "Mixed":
+        #     for i
         sf.write(save_path, self.modified_time_signal,
                  self.sampling_frequency)
         self.saved_audio_path = save_path
