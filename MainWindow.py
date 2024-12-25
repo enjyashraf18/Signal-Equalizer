@@ -33,7 +33,9 @@ class MainWindow(QMainWindow):
 
         # SHAHD #
         self.animals = {1: [0, 1200], 2: [2900, 5500],3: [1200,2900], 4: [5500,15796]}
-        self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000]}
+        # self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000]}
+        self.vocals_freq = {1: [1, 300], 2: [300, 750], 3: [750, 1500], 4: [5000, 8000], 5: [8000,16000]}
+
         # self.mixed_mode_freq = {  # arranged ascendingly in frequency
         #     1: [70, 492],  # Violin
         #     2: [500, 2000],  # Piano
@@ -63,6 +65,7 @@ class MainWindow(QMainWindow):
         self.uniform_label = {1: "0-10Hz", 2: "10-20Hz", 3: "20-30Hz", 4: "30-40Hz", 5: "40-50Hz", 6: "50-60Hz", 7: "60-70Hz", 8: "70-80Hz", 9: "80-90Hz", 10:"90-100Hz"}
         self.animals_labels = {1: "Lion", 2: "Bird", 3: "Monkey", 4: "Bat"}
         self.music_label = {1: "Bass", 2: "Piano", 3: "Guitar", 4: "Cymbal"}
+        self.vocals_labels = {1: "Bass", 2: "E", 3: "W", 4: "Drums", 5:"Cymbal"}
         self.ecg_label = {1: "Normal ECG", 2: "Atrial Flutter", 3: "Atrial Fibrillation", 4: "Ventricular Tachycardia"}
 
         # self.mixed_mode_labels = {1: "Flute", 2: "Piano", 3: "Cymbal", 4: "Monkey", 5: "Bat", 6: "Bear"}
@@ -73,6 +76,7 @@ class MainWindow(QMainWindow):
         self.previous_music_sliders_values = [1] * 4  # we want to make it more generalized
         self.previous_ECG_sliders_values = [1] * 4  # we want to make it more generalized
         self.previous_mixed_slider_values = [1] * 6
+        self.previous_vocals_slider_values = [1] * 5
         self.signal = None
         self.original_freqs = None
         self.modified_amplitudes = None
@@ -245,7 +249,7 @@ class MainWindow(QMainWindow):
 
         # Mode Combobox
         self.mode_combobox = self.findChild(QComboBox, "mode_combobox")
-        modes = ["Uniform", "Animal", "Music", "ECG", "Mixed"]
+        modes = ["Uniform", "Animal", "Music", "ECG", "Mixed", "Vocals"]
         self.mode_combobox.addItems(modes)
         self.mode_combobox.currentIndexChanged.connect(self.update_mode)
 
@@ -285,6 +289,9 @@ class MainWindow(QMainWindow):
         elif self.mode == "ECG":
             for i in range(1 ,number_of_labels):
                 self.sliders_labels[i].setText(self.ecg_label[i])
+        elif self.mode == "Vocals":
+            for i in range(1 , 6):
+                self.sliders_labels[i].setText(self.vocals_labels[i])
 
     def hide_show_sliders(self, number_of_previous_sliders, number_of_new_sliders):
         if self.mode == "Mixed":
@@ -292,6 +299,13 @@ class MainWindow(QMainWindow):
                 self.sliders[i].hide()
                 self.sliders_labels[i].hide()
             for i in range(1, 7):
+                self.sliders[i].show()
+                self.sliders_labels[i].show()
+        elif self.mode == "Vocals":
+            for i in range(1, 11):
+                self.sliders[i].hide()
+                self.sliders_labels[i].hide()
+            for i in range(1, 6):
                 self.sliders[i].show()
                 self.sliders_labels[i].show()
         else:
@@ -702,6 +716,14 @@ class MainWindow(QMainWindow):
             start_freq, end_freq = self.mixed_mode_freq[object_number]
             gain = slider_value / 100
             self.previous_mixed_slider_values[object_number - 1] = slider_value
+
+        elif self.mode == "Vocals":
+            start_freq, end_freq = self.vocals_freq[object_number]
+            # gain = slider_value/self.previous_music_sliders_values[object_number-1]
+            gain = slider_value / 100
+            # print(f"{len(self.previous_mixed_slider_values}")
+            self.previous_vocals_slider_values[object_number-1] = slider_value
+
         if self.mode == "ECG":
             indices = np.where((self.original_freqs >= start_freq) & (self.original_freqs <= end_freq))[0]
             self.modified_amplitudes[indices] *= gain
