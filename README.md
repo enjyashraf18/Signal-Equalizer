@@ -17,4 +17,10 @@ https://github.com/user-attachments/assets/aecc5ec8-8971-4f48-8ede-19f80794dd8a
 *   Sliders for adjusting frequency magnitudes of signal components.
 *   Two linked cine signal viewers to display the input and output signals synchronously, with functionality for playback control, zoom, pan, and reset. 
 *   Two spectrograms (one for input and one for output) that visually represent the frequency content of the signals. Spectrograms can be toggled on/off.
-*   The ability to display the frequency range in either linear scale or Audiogram scale. 
+*   The ability to display the frequency range in either linear scale or Audiogram scale.
+
+## Team Members
+1. Enjy Ashraf (https://github.com/enjyashraf18)
+2. Habiba Alaa (https://github.com/habibaalaa123)
+3. Nada Khaled (https://github.com/NadaKhaled157)
+4. Shahd Ahmed (https://github.com/Shahd-A-Mahmoud)
