@@ -25,6 +25,8 @@ from pyqtgraph import AxisItem
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.freq_start_idx = None
+        self.freq_end_idx = None
         uic.loadUi("Equalizer.ui", self)
         # VARIABLES
         self.mode = "Uniform"  # Default Mode
@@ -69,7 +71,7 @@ class MainWindow(QMainWindow):
         self.ecg_label = {1: "Normal ECG", 2: "Atrial Flutter", 3: "Atrial Fibrillation", 4: "Ventricular Tachycardia"}
 
         # self.mixed_mode_labels = {1: "Flute", 2: "Piano", 3: "Cymbal", 4: "Monkey", 5: "Bat", 6: "Bear"}
-        self.mixed_mode_labels = {1: "Bass", 2: "Piano", 3: "Monkey", 4: "Bat", 5: "Cymbal", 6: "Cat"}
+        self.mixed_mode_labels = {1: "Bass", 2: "Piano", 3: "Monkey", 4: "Bat", 5: "Cymbal", 6: "Weasel"}
 
         self.tolerance = 10
         self.previous_animals_sliders_values = [1] * 4   # we want to make it more generalized
@@ -249,7 +251,7 @@ class MainWindow(QMainWindow):
 
         # Mode Combobox
         self.mode_combobox = self.findChild(QComboBox, "mode_combobox")
-        modes = ["Uniform", "Animal", "Music", "ECG", "Mixed", "Vocals"]
+        modes = ["Uniform", "Animal", "Music", "ECG", "Mixed", "Vocals", "Wiener Filter"]
         self.mode_combobox.addItems(modes)
         self.mode_combobox.currentIndexChanged.connect(self.update_mode)
 
@@ -271,27 +273,38 @@ class MainWindow(QMainWindow):
         if self.mode == "Uniform":
             for i in range(1, number_of_labels):
                 self.sliders_labels[i].setText(self.uniform_label[i])
+                self.sliders[1].setValue(100)
 
         elif self.mode == "Animal":
             for i in range(1, number_of_labels):
                 # self.sliders_labels[i].setText(self.animals_labels[i])
                 self.sliders_labels[i].setPixmap(QPixmap(f"Deliverables/{self.animals_labels[i]}.png"))
+                self.sliders[1].setValue(100)
 
         elif self.mode == "Music":
             for i in range(1,number_of_labels):
                 # self.sliders_labels[i].setText(self.music_label[i])
                 self.sliders_labels[i].setPixmap(QPixmap(f"Deliverables/{self.music_label[i]}.png"))
+                self.sliders[1].setValue(100)
 
         elif self.mode == "Mixed":
             for i in range(1, 7):
-                self.sliders_labels[i].setText(self.mixed_mode_labels[i])
+                self.sliders_labels[i].setPixmap(QPixmap(f"Deliverables/{self.mixed_mode_labels[i]}.png"))
+                self.sliders[1].setValue(100)
 
         elif self.mode == "ECG":
             for i in range(1 ,number_of_labels):
                 self.sliders_labels[i].setText(self.ecg_label[i])
+                self.sliders[1].setValue(100)
+
         elif self.mode == "Vocals":
             for i in range(1 , 6):
-                self.sliders_labels[i].setText(self.vocals_labels[i])
+                self.sliders_labels[i].setPixmap(QPixmap(f"Deliverables/{self.vocals_labels[i]}.png"))
+                self.sliders[1].setValue(100)
+
+        elif self.mode == "Wiener Filter":
+            self.sliders_labels[1].setText("Noise Filter")
+            self.sliders[1].setValue(0)
 
     def hide_show_sliders(self, number_of_previous_sliders, number_of_new_sliders):
         if self.mode == "Mixed":
@@ -308,6 +321,14 @@ class MainWindow(QMainWindow):
             for i in range(1, 6):
                 self.sliders[i].show()
                 self.sliders_labels[i].show()
+        elif self.mode == "Wiener Filter":
+            for i in range(1, 11):
+                self.sliders[i].hide()
+                self.sliders_labels[i].hide()
+
+            self.sliders[1].show()
+            self.sliders_labels[1].show()
+
         else:
             for i in range(1, number_of_previous_sliders):
                 self.sliders[i].hide()
@@ -326,12 +347,15 @@ class MainWindow(QMainWindow):
         self.move(qr.topLeft())
 
     def update_mode(self):
+        self.reset_sliders()
         self.mode = self.mode_combobox.currentText()
-        print(f"{self.mode}")
-        if self.mode != "Uniform":
+        if self.mode == "Wiener Filter":
+            self.hide_show_sliders(11, 5)
+        elif self.mode != "Uniform":
             self.hide_show_sliders(11, 5)
         elif self.mode == "Mixed":
             self.hide_show_sliders(11, 8)
+
         else:
             self.hide_show_sliders(5, 11)
         self.reset_variables_and_graphs()
@@ -362,6 +386,20 @@ class MainWindow(QMainWindow):
         self.spectrogram_original_figure.clear()
         self.spectrogram_modified_figure.clear()
         self.frequency_plot.clear()
+
+    def roi_rigon_change(self):
+        pos = self.roi.pos()  # Current position
+        size = self.roi.size()  # Current size
+        self.roi.setSize([size[0], self.fixed_height], update=False)  # Fix height
+        self.roi.setPos([pos[0], -0.8])  # Ensure position remains valid
+        x_start = int(pos[0] * self.sampling_frequency)  # Convert ROI start to signal index
+        x_end = int((pos[0] + size[0]) * self.sampling_frequency)  # Convert ROI end to signal index
+        # Calculate corresponding frequency range indices
+        self.freq_start_idx = np.searchsorted(self.original_freqs, x_start / len(self.signal) * self.sampling_frequency)
+        self.freq_end_idx = np.searchsorted(self.original_freqs, x_end / len(self.signal) * self.sampling_frequency)
+
+
+
 
     def load_signal(self):
         self.reset_variables_and_graphs()
@@ -403,6 +441,29 @@ class MainWindow(QMainWindow):
 
                     print(f"the len of the original freq is {self.original_freqs.shape} and the len of original mag is {self.original_magnitudes.shape}")
                     self.plot_signal()
+
+                    if self.mode == "Wiener Filter":
+                        self.fixed_height = 1.6  # Fixed height for the ROI
+
+                        # Reset the ROI if it already exists
+                        if hasattr(self, 'roi') and self.roi is not None:
+                            self.original_time_plot.removeItem(self.roi)
+                            self.roi = None  # Clear the existing ROI reference
+
+                        # Create a new ROI
+                        self.roi = pg.RectROI(
+                            [0, -0.8],  # Initial position
+                            [0.5, self.fixed_height],  # Initial width and height
+                            pen=pg.mkPen("b", width=2),
+                            resizable=True, movable=True, invertible=True, rotatable=False
+                        )
+
+                        # Add the new ROI to the plot
+                        self.original_time_plot.addItem(self.roi)
+
+                        # Connect the ROI's signal to constrain the height
+                        self.roi.sigRegionChanged.connect(self.roi_rigon_change)
+
                     self.reset_sliders()  # resetting sliders to 100 after each upload
                 except Exception as e:
                     print(f"Error. Couldn't upload: {e}")
@@ -553,9 +614,13 @@ class MainWindow(QMainWindow):
             if self.mode == "ECG":
                 slider.setRange(0, 4)
                 slider.setValue(2)
+
             else:
                 slider.setRange(0, 200)
                 slider.setValue(100)
+        if self.mode == "Wiener Filter":
+            self.sliders[1].setRange(0, 100)
+            self.sliders[1].setValue(0)
         self.is_resetting_sliders = False
 
     # def on_slider_change(self, value, index):
@@ -669,48 +734,65 @@ class MainWindow(QMainWindow):
         return modified_signal
 
     def modify_volume(self, slider_value, object_number):
-        print(f"{object_number}")
         if self.is_resetting_sliders:
             return
+
         start_freq, end_freq = 0, 0
         gain = 0
-        if self.mode == "Animal":
-            # slider_value = self.magnitudes[slider_value]
-            print(f"gwa modify value {slider_value} object number {object_number}")
+
+        # Handle different modes
+        if self.mode == "Wiener Filter":
+            # Get the segment indices from ROI selection
+            start_freq, end_freq = self.freq_start_idx, self.freq_end_idx
+            noise_ratio = slider_value / 100  # Convert slider value to ratio
+
+            # Get the frequency components for the selected range
+            start_idx = np.where(np.abs(self.original_freqs - start_freq) <= self.tolerance)[0]
+            end_idx = np.where(np.abs(self.original_freqs - end_freq) <= self.tolerance)[0]
+            start_idx = int(start_idx[0]) if isinstance(start_idx, np.ndarray) else int(start_idx)
+            end_idx = int(end_idx[0]) if isinstance(end_idx, np.ndarray) else int(end_idx)
+
+            # Apply Wiener filter to the selected frequency range
+            # Get the power spectrum of the signal
+            signal_power = np.abs(self.original_magnitudes) ** 2
+
+            # Estimate noise power in the selected frequency range
+            noise_power = np.mean(signal_power[start_idx:end_idx]) * noise_ratio
+
+            # Compute Wiener filter transfer function
+            epsilon = np.finfo(float).eps  # Small constant to prevent division by zero
+            H = signal_power / (signal_power + noise_power + epsilon)
+
+            # Apply the filter to the modified amplitudes
+            self.modified_amplitudes = self.original_magnitudes.copy()
+            self.modified_amplitudes *= H
+
+        elif self.mode == "Animal":
             start_freq, end_freq = self.animals[object_number]
-            # gain = slider_value/self.previous_animals_sliders_values[object_number-1]
             gain = slider_value / 100
-            self.previous_animals_sliders_values[object_number-1] = slider_value
-            print(f"the start freq is {start_freq} and the end freq is {end_freq}. "
-                  f"max of freqs in all data is {max(self.original_freqs)}")
+            self.previous_animals_sliders_values[object_number - 1] = slider_value
 
         elif self.mode == "Music":
-            # print("ana gwaa modify 1")
-            # slider_value = self.magnitudes[slider_value]
             print(f"gwa modify value {slider_value} object number {object_number}")
             start_freq, end_freq = self.final_music_freq[object_number]
-            # gain = slider_value/self.previous_music_sliders_values[object_number-1]
             gain = slider_value / 100
-            self.previous_music_sliders_values[object_number-1] = slider_value
-            # print("ana gwaa modify 2")
-            print(f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
+            self.previous_music_sliders_values[object_number - 1] = slider_value
+            print(
+                f"the start freq is {start_freq} and the end freq is {end_freq}. max of freqs in all data is {max(self.original_freqs)}")
 
         elif self.mode == "ECG":
             slider_value = self.magnitudes[slider_value]
             print(f"gwa modify value {slider_value} object number {object_number}")
             start_freq, end_freq = self.final_ECG_freq[object_number]
             print(f"start and end {start_freq, end_freq}")
-            gain = slider_value * 10/self.previous_ECG_sliders_values[object_number-1]
-            # gain = slider_value / 100
-            self.previous_ECG_sliders_values[object_number-1] = slider_value* 10
+            gain = slider_value * 10 / self.previous_ECG_sliders_values[object_number - 1]
+            self.previous_ECG_sliders_values[object_number - 1] = slider_value * 10
 
         elif self.mode == "Uniform":
-            # slider = self.sliders[object_number]
             label = self.sliders_labels[object_number].text()
             start_freq = int(label.split('-')[0])
             end_freq = int(label.split('-')[1].split(' ')[0])
             gain = slider_value / 100
-            # self.modified_amplitudes = self.original_magnitudes.copy()
 
         elif self.mode == "Mixed":
             start_freq, end_freq = self.mixed_mode_freq[object_number]
@@ -719,26 +801,29 @@ class MainWindow(QMainWindow):
 
         elif self.mode == "Vocals":
             start_freq, end_freq = self.vocals_freq[object_number]
-            # gain = slider_value/self.previous_music_sliders_values[object_number-1]
             gain = slider_value / 100
-            # print(f"{len(self.previous_mixed_slider_values}")
-            self.previous_vocals_slider_values[object_number-1] = slider_value
+            self.previous_vocals_slider_values[object_number - 1] = slider_value
 
-        if self.mode == "ECG":
-            indices = np.where((self.original_freqs >= start_freq) & (self.original_freqs <= end_freq))[0]
-            self.modified_amplitudes[indices] *= gain
-        else:
-            start_idx = np.where(np.abs(self.original_freqs - start_freq) <= self.tolerance)[0]
-            end_idx = np.where(np.abs(self.original_freqs - end_freq) <= self.tolerance)[0]
-            start_idx = int(start_idx[0]) if isinstance(start_idx, np.ndarray) else int(start_idx)
-            end_idx = int(end_idx[0]) if isinstance(end_idx, np.ndarray) else int(end_idx)
+        # Apply modifications based on mode
+        if self.mode != "Wiener Filter":
             if self.mode == "ECG":
-                self.modified_amplitudes[start_idx:end_idx] *= gain
+                indices = np.where((self.original_freqs >= start_freq) & (self.original_freqs <= end_freq))[0]
+                self.modified_amplitudes[indices] *= gain
             else:
-                self.modified_amplitudes[start_idx:end_idx] = self.original_magnitudes[start_idx:end_idx] * gain
+                start_idx = np.where(np.abs(self.original_freqs - start_freq) <= self.tolerance)[0]
+                end_idx = np.where(np.abs(self.original_freqs - end_freq) <= self.tolerance)[0]
+                start_idx = int(start_idx[0]) if isinstance(start_idx, np.ndarray) else int(start_idx)
+                end_idx = int(end_idx[0]) if isinstance(end_idx, np.ndarray) else int(end_idx)
+                if self.mode == "ECG":
+                    self.modified_amplitudes[start_idx:end_idx] *= gain
+                else:
+                    self.modified_amplitudes[start_idx:end_idx] = self.original_magnitudes[start_idx:end_idx] * gain
+
+        # Transform back to time domain
         self.modified_time_signal = self.inverse_fourier_transform(self.modified_amplitudes)
         self.modified_time_plot.clear()
 
+        # Plot results
         if self.mode == "ECG":
             time = np.arange(len(self.modified_time_signal))
         else:
@@ -747,7 +832,9 @@ class MainWindow(QMainWindow):
 
         self.modified_time_plot.plot(time, self.modified_time_signal, pen=(50, 100, 240))
 
-        self.plot_spectrogram(self.modified_time_signal, self.sampling_frequency, self.spectrogram_modified_canvas,
+        # Update spectrogram and frequency plots
+        self.plot_spectrogram(self.modified_time_signal, self.sampling_frequency,
+                              self.spectrogram_modified_canvas,
                               self.spectrogram_modified_figure)
         self.change_frequency_plot()
         self.save_audio()
