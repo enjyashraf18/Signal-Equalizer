@@ -1,9 +1,10 @@
 # Signal-Equalizer
-This project develops a desktop application that functions as a **signal equaliser**. The application allows users to **manipulate the magnitude of frequency components** in a signal and reconstruct the modified signal. 
+This project develops a desktop application that functions as a **signal equaliser**. The application allows users to **manipulate the magnitude of frequency components** of a signal and reconstruct the modified signal. 
 
 ## Equalizer Modes
 
-*   **Uniform Range Mode:** Divides the frequency range into 10 equal sections, each controlled by a slider.
+*   **Uniform Range Mode:** Divides the frequency range of signal into 10 equal sections, each controlled by a slider.
+*   
 *   **Musical Instruments Mode:**  Adjusts the magnitude of specific musical instruments in a mixed signal containing four instruments.
 *   **Animal Sounds Mode:** Controls the magnitude of specific animal sounds in a mixed signal of four animal sounds.
 *   **Mixed Music and Animals Mode:**  A mix between the animal and music modes. User can adjust the presence of different animals and musical instruments in the audio.
