@@ -1,6 +1,5 @@
-# Signal-Equalizer 🎚️🎚️
+## Signal-Equalizer 🎚️🎚️
 
-## Introduction:
 This project develops a desktop application that functions as a signal equalizer. A signal equalizer is a tool used to adjust the balance of frequency components within a signal, allowing users to emphasize or attenuate specific frequency ranges. In this application, users can visually manipulate the magnitude of the frequency components of a signal using an intuitive interface, and reconstruct the modified signal for further analysis or playback. The equalizer provides both a graphical representation of the frequency spectrum and real-time feedback on the changes made.
 
 ## Features 🛠️
