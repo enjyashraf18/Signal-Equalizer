@@ -1,35 +1,38 @@
 # Signal-Equalizer
-This project develops a desktop application that functions as a **signal equalizer**. The application allows users to **manipulate the magnitude of frequency components** of a signal and reconstruct the modified signal. 
 
-## Equalizer Modes
+## Introduction:
+This project develops a desktop application that functions as a signal equalizer. A signal equalizer is a tool used to adjust the balance of frequency components within a signal, allowing users to emphasize or attenuate specific frequency ranges. In this application, users can visually manipulate the magnitude of the frequency components of a signal using an intuitive interface, and reconstruct the modified signal for further analysis or playback. The equalizer provides both a graphical representation of the frequency spectrum and real-time feedback on the changes made.
 
-* **Uniform Range Mode:** Divides the frequency range of signal into 10 equal sections, each controlled by a slider.
+## Features:
+### Equalizer Modes
+
+* **Uniform Range Mode:** Splits the signal's frequency range into 10 equal sections, each adjustable via a slider.
   
     https://github.com/user-attachments/assets/4286dd31-4699-419e-a9e0-a2e4284a8d4c
 
-* **Animal Sounds Mode:** Controls the magnitude of specific animal sounds in a mixed signal of four animal sounds.
+* **Animal Sounds Mode:** Adjusts the magnitude of individual animal sounds within a mixed signal of four distinct animal sounds.
   
     https://github.com/user-attachments/assets/ae937760-2e28-47d4-b698-4801f101bbbf
   
-* **Musical Instruments Mode:**  Adjusts the magnitude of specific musical instruments in a mixed signal containing four instruments.
+* **Musical Instruments Mode:**  Adjusts the magnitude of specific musical instruments within a mixed signal containing four instruments.
     
     https://github.com/user-attachments/assets/b4ae987d-d6b0-43f2-b826-9e3773e05b12
 
-* **Biological Signal Abnormalities:** Where each slider can control the magnitude of a specific abnormality (e.g. ECG arrhythmia) in the input biological signal.
+* **ECG Signal Abnormalities:** Where each slider can control the magnitude of a specific abnormality (e.g. ECG arrhythmia) in the input biological signal.
 
     https://github.com/user-attachments/assets/5a784e1a-5e36-420b-9e58-c85aec20b0fe
-* **Mixed Music and Animals Mode:**  A mix between the animal and music modes. User can adjust the presence of different animals and musical instruments in the audio.
+* **Mixed Music and Animals Mode:**  Allows users to adjust the presence of different animal sounds and musical instruments within a mixed audio signal.
 
     https://github.com/user-attachments/assets/aecc5ec8-8971-4f48-8ede-19f80794dd8a
-* **Mixed Vocals and Music Mode:** User can adjust sound of different Vocals and music.
+* **Mixed Vocals and Music Mode:** Allows users to adjust the levels of different vocals and musical elements within a song.
 
     https://github.com/user-attachments/assets/aad41067-adf4-4359-8b9a-1ce8d2fee8a0
 
-* **Weiner Filter Mode:** Removes noise from a sound.
+* **Weiner Filter Mode:** Reduces noise from a sound signal by applying adaptive filtering techniques.
 
     https://github.com/user-attachments/assets/ec7add02-7196-4d29-9818-17a9991236de
 
-## Features
+### Other Features:
 
 *   Sliders for adjusting frequency magnitudes of signal components.
 *   Two linked cine signal viewers to display the input and output signals synchronously, with functionality for playback control, zoom, pan, and reset. 
