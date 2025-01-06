@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
 
         # SHAHD #
         self.animals = {1: [0, 1200], 2: [2900, 5500],3: [1200,2900], 4: [5500,15796]}
-        # self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000]}
+        self.final_music_freq = {1: [20, 500], 2: [500, 2000], 3: [2000, 8000], 4: [8000, 16000]}
         self.vocals_freq = {1: [1, 300], 2: [300, 750], 3: [750, 1500], 4: [5000, 8000], 5: [8000,16000]}
 
         # self.mixed_mode_freq = {  # arranged ascendingly in frequency
@@ -62,7 +62,7 @@ class MainWindow(QMainWindow):
             6: [2600, 4500]
         }
 
-        self.final_ECG_freq = {1: [4, 6], 2: [51, 60], 3: [1101, 1200], 4: [120, 200]}
+        self.final_ECG_freq = {1: [0, 10], 2: [1.2, 4.5], 3: [90, 100], 4: [0.6, 1]}
         self.magnitudes = [0.0001, 0.1, 1, 10, 100]
         self.uniform_label = {1: "0-10Hz", 2: "10-20Hz", 3: "20-30Hz", 4: "30-40Hz", 5: "40-50Hz", 6: "50-60Hz", 7: "60-70Hz", 8: "70-80Hz", 9: "80-90Hz", 10:"90-100Hz"}
         self.animals_labels = {1: "Lion", 2: "Bird", 3: "Monkey", 4: "Bat"}
@@ -785,8 +785,8 @@ class MainWindow(QMainWindow):
             print(f"gwa modify value {slider_value} object number {object_number}")
             start_freq, end_freq = self.final_ECG_freq[object_number]
             print(f"start and end {start_freq, end_freq}")
-            gain = slider_value * 10 / self.previous_ECG_sliders_values[object_number - 1]
-            self.previous_ECG_sliders_values[object_number - 1] = slider_value * 10
+            gain = slider_value / self.previous_ECG_sliders_values[object_number - 1]
+            self.previous_ECG_sliders_values[object_number - 1] = slider_value
 
         elif self.mode == "Uniform":
             label = self.sliders_labels[object_number].text()
