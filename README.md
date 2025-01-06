@@ -17,7 +17,7 @@ This project develops a desktop application that functions as a **signal equaliz
 
 * **Biological Signal Abnormalities:** Where each slider can control the magnitude of a specific abnormality (e.g. ECG arrhythmia) in the input biological signal.
 
-  
+    https://github.com/user-attachments/assets/5a784e1a-5e36-420b-9e58-c85aec20b0fe
 * **Mixed Music and Animals Mode:**  A mix between the animal and music modes. User can adjust the presence of different animals and musical instruments in the audio.
 
     https://github.com/user-attachments/assets/aecc5ec8-8971-4f48-8ede-19f80794dd8a
