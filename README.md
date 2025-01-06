@@ -3,28 +3,31 @@ This project develops a desktop application that functions as a **signal equaliz
 
 ## Equalizer Modes
 
-*   **Uniform Range Mode:** Divides the frequency range of signal into 10 equal sections, each controlled by a slider.
+* **Uniform Range Mode:** Divides the frequency range of signal into 10 equal sections, each controlled by a slider.
   
-https://github.com/user-attachments/assets/4b6728fa-2629-4c52-95ef-32c475e62d77
+    https://github.com/user-attachments/assets/4286dd31-4699-419e-a9e0-a2e4284a8d4c
+
+* **Animal Sounds Mode:** Controls the magnitude of specific animal sounds in a mixed signal of four animal sounds.
   
-*   **Animal Sounds Mode:** Controls the magnitude of specific animal sounds in a mixed signal of four animal sounds.
+    https://github.com/user-attachments/assets/ae937760-2e28-47d4-b698-4801f101bbbf
   
-https://github.com/user-attachments/assets/69d5a803-e92d-4e0b-947a-c0f850ebf8fc
-  
-*   **Musical Instruments Mode:**  Adjusts the magnitude of specific musical instruments in a mixed signal containing four instruments.
+* **Musical Instruments Mode:**  Adjusts the magnitude of specific musical instruments in a mixed signal containing four instruments.
     
-https://github.com/user-attachments/assets/e30e4649-f24f-4582-b09c-099b4803d324
+    https://github.com/user-attachments/assets/b4ae987d-d6b0-43f2-b826-9e3773e05b12
+
+* **Biological Signal Abnormalities:** Where each slider can control the magnitude of a specific abnormality (e.g. ECG arrhythmia) in the input biological signal.
+
   
-*   **Mixed Music and Animals Mode:**  A mix between the animal and music modes. User can adjust the presence of different animals and musical instruments in the audio.
+* **Mixed Music and Animals Mode:**  A mix between the animal and music modes. User can adjust the presence of different animals and musical instruments in the audio.
 
-https://github.com/user-attachments/assets/aecc5ec8-8971-4f48-8ede-19f80794dd8a
-*  **Mixed Vocals and Music Mode:** User can adjust sound of different Vocals and music.
+    https://github.com/user-attachments/assets/aecc5ec8-8971-4f48-8ede-19f80794dd8a
+* **Mixed Vocals and Music Mode:** User can adjust sound of different Vocals and music.
 
-https://github.com/user-attachments/assets/56c60499-cec5-4224-b52d-4985fa6c271a
+    https://github.com/user-attachments/assets/aad41067-adf4-4359-8b9a-1ce8d2fee8a0
 
-*   **Weiner Filter Mode:** Removes noise from a sound.
+* **Weiner Filter Mode:** Removes noise from a sound.
 
-https://github.com/user-attachments/assets/8668a5bb-fc37-4c08-9671-65e1009a732f
+    https://github.com/user-attachments/assets/ec7add02-7196-4d29-9818-17a9991236de
 
 ## Features
 
