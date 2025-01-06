@@ -1,10 +1,10 @@
-# Signal-Equalizer
+# Signal-Equalizer 🎚️🎚️
 
 ## Introduction:
 This project develops a desktop application that functions as a signal equalizer. A signal equalizer is a tool used to adjust the balance of frequency components within a signal, allowing users to emphasize or attenuate specific frequency ranges. In this application, users can visually manipulate the magnitude of the frequency components of a signal using an intuitive interface, and reconstruct the modified signal for further analysis or playback. The equalizer provides both a graphical representation of the frequency spectrum and real-time feedback on the changes made.
 
-## Features:
-### Equalizer Modes
+## Features 🛠️
+### Equalizer Modes 
 
 * **Uniform Range Mode:** Splits the signal's frequency range into 10 equal sections, each adjustable via a slider.
   
@@ -38,6 +38,29 @@ This project develops a desktop application that functions as a signal equalizer
 *   Two linked cine signal viewers to display the input and output signals synchronously, with functionality for playback control, zoom, pan, and reset. 
 *   Two spectrograms (one for input and one for output) that visually represent the frequency content of the signals. Spectrograms can be toggled on/off.
 *   The ability to display the frequency range in either linear scale or Audiogram scale.
+
+## Installation 📥
+
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/habibaalaa123/Beamforming_Simulator.git
+   cd 2D-Beamforming-Simulator
+   ```
+
+2. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Run the simulator:
+   ```bash
+   python main.py
+   ```
+
+---
+
+## Acknowledgments :
+This project was supervised by Dr. Tamer Basha & Eng. Omar, who provided invaluable guidance and expertise throughout its development as a part of the Digital Signal Processing course at Cairo University Faculty of Engineering.
 
 ## Team Members
 <div align="center">
