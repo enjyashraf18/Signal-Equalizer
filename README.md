@@ -53,7 +53,7 @@ This project develops a desktop application that functions as a signal equalizer
 
 3. Run the simulator:
    ```bash
-   python main.py
+   python MainWindow.py
    ```
 
 ---
